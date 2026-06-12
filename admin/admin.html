@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Dashboard</title>
+
+  <link rel="stylesheet" href="admin.css">
+
+</head>
+<body>
+
+<div class="container">
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="sidebar-logo-container">
+      <a href="../home/home.html" title="Back to Home">
+        <img src="../assets/logo.jpg" alt="AponGhar Logo" class="sidebar-logo-img">
+      </a>
+    </div>
+
+    <h2>
+      AponGhar Admin
+    </h2>
+
+        <ul>
+
+        <li
+            class="active"
+            id="applicationsTab"
+        >
+            Owner Applications
+        </li>
+
+        <li id="ownersTab">
+            Owners
+        </li>
+
+        <li id="propertiesTab">
+            Pending Properties
+        </li>
+
+        <li id="allPropertiesTab">
+            Properties
+        </li>
+
+        <li id="checkinsTab">
+            Check-Ins
+        </li>
+
+        <li id="commissionRequestsTab">
+            Commission Requests
+        </li>
+
+        <li id="earningsTab">
+            Commission Earnings
+        </li>
+
+        <li id="withdrawalsTab">
+            Owner Withdrawals
+        </li>
+
+        <li id="walletTab">
+            Wallet Management
+        </li>
+
+        <li id="couponsTab">
+            Coupons
+        </li>
+
+        <li id="adsTab">
+            Banners & Ads
+        </li>
+
+        <li onclick="window.location.href='../home/home.html'" style="margin-top: 15px; border-top: 1.5px solid rgba(255, 255, 255, 0.1); padding-top: 15px; color: #c4f2dd; font-weight: 700;">
+            🏠 Go to Home
+        </li>
+
+        </ul>
+
+  </aside>
+
+
+
+
+
+  <!-- MAIN -->
+
+  <main class="main">
+
+    <div class="topbar">
+
+      <h1 id="pageTitle">
+        Owner Applications
+        </h1>
+
+      <!-- Premium Search Wrapper -->
+      <div class="admin-search-container" id="adminSearchWrapper" style="display: none;">
+        <svg class="search-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="adminSearchInput" placeholder="Search..." oninput="handleAdminSearch(this.value)" />
+        <span class="search-clear" id="adminSearchClear" style="display: none;" onclick="clearAdminSearch()">&times;</span>
+      </div>
+
+      <button id="logoutBtn">
+        Logout
+      </button>
+
+    </div>
+
+
+
+
+
+    <!-- APPLICATIONS -->
+
+    <div
+      id="applicationsContainer"
+      class="applications"
+    >
+
+    </div>
+
+    <!-- COMMISSION REQUESTS -->
+
+    <div
+      id="commissionRequestsContainer"
+      class="commission-requests"
+      style="display: none;"
+    >
+
+    </div>
+
+    <!-- OWNER WITHDRAWALS -->
+    <div
+      id="withdrawalsContainer"
+      class="withdrawals-section"
+      style="display: none;"
+    >
+      <div class="withdrawals-list" id="adminWithdrawalsList">
+        <p class="empty-state">Loading withdrawal requests...</p>
+      </div>
+    </div>
+
+    <!-- WALLET MANAGEMENT -->
+    <div
+      id="walletContainer"
+      class="wallet-section"
+      style="display: none;"
+    >
+      <div class="wallet-credit-form">
+        <h2>Credit User Wallet</h2>
+        <form id="creditWalletForm">
+          <div class="form-group">
+            <label for="userId">User/Owner ID:</label>
+            <input 
+              type="number" 
+              id="userId" 
+              name="userId" 
+              placeholder="Enter user or owner ID" 
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="amount">Amount (₹):</label>
+            <input 
+              type="number" 
+              id="amount" 
+              name="amount" 
+              placeholder="Enter amount" 
+              min="1" 
+              step="0.01" 
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="message">Admin Message:</label>
+            <textarea 
+              id="message" 
+              name="message" 
+              placeholder="Enter message for the user" 
+              rows="4" 
+              required
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">Credit Wallet</button>
+        </form>
+        <div id="walletMessage" class="message" style="display: none;"></div>
+      </div>
+
+      <div class="wallet-history">
+        <h2>Recent Credits</h2>
+        <div id="walletHistoryList" class="history-list">
+          <p class="empty-state">No credits yet</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- COUPONS MANAGEMENT -->
+    <div
+      id="couponsContainer"
+      class="wallet-section"
+      style="display: none;"
+    >
+      <div class="wallet-credit-form">
+        <h2>Create Global Coupon</h2>
+        <p style="font-size: 13px; color: var(--dark-muted); margin-bottom: 20px;">
+          Global coupons apply to all properties and rooms on the platform. Admins' coupons are automatically one-time use per user.
+        </p>
+        <form id="couponForm">
+          <div class="form-group">
+            <label for="coupon_code">Coupon Code:</label>
+            <input 
+              type="text" 
+              id="coupon_code" 
+              name="coupon_code" 
+              placeholder="e.g., GLOBAL30" 
+              required
+              style="text-transform: uppercase;"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_discount_type">Discount Type:</label>
+            <select id="coupon_discount_type" name="discount_type" required>
+              <option value="PERCENTAGE">Percentage (%)</option>
+              <option value="FIXED">Fixed Amount (₹)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_discount_value">Discount Value:</label>
+            <input 
+              type="number" 
+              id="coupon_discount_value" 
+              name="discount_value" 
+              placeholder="e.g., 20" 
+              min="1" 
+              step="0.01" 
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_min_amount">Min Booking Amount (₹):</label>
+            <input 
+              type="number" 
+              id="coupon_min_amount" 
+              name="minimum_booking_amount" 
+              placeholder="e.g., 500" 
+              min="0" 
+              step="0.01"
+              value="0"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_max_discount">Max Discount Cap (₹):</label>
+            <input 
+              type="number" 
+              id="coupon_max_discount" 
+              name="maximum_discount_amount" 
+              placeholder="e.g., 200 (optional)" 
+              min="0" 
+              step="0.01"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_usage_limit">Total Usage Limit:</label>
+            <input 
+              type="number" 
+              id="coupon_usage_limit" 
+              name="usage_limit" 
+              placeholder="Leave empty for unlimited" 
+              min="1"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_start_date">Start Date:</label>
+            <input 
+              type="datetime-local" 
+              id="coupon_start_date" 
+              name="start_date" 
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="coupon_expiry_date">Expiry Date:</label>
+            <input 
+              type="datetime-local" 
+              id="coupon_expiry_date" 
+              name="expiry_date" 
+              required
+            />
+          </div>
+
+          <button type="submit" class="submit-btn">Create Coupon</button>
+        </form>
+        <div id="couponFormMessage" class="message" style="display: none;"></div>
+      </div>
+
+      <div class="wallet-history">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="margin-bottom: 0;">Active Coupons</h2>
+          <span id="couponListCount" class="status pending" style="margin-bottom: 0;">0 coupons</span>
+        </div>
+        <div id="couponsList" class="coupons-list">
+          <p class="empty-state">Loading coupons...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- BANNERS & ADS MANAGEMENT -->
+    <div
+      id="adsContainer"
+      class="wallet-section"
+      style="display: none;"
+    >
+      <div class="wallet-credit-form">
+        <h2>Upload New Banner</h2>
+        <p style="font-size: 13px; color: var(--dark-muted); margin-bottom: 20px;">
+          Upload a promotional banner image and specify a redirect URL.
+        </p>
+        <form id="adForm">
+          <div class="form-group">
+            <label for="ad_image">Banner Image:</label>
+            <input type="file" id="ad_image" accept="image/*" required style="width: 100%; padding: 10px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px;" />
+          </div>
+          <div class="form-group">
+            <label for="ad_redirect_url">Redirect URL:</label>
+            <input type="url" id="ad_redirect_url" placeholder="https://example.com/promo" required style="width: 100%; padding: 10px; border: 1.5px solid var(--border-color); border-radius: var(--radius-sm); font-size: 13px;" />
+          </div>
+          <button type="submit" class="submit-btn" id="uploadAdBtn">Upload Banner</button>
+        </form>
+        <div id="adFormMessage" class="message" style="display: none;"></div>
+      </div>
+
+      <div class="wallet-history">
+        <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h2 style="margin-bottom: 0;">Active Banners</h2>
+          <span id="adListCount" class="status pending" style="margin-bottom: 0;">0 banners</span>
+        </div>
+        <div id="adsList" class="coupons-list">
+          <p class="empty-state">Loading banners...</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</div>
+
+<script src="admin.js"></script>
+
+</body>
+</html>

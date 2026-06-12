@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Check-Ins - Owner Dashboard</title>
+  <link rel="stylesheet" href="../owner/owner.css">
+</head>
+<body>
+
+<div class="container">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo-container">
+      <a href="../home/home.html" title="Back to Home">
+        <img src="../assets/logo.jpg" alt="AponGhar Logo" class="sidebar-logo-img">
+      </a>
+    </div>
+    <h2>Owner Portal</h2>
+    <ul>
+      <li id="dashboardTab">Dashboard</li>
+      <li id="propertiesTab" class="active">Properties</li>
+      <li id="bookingsTab">Bookings</li>
+      <li id="checkinsTab">Pending Check-Ins</li>
+      <li id="financeTab">Finance</li>
+      <li id="logoutBtn" class="logout">Logout</li>
+      <li onclick="window.location.href='../home/home.html'" style="margin-top: 15px; border-top: 1.5px solid rgba(255, 255, 255, 0.1); padding-top: 15px; color: #c4f2dd; font-weight: 700;">
+        🏠 Go to Home
+      </li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <h1 id="pageTitle">Pending Check-Ins</h1>
+      <button id="backBtn" class="btn-secondary">Back to Dashboard</button>
+    </div>
+
+    <!-- PENDING CHECK-INS -->
+    <div id="checkinsContainer" class="applications">
+    </div>
+  </main>
+</div>
+
+<script>
+const BASE_URL = "http://127.0.0.1:5000/api";
+
+const token = localStorage.getItem("token");
+const user = JSON.parse(localStorage.getItem("user"));
+
+if (!token || !user || user.role !== "OWNER") {
+  window.location.href = "../index.html";
+}
+
+const checkinsContainer = document.getElementById("checkinsContainer");
+
+// Load pending check-ins
+async function loadPendingCheckIns() {
+  try {
+    const res = await fetch(
+      `${BASE_URL}/checkins/owner/pending`,
+      {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await res.json();
+    console.log("PENDING CHECK-INS:", data);
+
+    checkinsContainer.innerHTML = "";
+
+    const checkIns = data.data || [];
+
+    if (checkIns.length === 0) {
+      checkinsContainer.innerHTML = `
+        <h2>No Pending Check-In Requests</h2>
+        <p>All check-in requests have been confirmed!</p>
+      `;
+      return;
+    }
+
+    checkIns.forEach(checkIn => {
+      checkinsContainer.innerHTML += `
+        <div class="card">
+          <h3>${checkIn.property_name}</h3>
+
+          <p>
+            <strong>Room Number:</strong>
+            ${checkIn.room_number}
+          </p>
+
+          <p>
+            <strong>Guest Name:</strong>
+            ${checkIn.guest_name}
+          </p>
+
+          <p>
+            <strong>Guest Email:</strong>
+            ${checkIn.user_email}
+          </p>
+
+          <p>
+            <strong>Guest Phone:</strong>
+            ${checkIn.user_phone || 'N/A'}
+          </p>
+
+          <p>
+            <strong>Check-In Date:</strong>
+            ${checkIn.check_in_date}
+          </p>
+
+          <p>
+            <strong>Check-Out Date:</strong>
+            ${checkIn.check_out_date}
+          </p>
+
+          <p>
+            <strong>Booking Amount:</strong>
+            <span class="amount">₹${parseFloat(checkIn.booking_amount).toFixed(2)}</span>
+          </p>
+
+          <p>
+            <strong>Check-In Time:</strong>
+            ${new Date(checkIn.user_checkin_at).toLocaleTimeString()}
+          </p>
+
+          <div class="actions">
+            <button
+              class="approveBtn"
+              onclick="confirmCheckIn(${checkIn.id})"
+            >
+              Confirm Check-In
+            </button>
+            <button
+              class="rejectBtn"
+              onclick="rejectCheckIn(${checkIn.id})"
+            >
+              Reject
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+  } catch (error) {
+    console.error(error);
+    alert("Failed to load check-in requests");
+  }
+}
+
+// Confirm check-in
+async function confirmCheckIn(checkinId) {
+  const ok = confirm("Confirm this guest check-in?");
+
+  if (!ok) return;
+
+  try {
+    const res = await fetch(
+      `${BASE_URL}/checkins/${checkinId}/confirm`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.message || "Failed to confirm check-in");
+      return;
+    }
+
+    alert("Check-in confirmed! Waiting for admin approval.");
+    loadPendingCheckIns();
+
+  } catch (error) {
+    console.error(error);
+    alert("Failed to confirm check-in");
+  }
+}
+
+// Reject check-in
+async function rejectCheckIn(checkinId) {
+  const reason = prompt("Enter rejection reason:");
+  
+  if (!reason) return;
+
+  try {
+    const res = await fetch(
+      `${BASE_URL}/checkins/${checkinId}/reject`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ reason })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.message || "Failed to reject check-in");
+      return;
+    }
+
+    alert("Check-in rejected.");
+    loadPendingCheckIns();
+
+  } catch (error) {
+    console.error(error);
+    alert("Failed to reject check-in");
+  }
+}
+
+// Back button
+document.getElementById("backBtn").addEventListener("click", () => {
+  window.location.href = "../owner/owner.html";
+});
+
+// Logout button
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  localStorage.clear();
+  window.location.href = "../index.html";
+});
+
+// Initial load
+loadPendingCheckIns();
+</script>
+
+<style>
+  .amount {
+    color: hsl(224, 92%, 56%);
+    font-weight: 700;
+  }
+</style>
+
+</body>
+</html>

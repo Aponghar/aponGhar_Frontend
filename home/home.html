@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+  <title>AponGhar Home</title>
+
+  <link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+<nav>
+
+  <a href="./home.html" class="logo-link">
+    <img src="../assets/logo.jpg" alt="AponGhar Logo" class="nav-logo">
+  </a>
+
+  <div class="profile-container">
+
+    <button id="profileBtn">
+      Profile
+    </button>
+
+    <div id="dropdownMenu" class="dropdown">
+
+  <button id="joinBtn">
+    Join With Us
+  </button>
+
+  <button
+    type="button"
+    id="profileMenuBtn"
+  >
+    My Profile
+  </button>
+
+  <button
+    type="button"
+    id="walletMenuBtn"
+  >
+    Wallet
+  </button>
+
+  <button
+    type="button"
+    id="bookingsMenuBtn"
+  >
+    My Bookings
+  </button>
+
+  <button
+    type="button"
+    id="wishlistMenuBtn"
+  >
+    My Wishlist
+  </button>
+
+  <button
+    type="button"
+    id="settingsMenuBtn"
+  >
+    Settings
+  </button>
+
+  <button id="logoutBtn">
+    Logout
+  </button>
+
+</div>
+
+</div>
+</nav>
+
+<section class="hero">
+
+  <div class="hero-bg-glow hero-glow-1"></div>
+  <div class="hero-bg-glow hero-glow-2"></div>
+  <div class="hero-bg-glow hero-glow-3"></div>
+
+  <span class="hero-trust-badge">
+    <span class="trust-star">⭐</span> Trusted by 50,000+ Travelers
+  </span>
+
+  <h1>
+    Find Your Perfect Stay<br>Across India
+  </h1>
+
+  <p>
+    Book Hotels, Homestays, Villas, Resorts and Unique Stays
+  </p>
+
+</section>
+
+<!-- PROMOTIONAL BANNERS CAROUSEL -->
+<div class="banner-carousel-container" id="bannerCarouselContainer" style="display: none;">
+  <div class="banner-track" id="bannerTrack">
+    <!-- Dynamic banners will load here -->
+  </div>
+  <button type="button" class="banner-nav prev" id="bannerPrevBtn">&lt;</button>
+  <button type="button" class="banner-nav next" id="bannerNextBtn">&gt;</button>
+</div>
+
+<section class="search-panel">
+  <div class="hero-stats">
+    <div class="stat-card">
+      <span class="stat-icon">🏠</span>
+      <span class="stat-number">10,000+</span>
+      <span class="stat-label">Properties</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">📍</span>
+      <span class="stat-number">500+</span>
+      <span class="stat-label">Destinations</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">👥</span>
+      <span class="stat-number">50,000+</span>
+      <span class="stat-label">Happy Guests</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">🛎️</span>
+      <span class="stat-number">24/7</span>
+      <span class="stat-label">Support</span>
+    </div>
+  </div>
+
+  <form id="searchForm" class="search-form">
+    <div class="search-row">
+      <div class="input-group wide">
+        <label for="keywordInput">📍 Destination / Property / Area</label>
+        <input
+          type="text"
+          id="keywordInput"
+          placeholder="Search by property name, city, location"
+        >
+      </div>
+
+      <div class="input-group">
+        <label for="checkInInput">📅 Check-In</label>
+        <input type="date" id="checkInInput">
+      </div>
+
+      <div class="input-group">
+        <label for="checkOutInput">📅 Check-Out</label>
+        <input type="date" id="checkOutInput">
+      </div>
+
+      <div class="input-group">
+        <label for="guestsInput">👥 Guests</label>
+        <input type="number" id="guestsInput" min="1" placeholder="2">
+      </div>
+    </div>
+
+    <div class="search-row">
+      <div class="input-group price-range-group">
+        <div class="price-range-header">
+          <label>Price Range (INR)</label>
+          <div class="price-range-values">
+            <span id="minPriceVal">₹0</span> - <span id="maxPriceVal">₹15,000+</span>
+          </div>
+        </div>
+        <div class="price-slider-container">
+          <div class="price-slider-track" id="priceSliderTrack"></div>
+          <input type="range" id="minPriceRange" min="0" max="15000" step="500" value="0">
+          <input type="range" id="maxPriceRange" min="0" max="15000" step="500" value="15000">
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button type="submit" class="search-btn">Search</button>
+        <button type="button" id="clearSearchBtn" class="clear-btn">Clear</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="popular-searches">
+    <span class="popular-label">📍 Popular:</span>
+    <div class="chips-container">
+      <button type="button" class="search-chip" data-location="Goa">Goa</button>
+      <button type="button" class="search-chip" data-location="Shillong">Shillong</button>
+      <button type="button" class="search-chip" data-location="Kaziranga">Kaziranga</button>
+      <button type="button" class="search-chip" data-location="Guwahati">Guwahati</button>
+      <button type="button" class="search-chip" data-location="Manali">Manali</button>
+      <button type="button" class="search-chip" data-location="Darjeeling">Darjeeling</button>
+    </div>
+  </div>
+</section>
+
+<!-- PROPERTIES GRID SECTION -->
+
+<section class="properties-section">
+
+  <div class="properties-header">
+    <div class="header-titles">
+      <h2>Handpicked Stays For Every Traveller</h2>
+      <p class="properties-subtitle">Hotels, Villas, Resorts and Homestays carefully selected for comfort and quality.</p>
+    </div>
+    <span id="resultsSummary" class="results-summary"></span>
+  </div>
+
+  <button type="button" class="filter-toggle-btn" id="filterToggleBtn">🔍 Filters</button>
+  <div class="filter-overlay" id="filterOverlay"></div>
+
+  <div class="properties-layout">
+    <aside class="filters-sidebar">
+      <h3>⚡ Filters</h3>
+
+      <div class="filter-group">
+        <h4><span class="group-title">🏨 Property Type</span> <span id="propertyTypeCount" class="filter-count"></span></h4>
+        <div id="propertyTypeFilters" class="checkbox-list">
+          <!-- Dynamic property types -->
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>💰 Pricing Mode</h4>
+        <div class="checkbox-list">
+          <label class="checkbox-item">
+            <input type="checkbox" id="nightlyFilter">
+            Nightly Pricing
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" id="hourlyFilter">
+            Hourly Pricing
+          </label>
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4><span class="group-title">✨ Amenities</span> <span id="amenityCount" class="filter-count"></span></h4>
+        <div id="amenityFilters" class="checkbox-list">
+          <!-- Dynamic amenities -->
+        </div>
+      </div>
+
+      <div class="filter-group">
+        <h4>↕ Sort By</h4>
+        <select id="sortSelect">
+          <option value="recommended">Recommended</option>
+          <option value="price_low">Price: Low to High</option>
+          <option value="price_high">Price: High to Low</option>
+          <option value="newest">Newest First</option>
+          <option value="name_asc">Name: A to Z</option>
+        </select>
+      </div>
+
+      <button type="button" id="resetFiltersBtn" class="reset-filters-btn">
+        Reset Filters
+      </button>
+    </aside>
+
+    <div class="properties-content">
+
+      <div class="properties-grid" id="propertiesGrid">
+        <!-- Properties will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- WHY CHOOSE APONGHAR SECTION -->
+<section class="why-aponghar">
+  <div class="section-container">
+    <div class="section-header">
+      <h2>Why Choose AponGhar</h2>
+      <p>Discover the advantages of booking your next stay with India's most trusted travel partner.</p>
+    </div>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <span class="feature-icon">🛡️</span>
+        <h3>Verified Properties</h3>
+        <p>Every hotel, homestay, and villa is strictly verified by our local experts for top-tier hygiene and comfort.</p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">💰</span>
+        <h3>Best Price Guarantee</h3>
+        <p>Get the lowest nightly or hourly rates. Found it cheaper elsewhere? We'll match the price instantly.</p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">🔒</span>
+        <h3>Secure Payments</h3>
+        <p>Multiple ultra-secure payment modes including UPI, Credit/Debit cards, Net Banking, and wallet system.</p>
+      </div>
+      
+      <div class="feature-card">
+        <span class="feature-icon">📞</span>
+        <h3>24/7 Assistance</h3>
+        <p>Our dedicated, hyper-responsive guest support team is always awake and ready to help you at any time.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRAVEL CATEGORIES SECTION -->
+<section class="travel-categories">
+  <div class="section-container">
+    <div class="section-header">
+      <h2>Explore Travel Categories</h2>
+      <p>Find the perfect type of accommodation tailored to your unique journey and lifestyle.</p>
+    </div>
+    
+    <div class="category-grid">
+      <div class="category-card" data-category="Hotel">
+        <span class="category-icon">🏨</span>
+        <span class="category-label">Hotels</span>
+      </div>
+      
+      <div class="category-card" data-category="Homestay">
+        <span class="category-icon">🏡</span>
+        <span class="category-label">Homestays</span>
+      </div>
+      
+      <div class="category-card" data-category="Resort">
+        <span class="category-icon">🌴</span>
+        <span class="category-label">Resorts</span>
+      </div>
+      
+      <div class="category-card" data-category="Villa">
+        <span class="category-icon">🏰</span>
+        <span class="category-label">Villas</span>
+      </div>
+      
+      <div class="category-card" data-category="Apartment">
+        <span class="category-icon">🏢</span>
+        <span class="category-label">Apartments</span>
+      </div>
+      
+      <div class="category-card" data-category="Business">
+        <span class="category-icon">💼</span>
+        <span class="category-label">Business Stays</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GUEST REVIEWS / TESTIMONIALS SECTION -->
+<section class="testimonials">
+  <div class="section-container">
+    <div class="section-header">
+      <h2>What Our Guests Say</h2>
+      <p>Real stories and exceptional experiences shared by travelers who booked their stays through AponGhar.</p>
+    </div>
+    
+    <div class="reviews-grid">
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <span class="quote-mark">“</span>
+        </div>
+        <p class="review-text">I booked a luxury villa in Goa for a week-long family getaway. The property was exactly as shown—perfectly clean, verified, and with superb amenities. The 24/7 assistance was extremely helpful when we checked in late at night. Will definitely book again!</p>
+        <div class="review-author">
+          <div class="author-info">
+            <h4 class="author-name">Rahul Sharma</h4>
+            <span class="author-location">Traveling from Mumbai</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <span class="quote-mark">“</span>
+        </div>
+        <p class="review-text">As a frequent corporate traveler, AponGhar's hourly booking options are a lifesaver. I booked a 6-hour stay near Guwahati airport to freshen up and attend calls between meetings. The price was highly optimized and very easy to book!</p>
+        <div class="review-author">
+          <div class="author-info">
+            <h4 class="author-name">Priya Das</h4>
+            <span class="author-location">Business Traveler</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="review-card">
+        <div class="review-header">
+          <div class="stars">⭐⭐⭐⭐⭐</div>
+          <span class="quote-mark">“</span>
+        </div>
+        <p class="review-text">Outstanding booking platform. The filter options helped me locate a child-friendly resort in Manali with free cancellation. The trust score badge was high, and the actual property lived up to all expectations. Seamless experience!</p>
+        <div class="review-author">
+          <div class="author-info">
+            <h4 class="author-name">Vikram Malhotra</h4>
+            <span class="author-location">Family Vacationer</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BECOME OWNER / PARTNER CTA SECTION -->
+<section class="partner-cta">
+  <div class="partner-cta-glow"></div>
+  <div class="partner-cta-container">
+    <h2>Own a Hotel, Homestay or Villa?</h2>
+    <p>Join thousands of successful property owners earning steady income through AponGhar. List your property today and unlock access to over 50,000 active travelers across India.</p>
+    <button type="button" id="partnerCtaBtn" class="partner-cta-btn">Become a Partner</button>
+  </div>
+</section>
+
+<!-- TRUST SIGNALS SECTION -->
+<section class="trust-signals">
+  <div class="section-container">
+    <div class="trust-signals-strip">
+      <div class="trust-signal-item">
+        <span class="trust-icon">🔒</span>
+        <span class="trust-text">Secure Payments</span>
+      </div>
+      <div class="trust-signal-item">
+        <span class="trust-icon">🛡️</span>
+        <span class="trust-text">Verified Stays</span>
+      </div>
+      <div class="trust-signal-item">
+        <span class="trust-icon">⚡</span>
+        <span class="trust-text">Instant Confirmation</span>
+      </div>
+      <div class="trust-signal-item">
+        <span class="trust-icon">📅</span>
+        <span class="trust-text">Free Cancellation</span>
+      </div>
+      <div class="trust-signal-item">
+        <span class="trust-icon">📞</span>
+        <span class="trust-text">24/7 Support</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SITE FOOTER -->
+<footer class="site-footer">
+  <div class="footer-container">
+    <div class="footer-grid">
+      <div class="footer-column brand-col">
+        <div class="footer-logo-container">
+          <img src="../assets/logo.jpg" alt="AponGhar Logo" class="footer-logo-img">
+        </div>
+        <p class="brand-desc">Book hotels, homestays, villas, and unique stays in India. Experience premium stays with optimized rates and verified comfort.</p>
+        <div class="social-links">
+          <a href="#" class="social-icon">🔗 LinkedIn</a>
+          <a href="#" class="social-icon">🔗 Twitter</a>
+        </div>
+      </div>
+      
+      <div class="footer-column">
+        <h4 class="footer-heading">Company</h4>
+        <ul class="footer-links">
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Careers</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Press</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4 class="footer-heading">Support</h4>
+        <ul class="footer-links">
+          <li><a href="#">Help Center</a></li>
+          <li><a href="#">Contact Us</a></li>
+          <li><a href="#">Cancellation Policy</a></li>
+          <li><a href="#">Refund Policy</a></li>
+        </ul>
+      </div>
+      
+      <div class="footer-column">
+        <h4 class="footer-heading">Owners</h4>
+        <ul class="footer-links">
+          <li><a href="#" onclick="document.getElementById('joinBtn').click(); return false;">List Your Property</a></li>
+          <li><a href="#" onclick="document.getElementById('joinBtn').click(); return false;">Owner Dashboard</a></li>
+          <li><a href="#">Partner Program</a></li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <p class="copyright">&copy; 2026 AponGhar Technologies Pvt. Ltd. All rights reserved.</p>
+      <div class="footer-bottom-links">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms &amp; Conditions</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- OWNER APPLY MODAL -->
+
+<div id="ownerModal" class="modal">
+
+  <div class="modal-content">
+
+    <span id="closeModal">&times;</span>
+
+    <h2>
+      Become a Property Owner
+    </h2>
+
+    <form id="ownerForm">
+
+      <input
+        type="text"
+        id="propertyName"
+        placeholder="Property Name"
+        required
+      />
+
+      <input
+        type="text"
+        id="propertyType"
+        placeholder="Property Type"
+        required
+      />
+
+      <input
+        type="text"
+        id="location"
+        placeholder="Location"
+        required
+      />
+
+      <input
+        type="text"
+        id="area"
+        placeholder="Area"
+      />
+
+      <input
+        type="text"
+        id="ownerName"
+        placeholder="Owner Name"
+        required
+      />
+
+      <input
+        type="text"
+        id="contactNumber"
+        placeholder="Contact Number"
+        required
+      />
+
+      <textarea
+        id="description"
+        placeholder="Description"
+      ></textarea>
+
+      <button type="submit">
+        Submit Application
+      </button>
+
+    </form>
+
+  </div>
+
+</div>
+
+<script src="home.js"></script>
+
+</body>
+</html>

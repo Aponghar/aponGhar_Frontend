@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile & Settings - AponGhar</title>
+  <link rel="stylesheet" href="profile.css">
+</head>
+<body>
+
+<nav>
+  <a class="logo-link" href="../home/home.html">
+    <img class="nav-logo" src="../assets/logo.jpg" alt="AponGhar Logo">
+  </a>
+  <div class="nav-actions">
+    <a href="../home/home.html">Home</a>
+    <a href="bookings.html" style="background:none;color:var(--primary);box-shadow:none;padding:11px 10px;">My Bookings</a>
+    <a href="wishlist.html" style="background:none;color:var(--primary);box-shadow:none;padding:11px 10px;">Wishlist</a>
+    <a href="wallet.html" style="background:none;color:var(--primary);box-shadow:none;padding:11px 10px;">Wallet</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <section class="page-heading">
+    <p class="eyebrow">Account Settings</p>
+    <h1>Profile & Settings</h1>
+    <p>Manage your personal profile details, contact information, and security preferences.</p>
+  </section>
+
+  <div class="profile-layout-grid">
+    <!-- Profile Form Card -->
+    <section class="content-panel">
+      <div class="panel-heading">
+        <h2>Personal Information</h2>
+      </div>
+      
+      <div id="profileMessage" class="alert-message hidden"></div>
+      
+      <form id="profileForm" class="settings-form">
+        <div class="form-group">
+          <label for="fullName">Full Name</label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="emailAddress">Email Address</label>
+          <input type="email" id="emailAddress" placeholder="Enter email address" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" id="phoneNumber" placeholder="Enter phone number" required>
+        </div>
+        
+        <button type="submit" id="saveProfileBtn">Save Profile Details</button>
+      </form>
+    </section>
+
+    <!-- Password Form Card -->
+    <section class="content-panel">
+      <div class="panel-heading">
+        <h2>Security Settings</h2>
+      </div>
+      
+      <div id="passwordMessage" class="alert-message hidden"></div>
+      
+      <form id="passwordForm" class="settings-form">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input type="password" id="currentPassword" placeholder="Enter current password" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" placeholder="Enter new password" minlength="6" required>
+        </div>
+        
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" id="confirmPassword" placeholder="Confirm new password" minlength="6" required>
+        </div>
+        
+        <button type="submit" id="changePasswordBtn">Change Password</button>
+      </form>
+    </section>
+  </div>
+</main>
+
+<script src="profile.js"></script>
+</body>
+</html>

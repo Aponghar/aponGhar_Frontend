@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Bookings - AponGhar</title>
+  <link rel="stylesheet" href="user.css">
+</head>
+<body>
+
+<nav>
+  <a class="logo-link" href="../home/home.html">
+    <img class="nav-logo" src="../assets/logo.jpg" alt="AponGhar Logo">
+  </a>
+  <div class="nav-actions">
+    <a href="../home/home.html">Home</a>
+    <a href="wallet.html">Wallet</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <section class="page-heading">
+    <p class="eyebrow">User account</p>
+    <h1>My Bookings</h1>
+    <p>Your booked stays, cancelled stays, payment status, and refund status stay saved here.</p>
+  </section>
+
+  <section class="content-panel">
+    <div class="panel-heading">
+      <h2>Booking history</h2>
+      <button type="button" id="refreshBtn">Refresh</button>
+    </div>
+    <div id="bookingsMessage" class="state-message">Loading bookings...</div>
+    <div id="bookingsList" class="booking-list"></div>
+  </section>
+</main>
+
+<div id="reviewModal" class="review-modal hidden">
+  <div class="review-modal-card">
+    <button type="button" id="closeReviewModal" class="review-modal-close">x</button>
+    <p class="eyebrow">Completed stay</p>
+    <h2 id="reviewModalTitle">Write Review</h2>
+    <p id="reviewModalSubtitle" class="review-modal-subtitle"></p>
+
+    <form id="reviewForm" class="review-form">
+      <input type="hidden" id="reviewBookingId">
+
+      <div class="review-stars" id="reviewStars" aria-label="Rating">
+        <button type="button" data-rating="1">★</button>
+        <button type="button" data-rating="2">★</button>
+        <button type="button" data-rating="3">★</button>
+        <button type="button" data-rating="4">★</button>
+        <button type="button" data-rating="5">★</button>
+      </div>
+
+      <textarea
+        id="reviewText"
+        placeholder="Share what stood out about your stay"
+        maxlength="2000"
+      ></textarea>
+
+      <label class="review-photo-input">
+        Photos
+        <input type="file" id="reviewPhotos" accept="image/*" multiple>
+      </label>
+
+      <p id="reviewFormMessage" class="review-form-message"></p>
+
+      <button type="submit" class="review-submit-btn">
+        Submit Review
+      </button>
+    </form>
+  </div>
+</div>
+
+<script src="bookings.js"></script>
+
+</body>
+</html>

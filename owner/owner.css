@@ -1,0 +1,1937 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: hsl(165, 80%, 23%);
+  --primary-hover: hsl(165, 80%, 17%);
+  --primary-light: hsla(165, 80%, 23%, 0.05);
+  --primary-glow: hsla(165, 80%, 23%, 0.12);
+  --dark: hsl(224, 60%, 12%);
+  --dark-sidebar: linear-gradient(180deg, hsl(165, 80%, 8%) 0%, hsl(165, 80%, 14%) 100%);
+  --dark-muted: hsl(220, 14%, 40%);
+  --bg-body: hsl(210, 40%, 98%);
+  --bg-card: #ffffff;
+  --border-color: hsl(220, 20%, 91%);
+  --border-hover: hsl(220, 20%, 85%);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
+  --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 20px 48px rgba(15, 23, 42, 0.08);
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+body {
+  background: var(--bg-body);
+  color: var(--dark);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  border: none;
+}
+
+.container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px;
+  background: var(--dark-sidebar);
+  color: #fff;
+  padding: 30px 18px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.05);
+}
+
+.sidebar-logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 24px;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 20px;
+}
+.sidebar-logo-img {
+  width: 100%;
+  max-width: 180px;
+  height: auto;
+  border-radius: 12px;
+  border: 1.5px solid rgba(212, 175, 55, 0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 10px rgba(212, 175, 55, 0.15);
+  transition: all 0.25s ease;
+}
+.sidebar-logo-img:hover {
+  transform: scale(1.03);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.4), 0 0 15px rgba(212, 175, 55, 0.3);
+}
+
+.sidebar h2 {
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 30px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 40%, #c4f2dd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-align: center;
+}
+
+.sidebar ul {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+}
+
+.sidebar li {
+  padding: 12px 16px;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  transition: var(--transition);
+  color: hsl(220, 20%, 75%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar li:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar li.active {
+  background: #ffffff;
+  color: var(--primary);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 40px;
+  min-width: 0;
+}
+
+/* TOPBAR */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 30px;
+}
+
+.topbar h1 {
+  color: var(--dark);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -1px;
+}
+
+.topbar button,
+form button,
+.upload-row button,
+.roomBtn {
+  color: #fff;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.topbar button {
+  background: var(--primary-light);
+  color: var(--primary);
+  padding: 11px 22px;
+}
+
+.topbar button:hover {
+  background: hsla(165, 80%, 23%, 0.12);
+  transform: translateY(-1px);
+}
+
+/* DASHBOARD HERO */
+.dashboard-section {
+  display: grid;
+  gap: 24px;
+}
+
+.dashboard-hero {
+  display: grid;
+  grid-template-columns: 1fr minmax(260px, 360px);
+  gap: 24px;
+  align-items: stretch;
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard-hero h2 {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 6px 0 12px;
+  color: var(--dark);
+}
+
+.dashboard-hero p {
+  color: var(--dark-muted);
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.eyebrow {
+  color: var(--primary);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* WALLET CARD */
+.wallet-card {
+  background: linear-gradient(135deg, hsl(165, 80%, 23%) 0%, hsl(165, 47%, 12%) 100%);
+  color: #fff;
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: grid;
+  align-content: space-between;
+  min-height: 160px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+  border: none;
+}
+
+.wallet-card::before {
+  content: "";
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 70%);
+  top: -40px;
+  right: -40px;
+}
+
+.wallet-card span,
+.wallet-card small {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wallet-card strong {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -1px;
+  margin: 12px 0;
+  display: block;
+}
+
+/* STATS CARDS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.stat-card,
+.panel,
+form,
+.card {
+  background: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.stat-card {
+  padding: 20px;
+  border-top: 4px solid var(--primary);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-card span {
+  display: block;
+  color: var(--dark-muted);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.stat-card strong {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+}
+
+.approved-card {
+  border-top-color: hsl(142, 72%, 29%);
+}
+
+.warning-card {
+  border-top-color: hsl(38, 92%, 50%);
+}
+
+.revenue-card {
+  border-top-color: hsl(265, 80%, 55%);
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 0.75fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.detail-section {
+  display: grid;
+  gap: 24px;
+}
+
+.wallet-details-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.2fr) repeat(2, minmax(220px, 0.8fr));
+  gap: 16px;
+}
+
+.wallet-card.large {
+  min-height: 180px;
+}
+
+.panel {
+  padding: 24px;
+}
+
+.panel-header,
+.card-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.panel-header h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+}
+
+.panel-pill {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.activity-list {
+  display: grid;
+  gap: 12px;
+}
+
+.activity-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: hsl(220, 20%, 99%);
+  transition: var(--transition);
+}
+
+.activity-item:hover {
+  background: #ffffff;
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.activity-item strong,
+.activity-item span,
+.activity-item small {
+  display: block;
+}
+
+.activity-item strong {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--dark);
+}
+
+.activity-item span {
+  color: var(--dark-muted);
+  font-size: 14px;
+  margin: 4px 0;
+  font-weight: 500;
+}
+
+.activity-item small {
+  color: hsl(220, 10%, 60%);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.activity-meta {
+  display: grid;
+  justify-items: end;
+  align-content: start;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.detail-list,
+.booking-list {
+  display: grid;
+  gap: 14px;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 18px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: hsl(220, 20%, 99%);
+  transition: var(--transition);
+}
+
+.detail-row:hover {
+  background: #ffffff;
+  border-color: var(--border-hover);
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-row strong,
+.detail-row span,
+.detail-row small {
+  display: block;
+}
+
+.detail-row strong {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.detail-row span {
+  color: var(--dark-muted);
+  margin: 4px 0;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.detail-row small {
+  color: hsl(220, 10%, 60%);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.detail-row-meta {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  white-space: nowrap;
+}
+
+.credit {
+  color: hsl(142, 72%, 29%);
+  font-weight: 700;
+}
+
+.debit {
+  color: hsl(348, 83%, 47%);
+  font-weight: 700;
+}
+
+/* BOOKING CARDS */
+.booking-card {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.booking-card:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.booking-card-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.booking-card h3 {
+  color: var(--dark);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin: 4px 0;
+}
+
+.booking-card p {
+  color: var(--dark-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.booking-code {
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.booking-amount {
+  display: grid;
+  gap: 6px;
+  justify-items: end;
+  align-content: start;
+  white-space: nowrap;
+}
+
+.booking-amount strong {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--dark);
+}
+
+.booking-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.booking-detail-grid p,
+.booking-guest {
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  background: hsl(220, 20%, 98%);
+  border: 1px solid var(--border-color);
+}
+
+.booking-detail-grid strong,
+.booking-guest strong {
+  color: var(--dark-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.booking-detail-grid span,
+.booking-guest span {
+  color: var(--dark);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.status-pill,
+.status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.status {
+  margin-top: 4px;
+}
+
+.pending {
+  background: hsl(38, 92%, 96%);
+  color: hsl(38, 92%, 40%);
+}
+
+.approved,
+.confirmed {
+  background: hsl(142, 72%, 96%);
+  color: hsl(142, 72%, 29%);
+}
+
+.rejected,
+.cancelled {
+  background: hsl(348, 83%, 97%);
+  color: hsl(348, 83%, 47%);
+}
+
+.empty-state {
+  padding: 24px;
+  border: 2px dashed var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--dark-muted);
+  background: hsl(220, 20%, 99%);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* ACTIONS */
+.booking-actions-row {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1.5px solid hsl(220, 20%, 96%);
+}
+
+.approve-booking-btn,
+.reject-booking-btn {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.approve-booking-btn {
+  background: hsl(142, 72%, 29%);
+  color: #fff;
+  border-color: hsl(142, 72%, 29%);
+  box-shadow: 0 4px 10px hsla(142, 72%, 29%, 0.15);
+}
+
+.approve-booking-btn:hover {
+  background: hsl(142, 72%, 23%);
+  border-color: hsl(142, 72%, 23%);
+  transform: translateY(-1px);
+}
+
+.reject-booking-btn {
+  background: #fff;
+  color: hsl(348, 83%, 47%);
+  border-color: hsl(348, 83%, 47%);
+}
+
+.reject-booking-btn:hover {
+  background: hsl(348, 83%, 47%);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+.booking-guest.rejection-reason {
+  background: hsl(348, 83%, 98%);
+  border: 1px solid hsl(348, 83%, 90%);
+  margin-top: 12px;
+}
+
+.booking-guest.rejection-reason strong {
+  color: hsl(348, 83%, 47%);
+}
+
+.checkin-panel {
+  max-width: 920px;
+}
+
+.checkin-form {
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  background: transparent;
+}
+
+.checkin-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: stretch;
+}
+
+.checkin-input-row input {
+  flex: 1;
+  min-width: 0;
+  text-transform: uppercase;
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+}
+
+.checkin-input-row button,
+#confirmCheckInBtn {
+  border: none;
+  border-radius: 8px;
+  padding: 12px 18px;
+  background: #2563eb;
+  color: #ffffff;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.checkin-input-row button:hover,
+#confirmCheckInBtn:hover {
+  background: #1d4ed8;
+}
+
+#confirmCheckInBtn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.room-assignment-box {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0;
+  padding: 14px;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  background: #eff6ff;
+}
+
+.room-assignment-box label,
+.room-management-toolbar label {
+  color: var(--dark-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.checkin-message {
+  min-height: 22px;
+  margin: 16px 0 0;
+  color: #475569;
+  font-weight: 700;
+}
+
+.checkin-message.success {
+  color: #047857;
+}
+
+.checkin-message.error {
+  color: #b91c1c;
+}
+
+.checkin-message.warning {
+  color: #b45309;
+}
+
+.checkin-preview {
+  margin-top: 18px;
+}
+
+.checkin-booking-card,
+.checkin-history-card {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, 0.08);
+}
+
+.checkin-booking-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.checkin-booking-header h3 {
+  margin: 8px 0 4px;
+  color: #0f172a;
+  font-size: 20px;
+}
+
+.checkin-booking-header p {
+  margin: 0;
+  color: #64748b;
+}
+
+.checkin-history-list {
+  display: grid;
+  gap: 16px;
+}
+
+.status-pill.owner_confirmed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.status-pill.admin_recorded {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.available {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status-pill.occupied {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.room-management-toolbar {
+  display: grid;
+  grid-template-columns: auto minmax(220px, 360px) auto;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 18px;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background: hsl(220, 20%, 99%);
+}
+
+.room-management-toolbar button {
+  padding: 12px 18px;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.room-management-list {
+  display: grid;
+  gap: 16px;
+}
+
+.room-management-card {
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-left: 5px solid #16a34a;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.room-management-card.occupied {
+  border-left-color: #f59e0b;
+}
+
+.room-management-main {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.room-management-main h3 {
+  margin: 6px 0 4px;
+  color: var(--dark);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.room-management-main p {
+  color: var(--dark-muted);
+  font-weight: 600;
+}
+
+.empty-state.full {
+  grid-column: 1 / -1;
+}
+
+/* FORMS IN DASHBOARD */
+form {
+  padding: 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border-color);
+  border-radius: var(--radius-md);
+  outline: none;
+  background: hsl(220, 20%, 98%);
+  color: var(--dark);
+  font-weight: 500;
+  transition: var(--transition);
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary);
+  background: white;
+  box-shadow: 0 0 0 4px var(--primary-glow);
+}
+
+textarea {
+  height: 120px;
+  resize: vertical;
+  margin-bottom: 16px;
+}
+
+form button,
+.upload-row button,
+.roomBtn {
+  background: var(--primary);
+  padding: 12px 20px;
+  box-shadow: 0 4px 10px var(--primary-glow);
+}
+
+form button:hover,
+.upload-row button:hover,
+.roomBtn:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* PROPERTIES GRID */
+.properties {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card h3 {
+  color: var(--dark);
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.card-header-row p {
+  color: var(--dark-muted);
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.propertyImage,
+.noImage {
+  width: 100%;
+  height: 200px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+}
+
+.propertyImage {
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .propertyImage {
+  transform: scale(1.02);
+}
+
+.noImage {
+  background: hsl(220, 20%, 95%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--dark-muted);
+  font-weight: 600;
+}
+
+.property-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.property-details p {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: hsl(220, 20%, 98%);
+  border: 1px solid var(--border-color);
+}
+
+.property-details strong {
+  font-size: 11px;
+  color: var(--dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.property-details span {
+  font-weight: 700;
+  color: var(--dark);
+  font-size: 14px;
+}
+
+.upload-row,
+.roomButtons {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.upload-row input {
+  min-width: 0;
+}
+
+.upload-row button,
+.roomBtn {
+  white-space: nowrap;
+}
+
+.roomBtn {
+  flex: 1;
+}
+
+.roomBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.secondaryBtn {
+  background: hsl(142, 72%, 29%);
+  box-shadow: 0 4px 10px hsla(142, 72%, 29%, 0.15);
+}
+
+.secondaryBtn:hover {
+  background: hsl(142, 72%, 23%);
+}
+
+.propertyInactiveNotice {
+  margin-top: 14px;
+  font-size: 13px;
+  color: hsl(348, 83%, 47%);
+  font-weight: 700;
+}
+
+.hidden {
+  display: none;
+}
+
+/* RESPONSIVE LAYOUT */
+@media (max-width: 1100px) {
+  .stats-grid,
+  .wallet-details-grid,
+  .dashboard-grid,
+  .dashboard-hero {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .dashboard-grid,
+  .dashboard-hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+  }
+
+  .sidebar ul {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  }
+
+  .main {
+    padding: 20px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wallet-details-grid,
+  .booking-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-item,
+  .detail-row,
+  .booking-card-main,
+  .checkin-input-row,
+  .checkin-booking-header,
+  .room-management-main,
+  .topbar,
+  .upload-row,
+  .roomButtons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .activity-meta {
+    justify-items: start;
+  }
+
+  .detail-row-meta,
+  .booking-amount {
+    justify-items: start;
+  }
+
+  .checkin-input-row button {
+    width: 100%;
+  }
+
+  .room-management-toolbar {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .sidebar ul {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-hero h2 {
+    font-size: 28px;
+  }
+
+  .wallet-card strong {
+    font-size: 28px;
+  }
+
+  .property-details {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   COUPON FORM
+   ============================================ */
+
+.coupon-form-wrapper {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.coupon-form-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 28px 30px;
+  background: linear-gradient(135deg, hsla(224, 60%, 12%, 0.06) 0%, hsla(165, 80%, 23%, 0.06) 50%, hsla(45, 90%, 55%, 0.06) 100%);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.coupon-icon-badge {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 6px 16px hsla(165, 80%, 23%, 0.25);
+}
+
+.coupon-form-header h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.coupon-form-header p {
+  font-size: 14px;
+  color: var(--dark-muted);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.coupon-form-wrapper form {
+  padding: 30px;
+  border: none;
+  box-shadow: none;
+  background: transparent;
+}
+
+.form-group {
+  display: grid;
+  gap: 8px;
+}
+
+.form-group label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark-muted);
+}
+
+.form-group.full-width {
+  margin-bottom: 8px;
+}
+
+.coupon-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.coupon-submit-btn {
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  box-shadow: 0 6px 20px hsla(165, 80%, 23%, 0.2);
+}
+
+.coupon-submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 28px hsla(165, 80%, 23%, 0.3);
+}
+
+/* ============================================
+   MY COUPONS — STATS
+   ============================================ */
+
+.coupon-stats-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* ============================================
+   COUPON CARDS
+   ============================================ */
+
+.coupons-list {
+  display: grid;
+  gap: 18px;
+}
+
+.coupon-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+  position: relative;
+}
+
+.coupon-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
+  border-radius: 4px 0 0 4px;
+}
+
+.coupon-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-hover);
+}
+
+.coupon-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, hsla(224, 60%, 12%, 0.03) 0%, hsla(165, 80%, 23%, 0.03) 50%, hsla(45, 90%, 55%, 0.03) 100%);
+  border-bottom: 1px dashed var(--border-color);
+}
+
+.coupon-code-display {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.coupon-code-text {
+  font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: var(--dark);
+  background: hsla(224, 92%, 56%, 0.06);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px dashed hsla(224, 92%, 56%, 0.25);
+}
+
+.coupon-status-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.coupon-status-pill.active {
+  background: hsl(142, 72%, 94%);
+  color: hsl(142, 72%, 29%);
+}
+
+.coupon-status-pill.inactive {
+  background: hsl(220, 15%, 93%);
+  color: hsl(220, 15%, 45%);
+}
+
+.coupon-status-pill.expired {
+  background: hsl(348, 83%, 95%);
+  color: hsl(348, 83%, 47%);
+}
+
+.coupon-status-pill.exhausted {
+  background: hsl(38, 92%, 94%);
+  color: hsl(38, 92%, 40%);
+}
+
+.coupon-status-pill.scheduled {
+  background: hsl(200, 80%, 94%);
+  color: hsl(200, 80%, 35%);
+}
+
+.coupon-discount-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 18px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
+  color: #fff;
+  min-width: 80px;
+  box-shadow: 0 4px 12px hsla(165, 80%, 23%, 0.2);
+}
+
+.coupon-discount-badge strong {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.coupon-discount-badge small {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.85;
+  margin-top: 2px;
+}
+
+.coupon-card-body {
+  padding: 20px 24px;
+}
+
+.coupon-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.coupon-meta-grid p {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  background: hsl(220, 20%, 98%);
+  border: 1px solid var(--border-color);
+}
+
+.coupon-meta-grid strong {
+  font-size: 10px;
+  color: var(--dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 700;
+}
+
+.coupon-meta-grid span {
+  font-weight: 700;
+  color: var(--dark);
+  font-size: 13px;
+}
+
+/* USAGE PROGRESS BAR */
+
+.coupon-usage-bar-wrapper {
+  margin-top: 4px;
+}
+
+.coupon-usage-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.coupon-usage-label span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.coupon-usage-track {
+  width: 100%;
+  height: 8px;
+  background: hsl(220, 20%, 93%);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.coupon-usage-fill {
+  height: 100%;
+  border-radius: 20px;
+  background: linear-gradient(90deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.coupon-usage-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* COUPON ACTIONS */
+
+.coupon-card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid hsl(220, 20%, 96%);
+  background: hsl(220, 20%, 99.5%);
+}
+
+.coupon-action-btn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+  border: 2px solid transparent;
+  text-align: center;
+}
+
+.coupon-action-btn.detail-btn {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: transparent;
+}
+
+.coupon-action-btn.detail-btn:hover {
+  background: hsla(224, 92%, 56%, 0.12);
+  transform: translateY(-1px);
+}
+
+.coupon-action-btn.toggle-btn {
+  background: hsl(38, 92%, 96%);
+  color: hsl(38, 80%, 35%);
+  border-color: transparent;
+}
+
+.coupon-action-btn.toggle-btn:hover {
+  background: hsl(38, 92%, 90%);
+  transform: translateY(-1px);
+}
+
+.coupon-action-btn.delete-btn {
+  background: hsl(348, 83%, 97%);
+  color: hsl(348, 83%, 47%);
+  border-color: transparent;
+}
+
+.coupon-action-btn.delete-btn:hover {
+  background: hsl(348, 83%, 47%);
+  color: #fff;
+  transform: translateY(-1px);
+}
+
+/* COUPON DETAIL PANEL */
+
+.coupon-detail-panel {
+  border-top: 1px solid var(--border-color);
+  padding: 24px;
+  background: hsl(220, 20%, 98.5%);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.coupon-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.detail-stat {
+  padding: 16px;
+  border-radius: var(--radius-md);
+  background: #fff;
+  border: 1px solid var(--border-color);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-stat span {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--dark-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.detail-stat strong {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--dark);
+  letter-spacing: -0.5px;
+}
+
+.coupon-usage-table-wrapper {
+  background: #fff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.coupon-usage-table-wrapper h4 {
+  padding: 14px 18px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--dark);
+  border-bottom: 1px solid var(--border-color);
+  background: hsl(220, 20%, 99%);
+}
+
+.coupon-usage-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.coupon-usage-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark-muted);
+  background: hsl(220, 20%, 98%);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.coupon-usage-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid hsl(220, 20%, 96%);
+  color: var(--dark);
+  font-weight: 500;
+}
+
+.coupon-usage-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.coupon-usage-table tbody tr:hover {
+  background: hsl(220, 20%, 98%);
+}
+
+/* ============================================
+   RESPONSIVE — COUPONS
+   ============================================ */
+
+@media (max-width: 1100px) {
+  .coupon-stats-grid,
+  .coupon-meta-grid,
+  .coupon-detail-stats {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 800px) {
+  .coupon-card-top {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+  }
+
+  .coupon-card-actions {
+    flex-direction: column;
+  }
+
+  .coupon-stats-grid,
+  .coupon-meta-grid,
+  .coupon-detail-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .coupon-form-header {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .coupon-usage-table {
+    font-size: 12px;
+  }
+
+  .coupon-usage-table th,
+  .coupon-usage-table td {
+    padding: 8px 10px;
+  }
+}
+
+/* Withdrawal and Payout Styles */
+.withdrawal-form-panel {
+  margin-top: 24px;
+}
+
+.withdrawal-amount-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.payout-method-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.payout-method-option {
+  position: relative;
+  display: block;
+  cursor: pointer;
+}
+
+.payout-method-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.payout-method-label {
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  border: 2px solid hsl(218, 20%, 90%);
+  border-radius: var(--radius-md);
+  background: #fff;
+  transition: all 0.2s ease;
+}
+
+.payout-method-option input[type="radio"]:checked + .payout-method-label {
+  border-color: var(--primary);
+  background: hsl(224, 92%, 98%);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.08);
+}
+
+.payout-method-label strong {
+  font-size: 15px;
+  color: var(--dark);
+  margin-bottom: 4px;
+}
+
+.payout-method-label small {
+  font-size: 12px;
+  color: hsl(218, 12%, 50%);
+}
+
+.payout-fields {
+  background: hsl(218, 40%, 98%);
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid hsl(218, 20%, 90%);
+  margin-bottom: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.payout-fields.hidden {
+  display: none !important;
+}
+
+.withdrawal-bank-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+.withdrawal-message {
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  display: none;
+}
+
+.withdrawal-message.success {
+  display: block;
+  background: hsl(142, 72%, 96%);
+  color: hsl(142, 72%, 29%);
+  border: 1px solid hsl(142, 72%, 90%);
+}
+
+.withdrawal-message.error {
+  display: block;
+  background: hsl(348, 83%, 97%);
+  color: hsl(348, 83%, 47%);
+  border: 1px solid hsl(348, 83%, 90%);
+}
+
+.withdrawal-submit-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.withdrawal-submit-btn:hover {
+  background: hsl(224, 92%, 50%);
+}
+
+.withdrawal-submit-btn:disabled {
+  background: hsl(218, 20%, 80%);
+  cursor: not-allowed;
+}
+
+/* Withdrawal History Cards */
+.withdrawal-card {
+  border-left: 4px solid var(--primary);
+}
+
+.withdrawal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.withdrawal-card-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: hsl(218, 12%, 40%);
+  margin-bottom: 6px;
+}
+
+.withdrawal-card-details span {
+  background: hsl(218, 20%, 93%);
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.withdrawal-card-notes {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: #fffbeb;
+  border: 1px solid #fef3c7;
+  color: #b45309;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.status-pill.paid {
+  background: hsl(142, 72%, 96%);
+  color: hsl(142, 72%, 29%);
+}
+
+.status-pill.approved {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+@media (max-width: 800px) {
+  .withdrawal-amount-row,
+  .payout-method-toggle,
+  .withdrawal-bank-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* ============================================
+   COMMISSIONS SECTION AND BADGES
+   ============================================ */
+.commission-filter-bar input[type="date"],
+.commission-filter-bar select {
+  font-size: 14px;
+  color: var(--dark);
+  font-weight: 500;
+  background-color: #fff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 6px 12px;
+}
+
+.commission-filter-bar input[type="date"]:focus,
+.commission-filter-bar select:focus {
+  border-color: var(--primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.commission-filter-bar button {
+  font-size: 14px;
+  font-weight: 700;
+  transition: var(--transition);
+}
+
+.commission-filter-bar button:hover {
+  transform: translateY(-1px);
+}
+
+.status-pill.pending {
+  background: hsl(38, 92%, 94%);
+  color: hsl(38, 92%, 40%);
+}
+
+.status-pill.approved {
+  background: hsl(142, 72%, 94%);
+  color: hsl(142, 72%, 29%);
+}
+
+.status-pill.cancelled {
+  background: hsl(348, 83%, 95%);
+  color: hsl(348, 83%, 47%);
+}
+
+/* Pay Commission Modal custom styles */
+.modal-overlay {
+  transition: opacity 0.3s ease;
+}
+
+.modal-overlay.hidden {
+  display: none !important;
+}
+
+.modal-content select, 
+.modal-content textarea {
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.modal-content select:focus, 
+.modal-content textarea:focus {
+  border-color: #1a73e8;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+}
+

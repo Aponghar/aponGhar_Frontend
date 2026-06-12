@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wallet - AponGhar</title>
+  <link rel="stylesheet" href="user.css">
+</head>
+<body>
+
+<nav>
+  <a class="logo-link" href="../home/home.html">
+    <img class="nav-logo" src="../assets/logo.jpg" alt="AponGhar Logo">
+  </a>
+  <div class="nav-actions">
+    <a href="../home/home.html">Home</a>
+    <a href="bookings.html">My Bookings</a>
+    <button id="logoutBtn">Logout</button>
+  </div>
+</nav>
+
+<main class="page-shell">
+  <section class="page-heading">
+    <p class="eyebrow">User account</p>
+    <h1>Wallet</h1>
+    <p>Refunds from cancelled bookings are credited here and shown in your transaction history.</p>
+  </section>
+
+  <section class="wallet-grid">
+    <article class="balance-card">
+      <span class="card-label">Available balance</span>
+      <strong id="walletBalance">INR 0</strong>
+      <small id="walletType">User wallet</small>
+    </article>
+
+    <article class="balance-card secondary">
+      <span class="card-label">Pending balance</span>
+      <strong id="pendingBalance">INR 0</strong>
+      <small>Reserved or processing amount</small>
+    </article>
+  </section>
+
+  <section class="content-panel">
+    <div class="panel-heading">
+      <h2>Transactions</h2>
+      <button type="button" id="refreshBtn">Refresh</button>
+    </div>
+    <div id="walletMessage" class="state-message">Loading wallet...</div>
+    <div id="transactionsList" class="transaction-list"></div>
+  </section>
+</main>
+
+<script src="wallet.js"></script>
+
+</body>
+</html>

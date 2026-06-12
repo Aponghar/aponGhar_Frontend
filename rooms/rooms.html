@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Room Management</title>
+  <link rel="stylesheet" href="rooms.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="topbar">
+    <h1 id="pageTitle">Room Management</h1>
+    <div class="topbar-actions">
+      <button id="switchToAddBtn" class="mode-btn">Add Rooms</button>
+      <button id="switchToMyBtn" class="mode-btn secondary">My Rooms</button>
+      <button id="homeBtn" class="mode-btn secondary" style="background: var(--dark) !important; box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1) !important;" onclick="window.location.href='../home/home.html'">Home</button>
+      <button id="backBtn">Back</button>
+    </div>
+  </div>
+
+  <section id="addRoomSection">
+    <form id="roomForm">
+      <h3>Room Details</h3>
+
+      <div class="grid">
+        <input type="text" id="room_name" placeholder="Room Name" required>
+        <input type="text" id="room_type" placeholder="Room Type (e.g., Deluxe, Suite)" required>
+        <input type="number" id="max_adults" placeholder="Max Adults" min="1" required>
+        <input type="number" id="max_children" placeholder="Max Children" min="0" required>
+        <input type="text" id="bed_type" placeholder="Bed Type (e.g., Double, Twin)">
+        <input type="text" id="room_size" placeholder="Room Size (e.g., 400 sqft)">
+      </div>
+
+      <textarea id="description" placeholder="Description of the room"></textarea>
+
+      <div>
+        <label><strong>Select Amenities:</strong></label>
+        <div class="amenities-container" id="amenitiesContainer"></div>
+      </div>
+
+      <div>
+        <label><strong>Select Room Benefit Points:</strong></label>
+        <div class="benefits-container" id="benefitsContainer"></div>
+      </div>
+
+      <div class="pricing-type-section">
+        <h5>Pricing Type & Configuration</h5>
+
+        <div class="price-options">
+          <div class="price-option">
+            <input type="radio" id="pricePerNight" name="price_type" value="PER_NIGHT" required>
+            <label for="pricePerNight">Per Night Pricing</label>
+          </div>
+
+          <div class="price-option">
+            <input type="radio" id="priceHourly" name="price_type" value="HOURLY" required>
+            <label for="priceHourly">Hourly Pricing</label>
+          </div>
+
+          <div class="price-option">
+            <input type="radio" id="priceBoth" name="price_type" value="BOTH" required>
+            <label for="priceBoth">Both (Night & Hourly)</label>
+          </div>
+        </div>
+
+        <div class="pricing-inputs-grid">
+          <div class="pricing-input-group">
+            <label for="base_price">Base Price INR *</label>
+            <input type="number" id="base_price" placeholder="Displayed price" step="0.01" required>
+          </div>
+          <div class="pricing-input-group">
+            <label for="price_per_night">Price Per Night INR</label>
+            <input type="number" id="price_per_night" placeholder="Nightly rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="price_3hours">Price for 3 Hours INR</label>
+            <input type="number" id="price_3hours" placeholder="3-hour rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="price_6hours">Price for 6 Hours INR</label>
+            <input type="number" id="price_6hours" placeholder="6-hour rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="price_9hours">Price for 9 Hours INR</label>
+            <input type="number" id="price_9hours" placeholder="9-hour rate" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="quantity-section">
+        <label for="roomQuantity">Number of Rooms to Create:</label>
+        <input type="number" id="roomQuantity" class="quantity-input" value="1" min="1" max="50" required>
+        <div class="quantity-info">
+          <span id="quantityInfo">1 room will be created with these details</span>
+        </div>
+      </div>
+
+      <div class="upload-section">
+        <label for="room_images"><strong>Room Photos (Optional):</strong></label>
+        <input type="file" id="room_images" accept="image/*" multiple>
+        <p class="upload-help">
+          If creating multiple rooms, the same selected photos will be added to all created rooms.
+        </p>
+      </div>
+
+      <button type="submit" id="submitBtn">Create Room</button>
+    </form>
+  </section>
+
+  <section id="myRoomsSection" class="hidden">
+    <h3 style="margin-top: 10px;">All Rooms</h3>
+    <div id="roomsContainer" class="rooms"></div>
+  </section>
+</div>
+
+<div id="editRoomModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Edit Room</h3>
+      <button id="closeEditModalBtn" class="close-btn">X</button>
+    </div>
+
+    <form id="editRoomForm">
+      <input type="hidden" id="edit_room_db_id">
+
+      <div class="grid">
+        <input type="text" id="edit_room_id" placeholder="Room ID" required>
+        <input type="text" id="edit_room_name" placeholder="Room Name" required>
+        <input type="text" id="edit_room_type" placeholder="Room Type" required>
+        <input type="number" id="edit_max_adults" placeholder="Max Adults" min="1" required>
+        <input type="number" id="edit_max_children" placeholder="Max Children" min="0" required>
+        <input type="text" id="edit_bed_type" placeholder="Bed Type">
+        <input type="text" id="edit_room_size" placeholder="Room Size">
+      </div>
+
+      <textarea id="edit_description" placeholder="Description"></textarea>
+
+      <div>
+        <label><strong>Select Amenities:</strong></label>
+        <div class="amenities-container" id="editAmenitiesContainer"></div>
+      </div>
+
+      <div>
+        <label><strong>Select Room Benefit Points:</strong></label>
+        <div class="benefits-container" id="editBenefitsContainer"></div>
+      </div>
+
+      <div class="pricing-type-section">
+        <h5>Pricing Type & Configuration</h5>
+
+        <div class="price-options">
+          <div class="price-option">
+            <input type="radio" id="editPricePerNight" name="edit_price_type" value="PER_NIGHT" required>
+            <label for="editPricePerNight">Per Night Pricing</label>
+          </div>
+
+          <div class="price-option">
+            <input type="radio" id="editPriceHourly" name="edit_price_type" value="HOURLY" required>
+            <label for="editPriceHourly">Hourly Pricing</label>
+          </div>
+
+          <div class="price-option">
+            <input type="radio" id="editPriceBoth" name="edit_price_type" value="BOTH" required>
+            <label for="editPriceBoth">Both (Night & Hourly)</label>
+          </div>
+        </div>
+
+        <div class="pricing-inputs-grid">
+          <div class="pricing-input-group">
+            <label for="edit_base_price">Base Price INR *</label>
+            <input type="number" id="edit_base_price" placeholder="Displayed price" step="0.01" required>
+          </div>
+          <div class="pricing-input-group">
+            <label for="edit_price_per_night">Price Per Night INR</label>
+            <input type="number" id="edit_price_per_night" placeholder="Nightly rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="edit_price_3hours">Price for 3 Hours INR</label>
+            <input type="number" id="edit_price_3hours" placeholder="3-hour rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="edit_price_6hours">Price for 6 Hours INR</label>
+            <input type="number" id="edit_price_6hours" placeholder="6-hour rate" step="0.01">
+          </div>
+          <div class="pricing-input-group">
+            <label for="edit_price_9hours">Price for 9 Hours INR</label>
+            <input type="number" id="edit_price_9hours" placeholder="9-hour rate" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="upload-section">
+        <label for="edit_room_images"><strong>Add More Room Photos (Optional):</strong></label>
+        <input type="file" id="edit_room_images" accept="image/*" multiple>
+        <p class="upload-help">
+          Selected photos will be uploaded to this room when you save changes.
+        </p>
+      </div>
+
+      <button type="submit">Save Changes</button>
+    </form>
+  </div>
+</div>
+
+<script src="rooms.js"></script>
+</body>
+</html>

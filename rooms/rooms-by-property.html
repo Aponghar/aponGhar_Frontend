@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Available Rooms - AponGhar</title>
+  <link rel="stylesheet" href="rooms-by-property.css">
+  <!-- Leaflet CSS & JS for Interactive Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+</head>
+<body>
+
+<nav>
+  <a href="../home/home.html" class="logo-link">
+    <img src="../assets/logo.jpg" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <div class="profile-container">
+    <button id="profileBtn">Profile</button>
+    <div id="dropdownMenu" class="dropdown">
+      <button id="joinBtn">Join With Us</button>
+      <a href="#">My Profile</a>
+      <a href="../user/wallet.html" id="walletMenuLink">Wallet</a>
+      <a href="../user/bookings.html" id="bookingsMenuLink">My Bookings</a>
+      <a href="#">Settings</a>
+      <button id="logoutBtn">Logout</button>
+    </div>
+  </div>
+  </div>
+</nav>
+
+<div class="breadcrumb">
+  <a href="../home/home.html">Home</a> / <span id="propertyNameBread">Property</span>
+</div>
+
+<main>
+  <section class="property-detail-header">
+    <div class="property-title-section">
+      <h1 id="propertyName"></h1>
+      <div class="property-meta">
+        <span id="propertyRating" class="meta-item"></span>
+        <span class="meta-separator">•</span>
+        <span id="propertyLocation" class="meta-item"></span>
+        <span class="meta-separator">•</span>
+        <span id="propertyTypeBadge" class="property-badge"></span>
+      </div>
+    </div>
+
+    <!-- Airbnb-Style Image Showcase Grid -->
+    <div class="property-gallery-grid" id="propertyGallery">
+      <!-- Dynamic grid filled by JS -->
+    </div>
+
+    <div class="property-info-split">
+      <div class="info-left">
+        <div class="info-card description-card">
+          <h2>About this stay</h2>
+          <p id="description" class="description"></p>
+        </div>
+        
+        <div class="info-card amenities-card" id="propertyAmenitiesSection">
+          <h2>Property Amenities</h2>
+          <div class="property-amenities-grid" id="propertyAmenities">
+            <!-- Dynamic property amenities -->
+          </div>
+        </div>
+
+        <!-- Map Card Section -->
+        <div class="info-card map-card" id="propertyMapSection" style="display: none;">
+          <h2>Where you'll be</h2>
+          <p id="propertyMapAddress" style="font-size: 14px; color: var(--dark-muted); margin-bottom: 15px; font-weight: 500;"></p>
+          <div id="propertyMap"></div>
+          <div class="map-link-container">
+            <a id="propertyMapExternalLink" href="#" target="_blank">
+              🗺️ Open in Google Maps
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-right">
+        <!-- Floating details card -->
+        <div class="sticky-info-card">
+          <div class="trust-badge-container" id="trustBadgeSection">
+            <span class="trust-icon">🛡️</span>
+            <div>
+              <strong>Verified Safe Stay</strong>
+              <small id="trustScoreText">Trust Score: 95%</small>
+            </div>
+          </div>
+
+          <div class="time-info">
+            <div class="time-block">
+              <span class="time-icon">🔑</span>
+              <div>
+                <strong>Check-In From</strong>
+                <span id="checkInTimeText">12:00 PM</span>
+              </div>
+            </div>
+            <div class="time-block">
+              <span class="time-icon">🚪</span>
+              <div>
+                <strong>Check-Out Before</strong>
+                <span id="checkOutTimeText">11:00 AM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="house-rules-section" id="propertyRulesSection">
+            <h3>House Rules</h3>
+            <ul id="propertyRules" class="rules-list">
+              <!-- Dynamic house rules -->
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="rooms-section">
+    <h2>Available Room Types</h2>
+
+    <div class="rooms-layout">
+      <aside class="filters-sidebar">
+
+        <h3>Filters</h3>
+
+        <div class="filter-group">
+          <h4>Amenities</h4>
+          <div id="amenityFilters" class="checkbox-list">
+            <!-- Amenity filters will be loaded here -->
+          </div>
+        </div>
+
+        <button type="button" id="resetRoomFiltersBtn" class="reset-filters-btn">
+          Reset Filters
+        </button>
+      </aside>
+
+      <div class="rooms-content">
+        <p id="roomsSummary" class="rooms-summary"></p>
+        <div class="rooms-grid" id="roomsGrid">
+          <!-- Rooms will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="property-reviews-section">
+    <div class="section-heading-row">
+      <div>
+        <h2>Guest Reviews</h2>
+        <p id="reviewsSummary" class="reviews-summary">Loading reviews...</p>
+      </div>
+      <button type="button" id="openPropertyReviewBtn" class="write-review-btn hidden">
+        Write Review
+      </button>
+    </div>
+    <div id="propertyReviews" class="property-reviews-grid">
+      <!-- Dynamic property reviews -->
+    </div>
+  </section>
+</main>
+
+<div id="bookingModal" class="booking-modal">
+  <form id="bookingForm" class="booking-modal-content">
+    <button type="button" id="closeBookingModal" class="modal-close" aria-label="Close booking form">&times;</button>
+    <h2>Confirm Booking</h2>
+    <p id="bookingRoomName" class="booking-room-name">Room</p>
+    <p id="bookingPricingSummary" class="booking-pricing-summary">Selected price</p>
+
+    <div class="booking-form-grid">
+      <label>
+        Check-in
+        <input type="date" id="bookingCheckIn" required>
+      </label>
+      <label>
+        Check-out
+        <input type="date" id="bookingCheckOut" required>
+      </label>
+      <label>
+        Check-in time
+        <input type="time" id="bookingCheckInTime" required>
+      </label>
+      <label>
+        Check-out time
+        <input type="time" id="bookingCheckOutTime">
+      </label>
+      <label>
+        Guests
+        <input type="number" id="bookingGuests" min="1" required>
+      </label>
+      <label>
+        Rooms
+        <input type="number" id="bookingRooms" min="1" value="1" required>
+      </label>
+      <label>
+        Guest name
+        <input type="text" id="bookingGuestName" maxlength="150" required>
+      </label>
+      <label>
+        Guest email
+        <input type="email" id="bookingGuestEmail" maxlength="150" required>
+      </label>
+      <label>
+        Guest age
+        <input type="number" id="bookingGuestAge" min="1" max="120" required>
+      </label>
+      <label>
+        User name
+        <input type="text" id="bookingCustomerName" maxlength="150" required>
+      </label>
+      <label id="bookingPhoneContainer" style="display: none;">
+        Phone number
+        <input type="text" id="bookingPhone" maxlength="20" placeholder="Enter your phone number">
+      </label>
+    </div>
+
+    <div class="coupon-section">
+      <label class="coupon-label">Coupon Code</label>
+      <div class="coupon-input-group">
+        <input type="text" id="bookingCouponCode" maxlength="50" placeholder="Enter coupon code (Optional)">
+        <button type="button" id="applyCouponBtn" class="coupon-btn">Apply</button>
+      </div>
+      <div id="couponStatusMessage" class="coupon-status"></div>
+    </div>
+
+    <div class="wallet-section">
+      <label class="wallet-option">
+        <input type="checkbox" id="useWalletInput">
+        <span class="wallet-label-text">Use wallet balance</span>
+      </label>
+      <div id="walletBalanceInfo" class="wallet-balance-info">Available: INR 0</div>
+    </div>
+
+    <!-- Live Price Summary Card -->
+    <div id="priceSummaryCard" class="price-summary-card">
+      <h3>Price Summary</h3>
+      <div class="summary-row">
+        <span id="summarySubtotalLabel">Subtotal</span>
+        <span id="summarySubtotal">INR 0</span>
+      </div>
+      <div class="summary-row discount-row" id="summaryDiscountRow" style="display: none;">
+        <span>Coupon Discount</span>
+        <span id="summaryDiscount" class="text-green">-INR 0</span>
+      </div>
+      <div class="summary-row wallet-row" id="summaryWalletRow" style="display: none;">
+        <span>Wallet Deduction</span>
+        <span id="summaryWallet" class="text-green">-INR 0</span>
+      </div>
+      <div class="summary-divider"></div>
+      <div class="summary-row total-row">
+        <span>Amount to Pay</span>
+        <span id="summaryTotal">INR 0</span>
+      </div>
+    </div>
+
+    <div class="payment-choice">
+      <span>Payment option</span>
+      <label id="offlineBookingLabel">
+        <input type="radio" name="bookingPaymentMethod" value="OFFLINE" checked>
+        <span id="offlineBookingText">Offline booking</span>
+      </label>
+      <label>
+        <input type="radio" name="bookingPaymentMethod" value="ONLINE">
+        Online payment
+      </label>
+      <small>Online payments are processed securely through Razorpay.</small>
+    </div>
+
+    <label class="special-request-field">
+      Special requests
+      <textarea id="specialRequests" maxlength="500" placeholder="Optional"></textarea>
+    </label>
+
+    <div id="bookingModalMessage" class="booking-modal-message"></div>
+
+    <button type="submit" id="confirmBookingBtn" class="confirm-booking-btn">
+      Request Booking
+    </button>
+  </form>
+</div>
+
+<div id="propertyReviewModal" class="review-modal hidden">
+  <div class="review-modal-card">
+    <button type="button" id="closePropertyReviewModal" class="review-modal-close">x</button>
+    <p class="review-eyebrow">Completed stay</p>
+    <h2 id="propertyReviewModalTitle">Write Review</h2>
+    <p id="propertyReviewModalSubtitle" class="review-modal-subtitle"></p>
+
+    <form id="propertyReviewForm" class="review-form">
+      <input type="hidden" id="propertyReviewBookingId">
+
+      <div class="review-rating-stars" id="propertyReviewStars" aria-label="Rating">
+        <button type="button" data-rating="1">&#9733;</button>
+        <button type="button" data-rating="2">&#9733;</button>
+        <button type="button" data-rating="3">&#9733;</button>
+        <button type="button" data-rating="4">&#9733;</button>
+        <button type="button" data-rating="5">&#9733;</button>
+      </div>
+
+      <textarea
+        id="propertyReviewText"
+        placeholder="Share what stood out about your stay"
+        maxlength="2000"
+      ></textarea>
+
+      <label class="review-photo-input">
+        Photos
+        <input type="file" id="propertyReviewPhotos" accept="image/*" multiple>
+      </label>
+
+      <p id="propertyReviewFormMessage" class="review-form-message"></p>
+
+      <button type="submit" class="review-submit-btn">
+        Submit Review
+      </button>
+    </form>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2024 AponGhar. All rights reserved.</p>
+</footer>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="rooms-by-property.js"></script>
+
+</body>
+</html>

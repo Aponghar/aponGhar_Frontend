@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Check-In</title>
+  <link rel="stylesheet" href="checkin.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <h1>Hotel Check-In</h1>
+    <p class="subtitle">Initiate your check-in process</p>
+    
+    <form id="checkinForm">
+      <div class="form-group">
+        <label for="bookingId">Booking ID</label>
+        <input 
+          type="text" 
+          id="bookingId" 
+          placeholder="Enter your booking ID"
+          required
+        >
+        <small>You can find this in your booking confirmation email</small>
+      </div>
+
+      <button type="submit" class="btn-primary">
+        Initiate Check-In
+      </button>
+      <button type="button" class="btn-secondary" onclick="window.location.href='../home/home.html'" style="margin-top: 10px;">
+        Back to Home
+      </button>
+    </form>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <div id="successCard" class="card success-card" style="display: none;">
+    <div class="success-icon">✓</div>
+    <h2>Check-In Initiated!</h2>
+    <p>Your check-in request has been sent to the property owner.</p>
+    <p class="checkin-details">
+      <strong>Check-In ID:</strong> <span id="checkinId"></span>
+    </p>
+    <p class="info-text">The owner will confirm your check-in shortly. You'll receive a notification once they confirm.</p>
+    <button onclick="window.location.href='../user/bookings.html'" class="btn-primary">
+      View My Bookings
+    </button>
+    <button onclick="window.location.href='../home/home.html'" class="btn-secondary" style="margin-top: 10px;">
+      Back to Home
+    </button>
+  </div>
+</div>
+
+<script src="checkin.js"></script>
+
+</body>
+</html>
