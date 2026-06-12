@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000/api";
+const BASE_URL = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api';
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));

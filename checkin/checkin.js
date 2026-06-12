@@ -1,5 +1,5 @@
-const BASE_URL = 
-  "http://127.0.0.1:5000/api";
+// API Configuration is loaded from config.js
+const BASE_URL = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api';
 
 const token = 
   localStorage.getItem("token");

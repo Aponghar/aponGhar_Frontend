@@ -1,4 +1,4 @@
-const BASE_URL = "http://127.0.0.1:5000/api/auth";
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/auth';
 
 let authToken = localStorage.getItem("token") || "";
 
@@ -437,7 +437,7 @@ async function loadGoogleConfig() {
 
   // Otherwise, fetch from backend config
   try {
-    const res = await fetch("http://127.0.0.1:5000/api/auth/config");
+    const res = await fetch((typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/auth/config');
     const data = await res.json();
     if (data.success && data.data.googleClientId) {
       GOOGLE_CLIENT_ID = data.data.googleClientId;

@@ -1,6 +1,7 @@
-const BASE_URL =
-"http://127.0.0.1:5000/api/admin";
-const ASSET_BASE_URL = "http://127.0.0.1:5000";
+// API Configuration is loaded from config.js
+// const BASE_URL = API_BASE_URL + '/admin';
+// const ASSET_BASE_URL already defined in config.js
+const BASE_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/admin';
 const IMAGE_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' width='100%' height='100%'><rect width='100%' height='100%' fill='%23f3f4f6'/><g fill='%239ca3af' transform='translate(180, 110) scale(1.5)'><path d='M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.12-1.12A1 1 0 0010.586 3H7.414a1 1 0 00-.707.293L5.586 4.707A1 1 0 014.88 5H4zM10 8a3 3 0 100 6 3 3 0 000-6z'/></g></svg>";
 
 const resolveImageUrl = (imagePath) => {
@@ -2370,7 +2371,7 @@ window.requestCommissionPayment = requestCommissionPayment;
 window.confirmCommissionPaymentModal = confirmCommissionPaymentModal;
 
 // OWNER WITHDRAWALS
-const FINANCE_API_URL = "http://127.0.0.1:5000/api/finance";
+const FINANCE_API_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/finance';
 
 const loadWithdrawals = async () => {
   try {
@@ -2676,7 +2677,7 @@ if (walletTab) {
 // COUPON SYSTEM FOR ADMIN
 // ===============================
 
-const COUPON_API_URL = "http://127.0.0.1:5000/api/coupons";
+const COUPON_API_URL = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/coupons';
 
 const loadCoupons = async () => {
   try {
@@ -2886,7 +2887,7 @@ if (couponForm) {
 // =============================================
 // ADVERTISEMENTS SYSTEM
 // =============================================
-const AD_API_BASE = "http://127.0.0.1:5000/api/advertisements";
+const AD_API_BASE = (typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api') + '/advertisements';
 
 const loadAds = async () => {
   adsList.innerHTML = "<p class='empty-state'>Loading banners...</p>";
