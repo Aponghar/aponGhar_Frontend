@@ -9,6 +9,11 @@ const getApiBaseUrl = () => {
     if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
         return 'https://api.aponghar.in/api';
     }
+    // Render deployment
+    if (hostname.includes('onrender.com')) {
+        return 'https://aponghar-backend.onrender.com/api';
+    }
+
     
     // Development
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
@@ -26,6 +31,11 @@ const getAssetBaseUrl = () => {
     // Production domains
     if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
         return 'https://api.aponghar.in';
+    }
+
+    // Render deployment
+    if (hostname.includes('onrender.com')) {
+        return 'https://aponghar-backend.onrender.com';
     }
     
     // Development
