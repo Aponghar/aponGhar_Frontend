@@ -2,9 +2,9 @@ const BASE_URL = typeof API_BASE_URL !== 'undefined'
   ? API_BASE_URL
   : 'https://api.aponghar.in/api';
 
-const ASSET_BASE_URL = typeof ASSET_BASE_URL !== 'undefined'
-  ? ASSET_BASE_URL
-  : 'https://api.aponghar.in';
+if (typeof ASSET_BASE_URL === 'undefined') {
+  var ASSET_BASE_URL = 'https://api.aponghar.in';
+}
 
   
 const IMAGE_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 300' width='100%' height='100%'><rect width='100%' height='100%' fill='%23f3f4f6'/><g fill='%239ca3af' transform='translate(180, 110) scale(1.5)'><path d='M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.12-1.12A1 1 0 0010.586 3H7.414a1 1 0 00-.707.293L5.586 4.707A1 1 0 014.88 5H4zM10 8a3 3 0 100 6 3 3 0 000-6z'/></g></svg>";

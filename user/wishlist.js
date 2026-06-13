@@ -378,7 +378,7 @@ propertiesGrid.addEventListener("click", async (event) => {
     const propertyName = shareBtn.dataset.propertyName;
     if (!propertyId) return;
 
-    const shareUrl = `${window.location.origin}/frontend/rooms/rooms-by-property.html?propertyId=${propertyId}`;
+    const shareUrl = `${window.location.origin}${window.location.pathname.replace(/\/user\/.*$/, '')}/rooms/rooms-by-property.html?propertyId=${propertyId}`;
     const shareText = `Check out ${propertyName} on AponGhar! View stays and book rooms directly here:`;
 
     if (navigator.share) {
