@@ -11,7 +11,7 @@ const getApiBaseUrl = () => {
     }
     // Render deployment
     if (hostname.includes('onrender.com')) {
-        return 'https://aponghar-backend.onrender.com/api';
+        return 'https://api.aponghar.in/api';
     }
 
     
@@ -35,7 +35,7 @@ const getAssetBaseUrl = () => {
 
     // Render deployment
     if (hostname.includes('onrender.com')) {
-        return 'https://aponghar-backend.onrender.com';
+        return 'https://api.aponghar.in';
     }
     
     // Development
