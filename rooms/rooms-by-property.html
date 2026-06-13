@@ -320,6 +320,57 @@
   </div>
 </div>
 
+<!-- Booking Status/Success Overlay -->
+<div id="bookingStatusOverlay" class="booking-status-overlay hidden">
+  <div class="booking-status-card">
+    <div class="status-icon-container">
+      <div id="statusSpinner" class="status-spinner"></div>
+      <div id="statusSuccessIcon" class="status-success-icon hidden">
+        <svg viewBox="0 0 52 52">
+          <circle class="success-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="success-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+      <div id="statusErrorIcon" class="status-error-icon hidden">
+        <svg viewBox="0 0 52 52">
+          <circle class="error-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="error-cross-line1" fill="none" d="M16 16 36 36"/>
+          <path class="error-cross-line2" fill="none" d="M36 16 16 36"/>
+        </svg>
+      </div>
+    </div>
+    
+    <h3 id="statusTitle">Processing Booking</h3>
+    <p id="statusDescription">Please wait while we secure your booking request.</p>
+    
+    <div id="statusDetails" class="status-details hidden">
+      <div class="status-detail-row">
+        <span>Booking Code:</span>
+        <strong id="detailBookingCode">-</strong>
+      </div>
+      <div class="status-detail-row">
+        <span>Payment Option:</span>
+        <strong id="detailPaymentMethod">-</strong>
+      </div>
+      <div class="status-detail-row">
+        <span>Payment Status:</span>
+        <strong id="detailPaymentStatus">-</strong>
+      </div>
+      <div class="status-detail-row">
+        <span>Total Price:</span>
+        <strong id="detailAmount">-</strong>
+      </div>
+    </div>
+
+    <div id="statusActions" class="status-actions hidden">
+      <button id="statusCloseBtn" class="status-btn secondary">Close</button>
+      <a href="../user/bookings.html" id="statusRedirectBtn" class="status-btn primary">Go to My Bookings</a>
+    </div>
+    
+    <div id="statusCountdown" class="status-countdown"></div>
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2024 AponGhar. All rights reserved.</p>
 </footer>

@@ -1499,6 +1499,89 @@ const closeBookingForm = () => {
   removeCoupon();
 };
 
+let redirectTimer = null;
+
+const showBookingStatus = (state, data = {}) => {
+  const overlay = document.getElementById("bookingStatusOverlay");
+  const spinner = document.getElementById("statusSpinner");
+  const successIcon = document.getElementById("statusSuccessIcon");
+  const errorIcon = document.getElementById("statusErrorIcon");
+  const title = document.getElementById("statusTitle");
+  const description = document.getElementById("statusDescription");
+  const details = document.getElementById("statusDetails");
+  const actions = document.getElementById("statusActions");
+  const countdown = document.getElementById("statusCountdown");
+  const closeBtn = document.getElementById("statusCloseBtn");
+
+  if (redirectTimer) {
+    clearInterval(redirectTimer);
+    redirectTimer = null;
+  }
+
+  overlay.classList.remove("hidden");
+  spinner.classList.add("hidden");
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+  details.classList.add("hidden");
+  actions.classList.add("hidden");
+  countdown.textContent = "";
+
+  if (state === "processing") {
+    spinner.classList.remove("hidden");
+    title.textContent = data.title || "Processing Booking";
+    description.textContent = data.description || "Please wait while we secure your booking request.";
+  } 
+  else if (state === "verifying") {
+    spinner.classList.remove("hidden");
+    title.textContent = data.title || "Verifying Payment";
+    description.textContent = data.description || "Securing transaction with our payment gateway...";
+  } 
+  else if (state === "success") {
+    successIcon.classList.remove("hidden");
+    title.textContent = data.title || "Booking Confirmed! 🎉";
+    description.textContent = data.description || "Your booking has been secured successfully.";
+
+    if (data.bookingCode || data.amount) {
+      details.classList.remove("hidden");
+      document.getElementById("detailBookingCode").textContent = data.bookingCode || "N/A";
+      document.getElementById("detailPaymentMethod").textContent = data.paymentMethod || "OFFLINE";
+      document.getElementById("detailPaymentStatus").textContent = data.paymentStatus || "PENDING";
+      document.getElementById("detailAmount").textContent = data.amount || "N/A";
+    }
+
+    actions.classList.remove("hidden");
+    closeBtn.classList.add("hidden");
+    
+    let secondsLeft = 4;
+    countdown.textContent = `Redirecting to My Bookings in ${secondsLeft}s...`;
+    
+    redirectTimer = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft <= 0) {
+        clearInterval(redirectTimer);
+        window.location.href = "../user/bookings.html";
+      } else {
+        countdown.textContent = `Redirecting to My Bookings in ${secondsLeft}s...`;
+      }
+    }, 1000);
+  } 
+  else if (state === "error") {
+    errorIcon.classList.remove("hidden");
+    title.textContent = data.title || "Booking Failed";
+    description.textContent = data.description || "An error occurred during booking. Please try again.";
+    
+    if (data.errorMessage) {
+      description.textContent = data.errorMessage;
+    }
+    
+    actions.classList.remove("hidden");
+    closeBtn.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+    };
+  }
+};
+
 const createBooking = async () => {
   if (!selectedBookingRoom?.id) {
     throw new Error("Room selection is missing.");
@@ -1617,6 +1700,10 @@ const openBookingRazorpayCheckout = (order, booking) => new Promise((resolve, re
     handler: async (response) => {
       completed = true;
       try {
+        showBookingStatus("verifying", {
+          title: "Verifying Payment",
+          description: "Confirming transaction details with our servers..."
+        });
         const verified = await verifyBookingPayment(response);
         resolve(verified);
       } catch (error) {
@@ -1699,6 +1786,11 @@ bookingForm.addEventListener("submit", async (event) => {
   confirmBookingBtn.textContent = "Requesting booking...";
 
   try {
+    showBookingStatus("processing", {
+      title: "Creating Booking",
+      description: "Securing your room request..."
+    });
+
     if (bookingPhone && bookingPhone.required && bookingPhoneContainer.style.display !== "none") {
       const phoneVal = bookingPhone.value.trim();
       if (!phoneVal) {
@@ -1720,39 +1812,67 @@ bookingForm.addEventListener("submit", async (event) => {
 
       const profileData = await profileRes.json();
       if (!profileData.success) {
-        throw new Error(profileData.message || "Failed to save phone number: " + (profileData.message || ""));
+        throw new Error(profileData.message || "Failed to save phone number.");
       }
     }
 
     updateBookingDateTimeFields();
     const booking = await createBooking();
 
+    closeBookingForm();
+
     if (getSelectedPaymentMethod() === "ONLINE") {
-      confirmBookingBtn.textContent = "Starting payment...";
+      showBookingStatus("processing", {
+        title: "Preparing Payment Gateway",
+        description: "Opening Razorpay checkout panel..."
+      });
+
       const order = await createPaymentOrder(booking.booking_id);
       if (order.payment_required === false) {
-        alert(order.message || "Booking confirmed successfully.");
-        window.location.href = "../user/bookings.html";
+        showBookingStatus("success", {
+          title: "Booking Confirmed! 🎉",
+          description: order.message || "Your booking has been secured successfully.",
+          bookingCode: booking.booking_code,
+          paymentMethod: "WALLET",
+          paymentStatus: "PAID",
+          amount: formatINR(booking.total_price)
+        });
         return;
       }
 
-      confirmBookingBtn.textContent = "Waiting for payment...";
+      showBookingStatus("processing", {
+        title: "Waiting for Payment",
+        description: "Please complete payment in the secure window."
+      });
+
       await openBookingRazorpayCheckout(order, booking);
-      alert(`Payment successful! Booking ${booking.booking_code || ""} is confirmed.`);
-      window.location.href = "../user/bookings.html";
+      
+      showBookingStatus("success", {
+        title: "Booking Confirmed! 🎉",
+        description: `Booking confirmed successfully. Payment complete.`,
+        bookingCode: booking.booking_code,
+        paymentMethod: "ONLINE",
+        paymentStatus: "PAID",
+        amount: formatINR(booking.total_price)
+      });
       return;
     }
 
     const bookingCode = booking.booking_code || "";
-    const successMessage = bookingCode
-      ? `Booking ${bookingCode} submitted successfully!\n\n${booking.message || "The owner will review and approve your request."}\n\nYou can track your booking in My Bookings.`
-      : booking.message || "Booking request sent. The owner will approve or reject it.";
-
-    alert(successMessage);
-    window.location.href = "../user/bookings.html";
+    showBookingStatus("success", {
+      title: "Booking Requested! 🔑",
+      description: booking.message || "Your offline booking request has been submitted for owner approval.",
+      bookingCode: bookingCode,
+      paymentMethod: "OFFLINE",
+      paymentStatus: "PENDING",
+      amount: formatINR(booking.total_price)
+    });
   } catch (error) {
     console.error(error);
-    bookingModalMessage.textContent = error.message || "Unable to continue booking.";
+    showBookingStatus("error", {
+      title: "Booking Unsuccessful",
+      errorMessage: error.message || "Unable to complete booking request. Please check details and try again."
+    });
   } finally {
     confirmBookingBtn.disabled = false;
     confirmBookingBtn.textContent = getSelectedPaymentMethod() === "ONLINE"

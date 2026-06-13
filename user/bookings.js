@@ -228,6 +228,7 @@ const renderBookings = (bookings) => {
   bookings.forEach((booking) => {
     const status = booking.booking_status || "PENDING";
     const paymentStatus = booking.payment_status || "PENDING";
+    const isPaid = String(paymentStatus).toUpperCase() === "PAID";
     const refundableAmount = getRefundableAmount(booking);
     const card = document.createElement("article");
     card.className = "booking-card";
@@ -255,30 +256,40 @@ const renderBookings = (bookings) => {
           <span>Payment<strong>${escapeHTML(paymentMethod)}</strong></span>
       </div>
 
-      <div class="money-grid">
-        <div class="money-row">
-          <span>Total room price</span>
-          <strong>${money(booking.total_amount)}</strong>
-        </div>
-        <div class="money-row">
-          <span>Included platform commission</span>
-          <strong>${money(booking.booking_commission_amount)}</strong>
-        </div>
-        <div class="money-row">
-          <span>Coupon discount</span>
-          <strong>${money(booking.coupon_discount)}</strong>
-        </div>
-        <div class="money-row">
-          <span>Payable after discount</span>
-          <strong>${money(getPayableAmount(booking))}</strong>
-        </div>
-        <div class="money-row">
-          <span>Wallet used</span>
-          <strong>${money(booking.wallet_used)}</strong>
-        </div>
-        <div class="money-row">
-          <span>Gateway paid</span>
-          <strong>${money(booking.gateway_paid)}</strong>
+      <div class="booking-payment-details">
+        <div class="payment-details-summary">
+          <div class="detail-line">
+            <span>Room Price</span>
+            <span>${money(booking.total_amount)}</span>
+          </div>
+          ${safeNumber(booking.coupon_discount) > 0 ? `
+          <div class="detail-line discount">
+            <span>Coupon Discount</span>
+            <span>-${money(booking.coupon_discount)}</span>
+          </div>
+          ` : ""}
+          ${safeNumber(booking.wallet_used) > 0 ? `
+          <div class="detail-line wallet">
+            <span>Wallet Used</span>
+            <span>-${money(booking.wallet_used)}</span>
+          </div>
+          ` : ""}
+          ${isPaid && safeNumber(booking.gateway_paid) > 0 ? `
+          <div class="detail-line gateway">
+            <span>Gateway Paid</span>
+            <span>${money(booking.gateway_paid)}</span>
+          </div>
+          ` : ""}
+          <div class="detail-divider"></div>
+          <div class="detail-line total">
+            ${isPaid ? `
+              <span>Total Paid</span>
+              <strong>${money(safeNumber(booking.gateway_paid) + safeNumber(booking.wallet_used))}</strong>
+            ` : `
+              <span>Payable at Property</span>
+              <strong>${money(Math.max(0, getPayableAmount(booking) - safeNumber(booking.wallet_used)))}</strong>
+            `}
+          </div>
         </div>
       </div>
 

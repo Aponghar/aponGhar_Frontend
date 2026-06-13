@@ -353,27 +353,51 @@ nav {
   margin-top: 4px;
 }
 
-/* MONEY DETAILS */
-.money-grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.money-row {
-  background: hsl(220, 20%, 98%);
+/* BOOKING PAYMENT DETAILS INVOICE STYLE */
+.booking-payment-details {
+  background: hsl(220, 20%, 99%);
   border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  max-width: 480px;
+  box-shadow: var(--shadow-sm);
 }
 
-.money-row strong {
-  display: block;
-  color: var(--primary);
-  font-size: 17px;
+.payment-details-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+  color: var(--dark-muted);
+}
+
+.detail-line.discount,
+.detail-line.wallet {
+  color: hsl(142, 72%, 29%);
+  font-weight: 600;
+}
+
+.detail-divider {
+  border-bottom: 1px dashed var(--border-color);
+  margin: 6px 0;
+}
+
+.detail-line.total {
+  font-size: 16px;
   font-weight: 800;
-  margin-top: 4px;
+  color: var(--dark);
+}
+
+.detail-line.total strong {
+  color: var(--primary);
+  font-size: 19px;
 }
 
 /* SPECIAL NOTES / REJECTION */
@@ -608,8 +632,7 @@ nav {
     padding: 16px 24px;
   }
 
-  .wallet-grid,
-  .money-grid {
+  .wallet-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
@@ -634,8 +657,7 @@ nav {
   }
 
   .wallet-grid,
-  .booking-meta,
-  .money-grid {
+  .booking-meta {
     grid-template-columns: 1fr;
   }
 
