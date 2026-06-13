@@ -53,3 +53,36 @@ const ASSET_BASE_URL = getAssetBaseUrl();
 console.log(`[API Config] Environment: ${window.location.hostname}`);
 console.log(`[API Config] API Base URL: ${API_BASE_URL}`);
 console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
+
+// Automatically sync user session/role from the server to local storage
+(async function syncUserSession() {
+    try {
+        const token = localStorage.getItem("token");
+        const localUserStr = localStorage.getItem("user");
+        if (!token || !localUserStr) return;
+
+        const localUser = JSON.parse(localUserStr);
+        const res = await fetch(`${API_BASE_URL}/users/profile`, {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${token}`
+            }
+        });
+
+        if (res.status === 200) {
+            const data = await res.json();
+            if (data.success && data.data) {
+                const dbUser = data.data;
+                if (dbUser.role !== localUser.role) {
+                    // Update role in locally stored user object while preserving other stored fields
+                    const updatedUser = { ...localUser, ...dbUser };
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                    console.log(`[API Config] User role updated from ${localUser.role} to ${dbUser.role}. Reloading page...`);
+                    window.location.reload();
+                }
+            }
+        }
+    } catch (err) {
+        console.error("[API Config] Failed to sync user session:", err);
+    }
+})();
