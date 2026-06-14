@@ -1584,6 +1584,7 @@ main {
 }
 
 .booking-form-grid input,
+.booking-form-grid select,
 .special-request-field textarea,
 .coupon-field input {
   width: 100%;
@@ -1599,6 +1600,7 @@ main {
 }
 
 .booking-form-grid input:focus,
+.booking-form-grid select:focus,
 .special-request-field textarea:focus,
 .coupon-field input:focus {
   border-color: var(--primary);

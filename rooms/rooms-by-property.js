@@ -1519,10 +1519,10 @@ const updateBookingDateTimeFields = () => {
   if (isHourly) {
     bookingCheckOut.value = bookingCheckIn.value;
     bookingCheckOutTime.value = addHoursToTime(bookingCheckInTime.value, duration);
-    bookingCheckOutTime.readOnly = true;
+    bookingCheckOutTime.disabled = true;
   } else {
-    bookingCheckOutTime.value = "";
-    bookingCheckOutTime.readOnly = false;
+    bookingCheckOutTime.value = bookingCheckInTime.value;
+    bookingCheckOutTime.disabled = true;
   }
 };
 
