@@ -111,6 +111,14 @@ const roomManagementProperty = document.getElementById("roomManagementProperty")
 const refreshRoomManagementBtn = document.getElementById("refreshRoomManagementBtn");
 const roomManagementList = document.getElementById("roomManagementList");
 
+// Notification DOM elements
+const notificationBellBtn = document.getElementById("notificationBellBtn");
+const notificationBadge = document.getElementById("notificationBadge");
+const notificationDropdown = document.getElementById("notificationDropdown");
+const notificationDropdownList = document.getElementById("notificationDropdownList");
+const markAllReadBtn = document.getElementById("markAllReadBtn");
+let ownerNotificationsCache = [];
+
 // Withdrawal DOM elements
 const withdrawalForm = document.getElementById("withdrawalForm");
 const withdrawalAmount = document.getElementById("withdrawalAmount");
@@ -428,67 +436,178 @@ const renderBookingsDetails = (bookings) => {
 
     return `
     <article class="booking-card" data-booking-id="${booking.id}">
-      <div class="booking-card-main">
-        <div>
-          <span class="booking-code">${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}</span>
+      <div class="booking-card-header">
+        <div class="booking-card-header-left">
+          <div class="booking-code-row">
+            <span class="booking-code">${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}</span>
+            <span class="status-pill ${String(booking.booking_status || "").toLowerCase()}">${escapeHTML(booking.booking_status || "NEW")}</span>
+          </div>
           <h3>${escapeHTML(booking.property_name || "Property")}</h3>
-          <p>${escapeHTML(booking.room_name || "Room")} for ${escapeHTML(guestName)}</p>
+          <p class="booking-subheader">${escapeHTML(booking.room_name || "Room")} for <strong>${escapeHTML(guestName)}</strong></p>
+          
+          <div class="booking-quick-info">
+            <span class="info-badge">📅 ${formatDate(booking.check_in_date)} - ${formatDate(booking.check_out_date)}</span>
+            <span class="info-badge">👤 ${escapeHTML(booking.guests || 0)} Guests</span>
+            <span class="info-badge">⏰ ${escapeHTML(formatLabel(booking.booking_type))}</span>
+          </div>
         </div>
-        <div class="booking-amount">
-          <strong>${formatINR(booking.total_amount)}</strong>
-          <small>Customer total</small>
-          <span class="status-pill ${String(booking.booking_status || "").toLowerCase()}">${escapeHTML(booking.booking_status || "NEW")}</span>
+        <div class="booking-card-header-right">
+          <div class="booking-amount">
+            <strong>${formatINR(booking.total_amount)}</strong>
+            <small>Customer total</small>
+          </div>
+          <div class="toggle-details-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
         </div>
       </div>
 
-      <div class="booking-detail-grid">
-        <p><strong>Check-in</strong><span>${formatDate(booking.check_in_date)}</span></p>
-        <p><strong>Check-out</strong><span>${formatDate(booking.check_out_date)}</span></p>
-        <p><strong>Arrival time</strong><span>${formatTime(booking.check_in_time)}</span></p>
-        <p><strong>Booking type</strong><span>${escapeHTML(formatLabel(booking.booking_type))}</span></p>
-        <p><strong>Price option</strong><span>${escapeHTML(formatLabel(booking.pricing_option))}</span></p>
-        <p><strong>Guests</strong><span>${escapeHTML(booking.guests || 0)}</span></p>
-        <p><strong>Rooms</strong><span>${escapeHTML(booking.booked_rooms || 0)}</span></p>
-        <p><strong>Payment</strong><span>${escapeHTML(formatLabel(booking.payment_method || booking.payment_status))}</span></p>
-        <p><strong>Booked On</strong><span>${formatDate(booking.created_at)}</span></p>
-        <p><strong>Owner Base Amount</strong><span>${formatINR(getBookingBaseAmount(booking))}</span></p>
-        <p><strong>Admin Commission</strong><span>${formatINR(booking.booking_commission_amount)}</span></p>
-        <p><strong>Coupon Discount</strong><span>${formatINR(booking.coupon_discount)}</span></p>
-        <p><strong>Payable After Discount</strong><span>${formatINR(getBookingPayableAmount(booking))}</span></p>
+      <div class="booking-card-details-collapse">
+        <div class="booking-detail-grid">
+          <p><strong>Check-in</strong><span>${formatDate(booking.check_in_date)}</span></p>
+          <p><strong>Check-out</strong><span>${formatDate(booking.check_out_date)}</span></p>
+          <p><strong>Arrival time</strong><span>${formatTime(booking.check_in_time)}</span></p>
+          <p><strong>Booking type</strong><span>${escapeHTML(formatLabel(booking.booking_type))}</span></p>
+          <p><strong>Price option</strong><span>${escapeHTML(formatLabel(booking.pricing_option))}</span></p>
+          <p><strong>Guests</strong><span>${escapeHTML(booking.guests || 0)}</span></p>
+          <p><strong>Rooms</strong><span>${escapeHTML(booking.booked_rooms || 0)}</span></p>
+          <p><strong>Payment</strong><span>${escapeHTML(formatLabel(booking.payment_method || booking.payment_status))}</span></p>
+          <p><strong>Booked On</strong><span>${formatDate(booking.created_at)}</span></p>
+          <p><strong>Owner Base Amount</strong><span>${formatINR(getBookingBaseAmount(booking))}</span></p>
+          <p><strong>Admin Commission</strong><span>${formatINR(booking.booking_commission_amount)}</span></p>
+          <p><strong>Coupon Discount</strong><span>${formatINR(booking.coupon_discount)}</span></p>
+          <p><strong>Payable After Discount</strong><span>${formatINR(getBookingPayableAmount(booking))}</span></p>
+        </div>
+
+        <div class="booking-guest">
+          <strong>Guest Contact</strong>
+          <span>${escapeHTML([
+            booking.guest_email || booking.user_email || "Email not available",
+            booking.guest_age ? `Age ${booking.guest_age}` : "",
+            booking.customer_name ? `User ${booking.customer_name}` : ""
+          ].filter(Boolean).join(" | "))}</span>
+        </div>
+
+        ${booking.special_requests ? `
+          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+            <strong>Special Requests & Additional Guests</strong>
+            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
+          </div>
+        ` : ""}
+
+        ${booking.rejection_reason ? `
+          <div class="booking-guest rejection-reason">
+            <strong>Rejection reason</strong>
+            <span>${escapeHTML(booking.rejection_reason)}</span>
+          </div>
+        ` : ""}
+
+        ${isPending ? `
+          <div class="booking-actions-row">
+            <button type="button" class="approve-booking-btn" data-booking-id="${booking.id}">Approve</button>
+            <button type="button" class="reject-booking-btn" data-booking-id="${booking.id}">Reject</button>
+          </div>
+        ` : ""}
       </div>
-
-      <div class="booking-guest">
-        <strong>Guest Contact</strong>
-        <span>${escapeHTML([
-          booking.guest_email || booking.user_email || "Email not available",
-          booking.guest_age ? `Age ${booking.guest_age}` : "",
-          booking.customer_name ? `User ${booking.customer_name}` : ""
-        ].filter(Boolean).join(" | "))}</span>
-      </div>
-
-      ${booking.special_requests ? `
-        <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
-          <strong>Special Requests & Additional Guests</strong>
-          <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
-        </div>
-      ` : ""}
-
-      ${booking.rejection_reason ? `
-        <div class="booking-guest rejection-reason">
-          <strong>Rejection reason</strong>
-          <span>${escapeHTML(booking.rejection_reason)}</span>
-        </div>
-      ` : ""}
-
-      ${isPending ? `
-        <div class="booking-actions-row">
-          <button type="button" class="approve-booking-btn" data-booking-id="${booking.id}">Approve</button>
-          <button type="button" class="reject-booking-btn" data-booking-id="${booking.id}">Reject</button>
-        </div>
-      ` : ""}
     </article>
   `;
   }).join("");
+};
+
+// ============================================
+// NOTIFICATION SYSTEM ACTIONS
+// ============================================
+const loadNotifications = async () => {
+  try {
+    const data = await fetchJson(`${API_BASE_URL}/notifications`);
+    ownerNotificationsCache = data.data || [];
+    renderNotifications(ownerNotificationsCache);
+  } catch (error) {
+    console.error("Error loading notifications:", error);
+    if (notificationDropdownList) {
+      notificationDropdownList.innerHTML = "<p class='empty-state'>Failed to load notifications.</p>";
+    }
+  }
+};
+
+const renderNotifications = (notifications) => {
+  if (!notificationBadge || !notificationDropdownList) return;
+
+  const unreadCount = notifications.filter((n) => !n.is_read).length;
+  if (unreadCount > 0) {
+    notificationBadge.textContent = unreadCount;
+    notificationBadge.classList.remove("hidden");
+  } else {
+    notificationBadge.textContent = "0";
+    notificationBadge.classList.add("hidden");
+  }
+
+  if (!notifications.length) {
+    notificationDropdownList.innerHTML = "<p class='empty-state'>No new notifications.</p>";
+    return;
+  }
+
+  notificationDropdownList.innerHTML = notifications.map((n) => {
+    const isUnread = !n.is_read;
+    const timeText = formatDateTime(n.created_at);
+
+    return `
+      <div class="notification-item ${isUnread ? "unread" : ""}" data-notification-id="${n.id}">
+        ${isUnread ? '<div class="unread-dot"></div>' : ""}
+        <div class="notification-item-content">
+          <h4 class="notification-item-title">${escapeHTML(n.title)}</h4>
+          <p class="notification-item-message">${escapeHTML(n.message)}</p>
+          <span class="notification-item-time">${timeText}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+};
+
+const markNotificationAsRead = async (notificationId) => {
+  try {
+    await fetchJson(`${API_BASE_URL}/notifications/read/${notificationId}`, {
+      method: "PATCH"
+    });
+    
+    ownerNotificationsCache = ownerNotificationsCache.map((n) => {
+      if (Number(n.id) === Number(notificationId)) {
+        return { ...n, is_read: true };
+      }
+      return n;
+    });
+    
+    renderNotifications(ownerNotificationsCache);
+  } catch (error) {
+    console.error("Error marking notification as read:", error);
+  }
+};
+
+const markAllNotificationsAsRead = async () => {
+  const unreadNotifications = ownerNotificationsCache.filter((n) => !n.is_read);
+  if (!unreadNotifications.length) {
+    alert("No unread notifications.");
+    return;
+  }
+
+  try {
+    await Promise.all(
+      unreadNotifications.map((n) =>
+        fetchJson(`${API_BASE_URL}/notifications/read/${n.id}`, {
+          method: "PATCH"
+        })
+      )
+    );
+
+    ownerNotificationsCache = ownerNotificationsCache.map((n) => ({ ...n, is_read: true }));
+    renderNotifications(ownerNotificationsCache);
+    alert("All notifications marked as read!");
+  } catch (error) {
+    console.error("Error marking all notifications as read:", error);
+    alert("Failed to mark all notifications as read.");
+  }
 };
 
 const setCheckInMessage = (message, type = "info") => {
@@ -1566,6 +1685,56 @@ bookingsList.addEventListener("click", (event) => {
     if (bookingId) {
       rejectBooking(bookingId);
     }
+    return;
+  }
+
+  // Handle collapsible state. Only toggle if clicked outside the expanded details content
+  const isDetailsClick = event.target.closest(".booking-card-details-collapse");
+  if (!isDetailsClick) {
+    const card = event.target.closest(".booking-card");
+    if (card) {
+      card.classList.toggle("expanded");
+    }
+  }
+});
+
+// ============================================
+// NOTIFICATION EVENT LISTENERS
+// ============================================
+if (notificationBellBtn) {
+  notificationBellBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    notificationDropdown.classList.toggle("hidden");
+    if (!notificationDropdown.classList.contains("hidden")) {
+      loadNotifications();
+    }
+  });
+}
+
+if (notificationDropdownList) {
+  notificationDropdownList.addEventListener("click", (e) => {
+    const item = e.target.closest(".notification-item");
+    if (item) {
+      const id = item.dataset.notificationId;
+      if (id && item.classList.contains("unread")) {
+        markNotificationAsRead(id);
+      }
+    }
+  });
+}
+
+if (markAllReadBtn) {
+  markAllReadBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    markAllNotificationsAsRead();
+  });
+}
+
+document.addEventListener("click", (e) => {
+  if (notificationDropdown && !notificationDropdown.classList.contains("hidden")) {
+    if (!notificationDropdown.contains(e.target) && !notificationBellBtn.contains(e.target)) {
+      notificationDropdown.classList.add("hidden");
+    }
   }
 });
 
@@ -2344,6 +2513,7 @@ manualBookForm.addEventListener("submit", async (e) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  loadNotifications();
   const tabFromUrl = new URLSearchParams(window.location.search).get("tab");
 
   if (tabFromUrl === "wallet") {
