@@ -466,6 +466,13 @@ const renderBookingsDetails = (bookings) => {
         ].filter(Boolean).join(" | "))}</span>
       </div>
 
+      ${booking.special_requests ? `
+        <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+          <strong>Special Requests & Additional Guests</strong>
+          <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
+        </div>
+      ` : ""}
+
       ${booking.rejection_reason ? `
         <div class="booking-guest rejection-reason">
           <strong>Rejection reason</strong>
@@ -567,6 +574,13 @@ const renderCheckInBookingPreview = (booking) => {
           booking.guest_age ? `Age ${booking.guest_age}` : ""
         ].filter(Boolean).join(" | "))}</span>
       </div>
+
+      ${booking.special_requests ? `
+        <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+          <strong>Special Requests & Additional Guests</strong>
+          <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
+        </div>
+      ` : ""}
 
       <div class="booking-actions-row">
         <button
@@ -744,6 +758,13 @@ const renderCheckInHistory = (checkIns) => {
           <p><strong>Checked Out</strong><span>${formatDateTime(checkIn.checked_out_at)}</span></p>
           <p><strong>Guest Email</strong><span>${escapeHTML(checkIn.guest_email || checkIn.user_email || "N/A")}</span></p>
         </div>
+
+        ${checkIn.special_requests ? `
+          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px; font-size: 14px;">
+            <strong>Special Requests & Additional Guests</strong>
+            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+          </div>
+        ` : ""}
       </article>
     `;
   }).join("");

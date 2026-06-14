@@ -55,6 +55,8 @@ const propertyReviewStars = document.getElementById("propertyReviewStars");
 const propertyReviewText = document.getElementById("propertyReviewText");
 const propertyReviewPhotos = document.getElementById("propertyReviewPhotos");
 const propertyReviewFormMessage = document.getElementById("propertyReviewFormMessage");
+const addGuestBtn = document.getElementById("addGuestBtn");
+const additionalGuestsContainer = document.getElementById("additionalGuestsContainer");
 
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
@@ -755,12 +757,6 @@ const renderPropertyMap = (property) => {
       const parent = oldMapDiv.parentNode;
       const newMapDiv = document.createElement("div");
       newMapDiv.id = "propertyMap";
-      newMapDiv.style.height = "240px";
-      newMapDiv.style.width = "100%";
-      newMapDiv.style.borderRadius = "var(--radius-md)";
-      newMapDiv.style.border = "1px solid var(--border-color)";
-      newMapDiv.style.overflow = "hidden";
-      newMapDiv.style.zIndex = "1";
       parent.replaceChild(newMapDiv, oldMapDiv);
     }
     
@@ -1500,6 +1496,9 @@ function bookRoom(buttonElement) {
   specialRequests.value = "";
   bookingModalMessage.textContent = "";
   document.querySelector('input[name="bookingPaymentMethod"][value="OFFLINE"]').checked = true;
+  if (additionalGuestsContainer) {
+    additionalGuestsContainer.innerHTML = "";
+  }
   updateBookingDateTimeFields();
   updatePriceSummary();
   bookingModal.classList.add("active");
@@ -1621,6 +1620,30 @@ const createBooking = async () => {
     throw new Error("Room selection is missing.");
   }
 
+  const guestCount = Number(bookingGuests.value);
+  const additionalGuests = [];
+  document.querySelectorAll(".additional-guest-row").forEach(row => {
+    const nameInput = row.querySelector(".add-guest-name");
+    const ageInput = row.querySelector(".add-guest-age");
+    if (nameInput && ageInput) {
+      const name = nameInput.value.trim();
+      const age = ageInput.value.trim();
+      if (name && age) {
+        additionalGuests.push({ name, age });
+      }
+    }
+  });
+
+  if (guestCount > 2 && additionalGuests.length < guestCount - 1) {
+    throw new Error(`Please add name and age details for the other ${guestCount - 1} guests using the "+ Add Additional Guest" button.`);
+  }
+
+  let requestsText = specialRequests.value.trim();
+  if (additionalGuests.length > 0) {
+    const guestsHeader = `[Additional Guests]\n${additionalGuests.map((g, i) => `${i + 1}. ${g.name} (Age: ${g.age})`).join("\n")}`;
+    requestsText = requestsText ? `${guestsHeader}\n\n[Special Requests]\n${requestsText}` : guestsHeader;
+  }
+
   const bookingPayload = {
     room_id: selectedBookingRoom.id,
     booking_type: selectedBookingRoom.bookingType,
@@ -1629,16 +1652,16 @@ const createBooking = async () => {
     check_out_date: bookingCheckOut.value,
     check_in_time: bookingCheckInTime.value,
     check_out_time: bookingCheckOutTime.value || null,
-    guests: Number(bookingGuests.value),
+    guests: guestCount,
     booked_rooms: Number(bookingRooms.value),
     guest_name: bookingGuestName.value.trim(),
     guest_email: bookingGuestEmail.value.trim(),
     guest_age: Number(bookingGuestAge.value),
-    customer_name: bookingCustomerName.value.trim(),
+    customer_name: bookingCustomerName.value.trim() || user?.full_name || "",
     coupon_code: appliedCouponCode || null,
     payment_method: getSelectedPaymentMethod(),
     use_wallet: useWalletInput.checked,
-    special_requests: specialRequests.value.trim()
+    special_requests: requestsText
   };
 
   const response = await fetch(`${BASE_URL}/bookings`, {
@@ -1960,6 +1983,38 @@ document.addEventListener("DOMContentLoaded", () => {
         input.checked = false;
       });
       applyRoomFilters();
+    });
+  }
+
+  if (addGuestBtn && additionalGuestsContainer) {
+    let guestIndex = 0;
+    addGuestBtn.addEventListener("click", () => {
+      guestIndex++;
+      const rowId = `guest-row-${guestIndex}`;
+      const rowHtml = `
+        <div class="additional-guest-row" id="${rowId}">
+          <div class="input-group">
+            <label>Name</label>
+            <input type="text" class="add-guest-name" placeholder="Full Name" required>
+          </div>
+          <div class="input-group">
+            <label>Age</label>
+            <input type="number" class="add-guest-age" min="1" max="120" placeholder="Age" required>
+          </div>
+          <button type="button" class="remove-guest-btn" aria-label="Remove guest">&times;</button>
+        </div>
+      `;
+      additionalGuestsContainer.insertAdjacentHTML("beforeend", rowHtml);
+    });
+
+    additionalGuestsContainer.addEventListener("click", (event) => {
+      const removeBtn = event.target.closest(".remove-guest-btn");
+      if (removeBtn) {
+        const row = removeBtn.closest(".additional-guest-row");
+        if (row) {
+          row.remove();
+        }
+      }
     });
   }
 

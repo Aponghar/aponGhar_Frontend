@@ -1582,6 +1582,13 @@ function renderPendingCheckIns(checkIns) {
           `
         }
 
+        ${checkIn.special_requests ? `
+          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed #ddd; padding-top: 10px; font-size: 13px; text-align: left;">
+            <strong>Special Requests & Additional Guests:</strong>
+            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+          </div>
+        ` : ""}
+
       </div>
     `;
   });

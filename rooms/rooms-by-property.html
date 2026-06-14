@@ -52,12 +52,14 @@
       <!-- Dynamic grid filled by JS -->
     </div>
 
+    <!-- Full-width About Stay Section -->
+    <div class="info-card description-card full-width-description">
+      <h2>About this stay</h2>
+      <p id="description" class="description"></p>
+    </div>
+
     <div class="property-info-split">
       <div class="info-left">
-        <div class="info-card description-card">
-          <h2>About this stay</h2>
-          <p id="description" class="description"></p>
-        </div>
         
         <div class="info-card amenities-card" id="propertyAmenitiesSection">
           <h2>Property Amenities</h2>
@@ -73,7 +75,7 @@
           <div id="propertyMap"></div>
           <div class="map-link-container">
             <a id="propertyMapExternalLink" href="#" target="_blank">
-              🗺️ Open in Google Maps
+              <svg class="map-link-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Open in Google Maps
             </a>
           </div>
         </div>
@@ -83,7 +85,9 @@
         <!-- Floating details card -->
         <div class="sticky-info-card">
           <div class="trust-badge-container" id="trustBadgeSection">
-            <span class="trust-icon">🛡️</span>
+            <span class="trust-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+            </span>
             <div>
               <strong>Verified Safe Stay</strong>
               <small id="trustScoreText">Trust Score: 95%</small>
@@ -92,14 +96,19 @@
 
           <div class="time-info">
             <div class="time-block">
-              <span class="time-icon">🔑</span>
+              <span class="time-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+              </span>
               <div>
                 <strong>Check-In From</strong>
                 <span id="checkInTimeText">12:00 PM</span>
               </div>
             </div>
+            <div class="time-block-separator"></div>
             <div class="time-block">
-              <span class="time-icon">🚪</span>
+              <span class="time-icon">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+              </span>
               <div>
                 <strong>Check-Out Before</strong>
                 <span id="checkOutTimeText">11:00 AM</span>
@@ -171,6 +180,9 @@
     <p id="bookingPricingSummary" class="booking-pricing-summary">Selected price</p>
 
     <div class="booking-form-grid">
+      <!-- Section: Stay Details -->
+      <div class="booking-section-title">Stay Details</div>
+
       <label>
         Check-in
         <input type="date" id="bookingCheckIn" required>
@@ -195,6 +207,10 @@
         Rooms
         <input type="number" id="bookingRooms" min="1" value="1" required>
       </label>
+
+      <!-- Section: Primary Guest Details -->
+      <div class="booking-section-title">Primary Guest Details</div>
+
       <label>
         Guest name
         <input type="text" id="bookingGuestName" maxlength="150" required>
@@ -207,14 +223,18 @@
         Guest age
         <input type="number" id="bookingGuestAge" min="1" max="120" required>
       </label>
-      <label>
-        User name
-        <input type="text" id="bookingCustomerName" maxlength="150" required>
-      </label>
       <label id="bookingPhoneContainer" style="display: none;">
         Phone number
         <input type="text" id="bookingPhone" maxlength="20" placeholder="Enter your phone number">
       </label>
+
+      <!-- Hidden Customer Name (keeps the JS code happy) -->
+      <input type="hidden" id="bookingCustomerName">
+
+      <!-- Section: Additional Guests Details -->
+      <div class="booking-section-title">Additional Guests (Optional)</div>
+      <div id="additionalGuestsContainer" class="additional-guests-container"></div>
+      <button type="button" id="addGuestBtn" class="add-guest-btn">+ Add Additional Guest</button>
     </div>
 
     <div class="coupon-section">

@@ -295,8 +295,8 @@ const renderBookings = (bookings) => {
 
       ${specialRequests ? `
         <div class="booking-note">
-          <span>Special requests</span>
-          <p>${specialRequests}</p>
+          <span>Special requests & Additional guests</span>
+          <p style="white-space: pre-line;">${escapeHTML(specialRequests)}</p>
         </div>
       ` : ""}
 
