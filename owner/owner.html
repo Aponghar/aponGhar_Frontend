@@ -1217,6 +1217,51 @@
   </div>
 </div>
 
+<!-- Manual Booking Modal -->
+<div id="manualBookModal" class="modal-overlay hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+  <div class="modal-content" style="background: white; padding: 25px; border-radius: 8px; width: 100%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); color: #333;">
+    <h3 style="margin-top: 0; margin-bottom: 15px; color: #333;">Book Room Manually</h3>
+    <form id="manualBookForm">
+      <input type="hidden" id="manualBookRoomId">
+      
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Room</label>
+        <input type="text" id="manualBookRoomName" readonly class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #f5f5f5; color: #333; font-weight: bold;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label for="manualBookGuestName" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Guest Name *</label>
+        <input type="text" id="manualBookGuestName" required placeholder="Enter guest full name" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label for="manualBookGuestEmail" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Guest Email (Optional)</label>
+        <input type="email" id="manualBookGuestEmail" placeholder="Enter guest email address" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label for="manualBookGuestPhone" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Guest Phone (Optional)</label>
+        <input type="text" id="manualBookGuestPhone" placeholder="Enter guest phone number" class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label for="manualBookCheckIn" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Check-In Date *</label>
+        <input type="date" id="manualBookCheckIn" required class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <label for="manualBookCheckOut" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Check-Out Date *</label>
+        <input type="date" id="manualBookCheckOut" required class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">
+      </div>
+
+      <div style="display: flex; justify-content: flex-end; gap: 10px;">
+        <button type="button" id="btnCancelManualBook" class="btn btn-outline" style="padding: 8px 16px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; color: #333;">Cancel</button>
+        <button type="submit" class="btn btn-primary" style="padding: 8px 16px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">Book & Check-In</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="owner.js"></script>
 

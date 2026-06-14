@@ -57,6 +57,17 @@ const payCommissionMethod = document.getElementById("payCommissionMethod");
 const payCommissionNotes = document.getElementById("payCommissionNotes");
 const btnCancelPayCommission = document.getElementById("btnCancelPayCommission");
 
+const manualBookModal = document.getElementById("manualBookModal");
+const manualBookForm = document.getElementById("manualBookForm");
+const manualBookRoomId = document.getElementById("manualBookRoomId");
+const manualBookRoomName = document.getElementById("manualBookRoomName");
+const manualBookGuestName = document.getElementById("manualBookGuestName");
+const manualBookGuestEmail = document.getElementById("manualBookGuestEmail");
+const manualBookGuestPhone = document.getElementById("manualBookGuestPhone");
+const manualBookCheckIn = document.getElementById("manualBookCheckIn");
+const manualBookCheckOut = document.getElementById("manualBookCheckOut");
+const btnCancelManualBook = document.getElementById("btnCancelManualBook");
+
 const backBtn = document.getElementById("backBtn");
 const pageTitle = document.getElementById("pageTitle");
 const ownerWelcome = document.getElementById("ownerWelcome");
@@ -831,7 +842,13 @@ const renderRoomManagement = (rooms) => {
                 </button>
               </div>
             `
-            : ""
+            : `
+              <div class="booking-actions-row">
+                <button type="button" class="approve-booking-btn book-manually-btn" data-room-id="${room.id}" data-room-name="${escapeHTML(room.room_id || `Room #${room.id}`)}">
+                  Book Manually
+                </button>
+              </div>
+            `
         }
       </article>
     `;
@@ -1550,6 +1567,12 @@ roomManagementList.addEventListener("click", (event) => {
   const checkoutBtn = event.target.closest(".checkout-room-btn");
   if (checkoutBtn?.dataset.checkinId) {
     markRoomCheckOut(checkoutBtn.dataset.checkinId);
+    return;
+  }
+
+  const bookManuallyBtn = event.target.closest(".book-manually-btn");
+  if (bookManuallyBtn?.dataset.roomId) {
+    openManualBookModal(bookManuallyBtn.dataset.roomId, bookManuallyBtn.dataset.roomName);
   }
 });
 
@@ -2220,6 +2243,82 @@ payCommissionForm.addEventListener("submit", async (e) => {
   } catch (error) {
     console.error("Error paying commission:", error);
     alert(error.message || "Failed to record payment. Please try again.");
+  }
+});
+
+const openManualBookModal = (roomId, roomName) => {
+  manualBookRoomId.value = roomId;
+  manualBookRoomName.value = roomName;
+  manualBookGuestName.value = "";
+  manualBookGuestEmail.value = "";
+  manualBookGuestPhone.value = "";
+  
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const formatDate = (d) => {
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  manualBookCheckIn.value = formatDate(today);
+  manualBookCheckOut.value = formatDate(tomorrow);
+  manualBookModal.classList.remove("hidden");
+};
+
+const closeManualBookModal = () => {
+  manualBookModal.classList.add("hidden");
+};
+
+btnCancelManualBook.addEventListener("click", closeManualBookModal);
+
+manualBookModal.addEventListener("click", (e) => {
+  if (e.target === manualBookModal) {
+    closeManualBookModal();
+  }
+});
+
+manualBookForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const assigned_room_id = Number(manualBookRoomId.value);
+  const guest_name = manualBookGuestName.value.trim();
+  const guest_email = manualBookGuestEmail.value.trim();
+  const guest_phone = manualBookGuestPhone.value.trim();
+  const check_in_date = manualBookCheckIn.value;
+  const check_out_date = manualBookCheckOut.value;
+
+  if (new Date(check_in_date) >= new Date(check_out_date)) {
+    alert("Check-out date must be after check-in date.");
+    return;
+  }
+
+  try {
+    const data = await fetchJson(`${API_BASE_URL}/checkins/owner/manual-checkin`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        assigned_room_id,
+        guest_name,
+        guest_email,
+        guest_phone,
+        check_in_date,
+        check_out_date
+      })
+    });
+
+    alert(data.data?.message || "Room manually booked and checked in successfully.");
+    closeManualBookModal();
+    roomManagementLoaded = false;
+    await loadRoomManagement();
+  } catch (error) {
+    console.error("Error booking room manually:", error);
+    alert(error.message || "Failed to book room manually.");
   }
 });
 
