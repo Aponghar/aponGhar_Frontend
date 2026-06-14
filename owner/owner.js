@@ -633,7 +633,7 @@ async function confirmOwnerCheckIn() {
     return;
   }
 
-  const ok = window.confirm("Confirm this guest check-in and assign the selected room?");
+  const ok = await window.customConfirm("Confirm this guest check-in and assign the selected room?");
   if (!ok) {
     return;
   }
@@ -866,7 +866,7 @@ const loadRoomManagement = async () => {
 };
 
 async function markRoomCheckOut(checkinId) {
-  if (!window.confirm("Mark this guest as checked out and make the room available?")) {
+  if (!await window.customConfirm("Mark this guest as checked out and make the room available?")) {
     return;
   }
 
@@ -1758,7 +1758,7 @@ async function toggleCoupon(couponId) {
 }
 
 async function deleteCouponAction(couponId) {
-  if (!confirm("Are you sure you want to delete this coupon? This action cannot be undone.")) {
+  if (!await window.customConfirm("Are you sure you want to delete this coupon? This action cannot be undone.")) {
     return;
   }
 

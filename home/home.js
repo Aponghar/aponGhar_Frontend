@@ -514,6 +514,17 @@ const enrichPropertyWithRooms = async (property) => {
 
 const loadProperties = async () => {
   try {
+    propertiesGrid.innerHTML = Array(4).fill(0).map(() => `
+      <div class="property-card skeleton" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; padding-bottom: 20px;">
+        <div class="skeleton-image pulsing" style="height: 200px; width: 100%;"></div>
+        <div class="property-card-content" style="padding: 20px;">
+          <div class="skeleton-line title pulsing" style="height: 20px; width: 60%; margin-bottom: 12px;"></div>
+          <div class="skeleton-line text pulsing" style="height: 14px; width: 90%; margin-bottom: 8px;"></div>
+          <div class="skeleton-line text short pulsing" style="height: 14px; width: 45%; margin-bottom: 8px;"></div>
+        </div>
+      </div>
+    `).join("");
+
     const response = await fetch(`${BASE_URL}/properties`, {
       method: "GET",
       headers: { "Content-Type": "application/json" }
@@ -952,7 +963,7 @@ propertiesGrid.addEventListener("click", async (event) => {
     try {
       await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
       const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(`${shareText} ${shareUrl}`)}`;
-      if (confirm(`Link copied to clipboard!\n\nUrl: ${shareUrl}\n\nWould you like to share directly on WhatsApp?`)) {
+      if (await window.customConfirm(`Link copied to clipboard!\n\nUrl: ${shareUrl}\n\nWould you like to share directly on WhatsApp?`)) {
         window.open(waUrl, "_blank");
       }
     } catch (clipErr) {

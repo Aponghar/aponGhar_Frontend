@@ -681,7 +681,7 @@ function closeEditModal() {
 }
 
 async function deleteRoom(roomId) {
-  const shouldDelete = confirm("Delete this room?");
+  const shouldDelete = await window.customConfirm("Delete this room?");
   if (!shouldDelete) {
     return;
   }

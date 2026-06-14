@@ -508,6 +508,27 @@ const attachRoomGalleries = async (rooms) => {
 
 const loadPropertyAndRooms = async () => {
   try {
+    const roomsGridEl = document.getElementById("roomsGrid");
+    if (roomsGridEl) {
+      roomsGridEl.innerHTML = Array(3).fill(0).map(() => `
+        <div class="room-card skeleton" style="border: 1px solid var(--border-color); border-radius: var(--radius-lg); overflow: hidden; display: flex; flex-direction: row; gap: 24px; padding: 24px; background: #fff; margin-bottom: 20px;">
+          <div class="skeleton-image pulsing" style="height: 220px; width: 340px; border-radius: 12px; flex-shrink: 0;"></div>
+          <div class="room-card-content" style="flex: 1; padding: 0; display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+              <div class="skeleton-line title pulsing" style="height: 22px; width: 60%; margin-bottom: 12px;"></div>
+              <div class="skeleton-line text pulsing" style="height: 14px; width: 40%; margin-bottom: 8px;"></div>
+              <div class="skeleton-line text pulsing" style="height: 14px; width: 85%; margin-bottom: 8px;"></div>
+            </div>
+          </div>
+          <aside class="room-booking-panel" style="width: 260px; flex-shrink: 0; padding: 18px; border: 1px solid var(--border-color); border-radius: var(--radius-md); background: hsl(220, 20%, 99%); display: flex; flex-direction: column; gap: 12px; align-self: flex-start;">
+            <div class="skeleton-line pulsing" style="height: 18px; width: 50%;"></div>
+            <div class="skeleton-line pulsing" style="height: 35px; width: 75%;"></div>
+            <div class="skeleton-line pulsing" style="height: 45px; width: 100%; border-radius: 8px;"></div>
+          </aside>
+        </div>
+      `).join("");
+    }
+
     await fetchAmenities();
 
     const [propertyRes, roomsRes] = await Promise.all([
@@ -855,6 +876,19 @@ const loadPropertyReviews = async () => {
 
   try {
     reviewsSummary.textContent = "Loading reviews...";
+    reviewsGrid.innerHTML = Array(2).fill(0).map(() => `
+      <div class="property-review-card skeleton" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; background: #fff;">
+        <div class="review-card-top" style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+          <div>
+            <div class="skeleton-line pulsing" style="height: 16px; width: 120px; margin-bottom: 6px;"></div>
+            <div class="skeleton-line pulsing" style="height: 12px; width: 80px;"></div>
+          </div>
+          <div class="skeleton-line pulsing" style="height: 16px; width: 60px;"></div>
+        </div>
+        <div class="skeleton-line pulsing" style="height: 14px; width: 100%; margin-bottom: 6px;"></div>
+        <div class="skeleton-line pulsing" style="height: 14px; width: 90%;"></div>
+      </div>
+    `).join("");
 
     const response = await fetch(`${BASE_URL}/reviews/property/${propertyId}`);
     const data = await response.json();

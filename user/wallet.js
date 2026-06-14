@@ -90,7 +90,20 @@ const renderTransactions = (transactions) => {
 };
 
 const loadWallet = async () => {
-  showMessage("Loading wallet...");
+  hideMessage();
+  transactionsList.innerHTML = Array(3).fill(0).map(() => `
+    <div class="transaction-card skeleton" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; background: #fff; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; pointer-events: none;">
+      <div class="transaction-title" style="flex: 1;">
+        <div class="skeleton-line title pulsing" style="height: 18px; width: 120px; margin-bottom: 8px;"></div>
+        <div class="skeleton-line pulsing" style="height: 12px; width: 220px; margin-bottom: 6px;"></div>
+        <div class="skeleton-line pulsing" style="height: 10px; width: 150px;"></div>
+      </div>
+      <div class="skeleton-line pulsing" style="height: 22px; width: 80px; border-radius: 6px;"></div>
+    </div>
+  `).join("");
+  
+  walletBalance.innerHTML = '<span class="pulsing" style="display:inline-block; width:120px; height:32px; border-radius:6px;"></span>';
+  pendingBalance.innerHTML = '<span class="pulsing" style="display:inline-block; width:80px; height:18px; border-radius:4px;"></span>';
 
   try {
     const [walletResponse, transactionsResponse] = await Promise.all([

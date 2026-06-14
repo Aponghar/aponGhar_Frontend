@@ -126,7 +126,7 @@ const getCancelButtonText = (booking) => {
 };
 
 const cancelBooking = async (bookingId) => {
-  const confirmed = window.confirm("Cancel this booking? Any paid amount will be credited to your wallet.");
+  const confirmed = await window.customConfirm("Cancel this booking? Any paid amount will be credited to your wallet.");
   if (!confirmed) {
     return;
   }
@@ -329,7 +329,22 @@ const renderBookings = (bookings) => {
 };
 
 const loadBookings = async () => {
-  showMessage("Loading bookings...");
+  hideMessage();
+  bookingsList.innerHTML = Array(3).fill(0).map(() => `
+    <div class="booking-card skeleton" style="border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px; background: #fff; margin-bottom: 20px;">
+      <div class="booking-topline" style="display: flex; justify-content: space-between; margin-bottom: 16px;">
+        <div>
+          <div class="skeleton-line title pulsing" style="height: 20px; width: 180px; margin-bottom: 8px;"></div>
+          <div class="skeleton-line pulsing" style="height: 14px; width: 130px;"></div>
+        </div>
+        <div class="skeleton-line pulsing" style="height: 24px; width: 80px; border-radius: 12px;"></div>
+      </div>
+      <div class="booking-meta" style="margin: 16px 0; padding: 14px 0; border-top: 1.5px solid var(--border-color); border-bottom: 1.5px solid var(--border-color);">
+        <div class="skeleton-line pulsing" style="height: 35px; width: 100%;"></div>
+      </div>
+      <div class="skeleton-line pulsing" style="height: 80px; width: 100%; border-radius: 10px;"></div>
+    </div>
+  `).join("");
 
   try {
     const response = await fetch(`${BASE_URL}/bookings/my-bookings`, {
