@@ -53,13 +53,10 @@ const payCommissionModal = document.getElementById("payCommissionModal");
 const payCommissionForm = document.getElementById("payCommissionForm");
 const payCommissionId = document.getElementById("payCommissionId");
 const payCommissionAmount = document.getElementById("payCommissionAmount");
-const payCommissionMethod = document.getElementById("payCommissionMethod");
-const payCommissionNotes = document.getElementById("payCommissionNotes");
 const btnCancelPayCommission = document.getElementById("btnCancelPayCommission");
 const onlinePaymentContainer = document.getElementById("onlinePaymentContainer");
 const onlinePaymentMinWarning = document.getElementById("onlinePaymentMinWarning");
 const btnPayCommissionOnline = document.getElementById("btnPayCommissionOnline");
-const offlineSectionTitle = document.getElementById("offlineSectionTitle");
 
 const manualBookModal = document.getElementById("manualBookModal");
 const manualBookForm = document.getElementById("manualBookForm");
@@ -3213,17 +3210,13 @@ const renderOwnerCommissions = (commissions) => {
 const openPayCommissionModal = (id, amount) => {
   payCommissionId.value = id;
   payCommissionAmount.value = amount;
-  payCommissionMethod.value = "";
-  payCommissionNotes.value = "";
 
   const numericAmount = parseFloat(amount || "0");
   if (numericAmount >= 1.0) {
     onlinePaymentContainer.style.display = "block";
-    offlineSectionTitle.style.display = "block";
     onlinePaymentMinWarning.style.display = "none";
   } else {
     onlinePaymentContainer.style.display = "none";
-    offlineSectionTitle.style.display = "none";
     onlinePaymentMinWarning.style.display = "block";
   }
 
@@ -3275,33 +3268,9 @@ payCommissionModal.addEventListener("click", (e) => {
   }
 });
 
-// Form submission
-payCommissionForm.addEventListener("submit", async (e) => {
+// Form submission prevent default
+payCommissionForm.addEventListener("submit", (e) => {
   e.preventDefault();
-  const id = payCommissionId.value;
-  const method = payCommissionMethod.value;
-  const notes = payCommissionNotes.value;
-
-  try {
-    await fetchJson(`${API_BASE_URL}/checkins/owner/commissions/${id}/pay`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        payment_method: method,
-        payment_notes: notes
-      })
-    });
-
-    alert("Commission payment recorded successfully!");
-    closePayCommissionModal();
-    loadOwnerCommissions();
-    loadOwnerCommissionSummary();
-  } catch (error) {
-    console.error("Error paying commission:", error);
-    alert(error.message || "Failed to record payment. Please try again.");
-  }
 });
 
 const openManualBookModal = (roomId, roomName) => {
