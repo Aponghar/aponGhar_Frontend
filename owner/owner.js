@@ -56,6 +56,10 @@ const payCommissionAmount = document.getElementById("payCommissionAmount");
 const payCommissionMethod = document.getElementById("payCommissionMethod");
 const payCommissionNotes = document.getElementById("payCommissionNotes");
 const btnCancelPayCommission = document.getElementById("btnCancelPayCommission");
+const onlinePaymentContainer = document.getElementById("onlinePaymentContainer");
+const onlinePaymentMinWarning = document.getElementById("onlinePaymentMinWarning");
+const btnPayCommissionOnline = document.getElementById("btnPayCommissionOnline");
+const offlineSectionTitle = document.getElementById("offlineSectionTitle");
 
 const manualBookModal = document.getElementById("manualBookModal");
 const manualBookForm = document.getElementById("manualBookForm");
@@ -849,41 +853,62 @@ const renderCheckInHistory = (checkIns) => {
             : "Waiting for admin record";
 
     return `
-      <article class="checkin-history-card">
-        <div class="checkin-booking-header">
-          <div>
-            <span class="booking-code">${escapeHTML(checkIn.booking_code || `Check-in #${checkIn.id}`)}</span>
+      <article class="booking-card checkin-history-card" data-checkin-id="${checkIn.id}">
+        <div class="booking-card-header">
+          <div class="booking-card-header-left">
+            <div class="booking-code-row">
+              <span class="booking-code">${escapeHTML(checkIn.booking_code || `Check-in #${checkIn.id}`)}</span>
+              <span class="status-pill ${String(checkIn.status || "").toLowerCase()}">
+                ${escapeHTML(formatLabel(checkIn.status))}
+              </span>
+            </div>
             <h3>${escapeHTML(checkIn.property_name || "Property")}</h3>
-            <p>${escapeHTML(checkIn.room_name || "Room")} for ${escapeHTML(guestName)}</p>
+            <p class="booking-subheader">${escapeHTML(checkIn.room_name || "Room")} for <strong>${escapeHTML(guestName)}</strong></p>
+            
+            <div class="booking-quick-info">
+              <span class="info-badge">📅 ${formatDate(checkIn.check_in_date)} - ${formatDate(checkIn.check_out_date)}</span>
+              <span class="info-badge">👤 ${escapeHTML(checkIn.guests || 1)} Guests</span>
+              <span class="info-badge">⏰ ${escapeHTML(formatLabel(checkIn.booking_type || "NIGHTLY"))}</span>
+            </div>
           </div>
-          <span class="status-pill ${String(checkIn.status || "").toLowerCase()}">
-            ${escapeHTML(formatLabel(checkIn.status))}
-          </span>
+          <div class="booking-card-header-right">
+            <div class="booking-amount">
+              <strong>${formatINR(checkIn.booking_amount)}</strong>
+              <small>Booking total</small>
+            </div>
+            <div class="toggle-details-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <div class="booking-detail-grid">
-          <p><strong>Check-in Date</strong><span>${formatDate(checkIn.check_in_date)}</span></p>
-          <p><strong>Check-out Date</strong><span>${formatDate(checkIn.check_out_date)}</span></p>
-          <p><strong>Booking Value</strong><span>${formatINR(checkIn.booking_amount)}</span></p>
-          <p><strong>Owner Base Amount</strong><span>${formatINR(checkIn.booking_base_amount)}</span></p>
-          <p><strong>Commission Rate</strong><span>${toNumber(checkIn.commission_percentage).toFixed(2)}%</span></p>
-          <p><strong>Commission</strong><span>${formatINR(checkIn.commission_amount)}</span></p>
-          <p><strong>Payment Status</strong><span>${escapeHTML(paymentStatus)}</span></p>
-          <p><strong>Assigned Room ID</strong><span>${escapeHTML(checkIn.assigned_room_code || "Not assigned")}</span></p>
-          <p><strong>Requested On</strong><span>${formatDateTime(checkIn.payment_requested_at)}</span></p>
-          <p><strong>Paid On</strong><span>${formatDateTime(checkIn.payment_confirmed_at)}</span></p>
-          <p><strong>Owner Confirmed</strong><span>${formatDateTime(checkIn.owner_confirmed_at)}</span></p>
-          <p><strong>Admin Recorded</strong><span>${formatDateTime(checkIn.admin_recorded_at)}</span></p>
-          <p><strong>Checked Out</strong><span>${formatDateTime(checkIn.checked_out_at)}</span></p>
-          <p><strong>Guest Email</strong><span>${escapeHTML(checkIn.guest_email || checkIn.user_email || "N/A")}</span></p>
-        </div>
-
-        ${checkIn.special_requests ? `
-          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px; font-size: 14px;">
-            <strong>Special Requests & Additional Guests</strong>
-            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+        <div class="booking-card-details-collapse">
+          <div class="booking-detail-grid">
+            <p><strong>Check-in Date</strong><span>${formatDate(checkIn.check_in_date)}</span></p>
+            <p><strong>Check-out Date</strong><span>${formatDate(checkIn.check_out_date)}</span></p>
+            <p><strong>Booking Value</strong><span>${formatINR(checkIn.booking_amount)}</span></p>
+            <p><strong>Owner Base Amount</strong><span>${formatINR(checkIn.booking_base_amount)}</span></p>
+            <p><strong>Commission Rate</strong><span>${toNumber(checkIn.commission_percentage).toFixed(2)}%</span></p>
+            <p><strong>Commission</strong><span>${formatINR(checkIn.commission_amount)}</span></p>
+            <p><strong>Payment Status</strong><span>${escapeHTML(paymentStatus)}</span></p>
+            <p><strong>Assigned Room ID</strong><span>${escapeHTML(checkIn.assigned_room_code || "Not assigned")}</span></p>
+            <p><strong>Requested On</strong><span>${formatDateTime(checkIn.payment_requested_at)}</span></p>
+            <p><strong>Paid On</strong><span>${formatDateTime(checkIn.payment_confirmed_at)}</span></p>
+            <p><strong>Owner Confirmed</strong><span>${formatDateTime(checkIn.owner_confirmed_at)}</span></p>
+            <p><strong>Admin Recorded</strong><span>${formatDateTime(checkIn.admin_recorded_at)}</span></p>
+            <p><strong>Checked Out</strong><span>${formatDateTime(checkIn.checked_out_at)}</span></p>
+            <p><strong>Guest Email</strong><span>${escapeHTML(checkIn.guest_email || checkIn.user_email || "N/A")}</span></p>
           </div>
-        ` : ""}
+
+          ${checkIn.special_requests ? `
+            <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px; font-size: 14px;">
+              <strong>Special Requests & Additional Guests</strong>
+              <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+            </div>
+          ` : ""}
+        </div>
       </article>
     `;
   }).join("");
@@ -1698,6 +1723,17 @@ bookingsList.addEventListener("click", (event) => {
   }
 });
 
+checkInsHistoryList.addEventListener("click", (event) => {
+  // Handle collapsible state. Only toggle if clicked outside the expanded details content
+  const isDetailsClick = event.target.closest(".booking-card-details-collapse");
+  if (!isDetailsClick) {
+    const card = event.target.closest(".booking-card");
+    if (card) {
+      card.classList.toggle("expanded");
+    }
+  }
+});
+
 // ============================================
 // NOTIFICATION EVENT LISTENERS
 // ============================================
@@ -2358,7 +2394,8 @@ const renderOwnerCommissions = (commissions) => {
   document.querySelectorAll(".pay-commission-btn").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const id = e.target.getAttribute("data-id");
-      payCommissionOnline(id);
+      const amount = e.target.getAttribute("data-amount");
+      openPayCommissionModal(id, amount);
     });
   });
 };
@@ -2368,6 +2405,18 @@ const openPayCommissionModal = (id, amount) => {
   payCommissionAmount.value = amount;
   payCommissionMethod.value = "";
   payCommissionNotes.value = "";
+
+  const numericAmount = parseFloat(amount || "0");
+  if (numericAmount >= 1.0) {
+    onlinePaymentContainer.style.display = "block";
+    offlineSectionTitle.style.display = "block";
+    onlinePaymentMinWarning.style.display = "none";
+  } else {
+    onlinePaymentContainer.style.display = "none";
+    offlineSectionTitle.style.display = "none";
+    onlinePaymentMinWarning.style.display = "block";
+  }
+
   payCommissionModal.classList.remove("hidden");
 };
 
@@ -2399,6 +2448,15 @@ btnClearFilterCommissions.addEventListener("click", () => {
 
 // Bind cancel button
 btnCancelPayCommission.addEventListener("click", closePayCommissionModal);
+
+// Bind online payment button inside modal
+btnPayCommissionOnline.addEventListener("click", () => {
+  const id = payCommissionId.value;
+  if (id) {
+    closePayCommissionModal();
+    payCommissionOnline(id);
+  }
+});
 
 // Close modal if clicking overlay
 payCommissionModal.addEventListener("click", (e) => {

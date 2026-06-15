@@ -1259,6 +1259,19 @@
         <input type="text" id="payCommissionAmount" readonly class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: #f5f5f5; color: #333; font-weight: bold;">
       </div>
 
+      <!-- Online payment option -->
+      <div id="onlinePaymentContainer" style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee; display: none;">
+        <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #555;">Instant Payment</label>
+        <button type="button" id="btnPayCommissionOnline" class="btn btn-primary" style="width: 100%; padding: 10px; background: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">
+          ⚡ Pay Online (Razorpay)
+        </button>
+      </div>
+      <div id="onlinePaymentMinWarning" style="margin-bottom: 20px; padding: 10px; background: #fdf2f2; border: 1px solid #fde8e8; border-radius: 6px; color: #c81e1e; font-size: 0.85rem; font-weight: 500; display: none; text-align: left;">
+        ⚠️ Online payment via Razorpay is only available for amounts of ₹1.00 or more. Please use the offline options below.
+      </div>
+
+      <div style="font-weight: bold; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; color: #777;" id="offlineSectionTitle">Offline Recording</div>
+
       <div class="form-group" style="margin-bottom: 15px;">
         <label for="payCommissionMethod" style="display: block; margin-bottom: 5px; font-weight: 500; color: #555;">Payment Method *</label>
         <select id="payCommissionMethod" required class="form-control" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; color: #333; background: white;">

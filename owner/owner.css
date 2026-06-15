@@ -854,8 +854,7 @@ form,
   margin-top: 18px;
 }
 
-.checkin-booking-card,
-.checkin-history-card {
+.checkin-booking-card {
   border: 1px solid #e2e8f0;
   border-radius: 8px;
   padding: 20px;
