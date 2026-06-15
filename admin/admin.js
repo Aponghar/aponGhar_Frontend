@@ -80,6 +80,11 @@ document.getElementById(
   "commissionRequestsContainer"
 );
 
+const earningsContainer =
+document.getElementById(
+  "earningsContainer"
+);
+
 const withdrawalsTab =
 document.getElementById(
   "withdrawalsTab"
@@ -147,6 +152,7 @@ const showApplicationsContainer = () => {
   walletContainer.style.display = "none";
   couponsContainer.style.display = "none";
   adsContainer.style.display = "none";
+  earningsContainer.style.display = "none";
 };
 
 const showCommissionRequestsContainer = () => {
@@ -156,6 +162,7 @@ const showCommissionRequestsContainer = () => {
   walletContainer.style.display = "none";
   couponsContainer.style.display = "none";
   adsContainer.style.display = "none";
+  earningsContainer.style.display = "none";
 };
 
 const showWithdrawalsContainer = () => {
@@ -165,6 +172,7 @@ const showWithdrawalsContainer = () => {
   walletContainer.style.display = "none";
   couponsContainer.style.display = "none";
   adsContainer.style.display = "none";
+  earningsContainer.style.display = "none";
 };
 
 const showWalletContainer = () => {
@@ -174,6 +182,7 @@ const showWalletContainer = () => {
   walletContainer.style.display = "block";
   couponsContainer.style.display = "none";
   adsContainer.style.display = "none";
+  earningsContainer.style.display = "none";
 };
 
 const showCouponsContainer = () => {
@@ -183,6 +192,7 @@ const showCouponsContainer = () => {
   walletContainer.style.display = "none";
   couponsContainer.style.display = "grid";
   adsContainer.style.display = "none";
+  earningsContainer.style.display = "none";
 };
 
 const showAdsContainer = () => {
@@ -192,6 +202,17 @@ const showAdsContainer = () => {
   walletContainer.style.display = "none";
   couponsContainer.style.display = "none";
   adsContainer.style.display = "grid";
+  earningsContainer.style.display = "none";
+};
+
+const showEarningsContainer = () => {
+  applicationsContainer.style.display = "none";
+  commissionRequestsContainer.style.display = "none";
+  withdrawalsContainer.style.display = "none";
+  walletContainer.style.display = "none";
+  couponsContainer.style.display = "none";
+  adsContainer.style.display = "none";
+  earningsContainer.style.display = "block";
 };
 
 const removeAllTabStates = () => {
@@ -1687,7 +1708,7 @@ async function loadEarnings(propertyId = ""){
 
   try {
 
-    showApplicationsContainer();
+    showEarningsContainer();
     setupSearch("Earnings", "Search earnings details by property, guest, booking...");
     await ensureAdminProperties();
     currentEarningsPropertyId = propertyId;
@@ -1728,194 +1749,305 @@ async function loadEarnings(propertyId = ""){
 }
 
 function renderEarnings(summary, commissions, propertyId) {
-  applicationsContainer.innerHTML = "";
+  earningsContainer.innerHTML = "";
 
-  // Display summary
-  applicationsContainer.innerHTML = `
-
-    <div class="commission-filter-row" style="margin-bottom: 20px;">
-      <label for="earningsPropertyFilter">
-        Filter by property
-      </label>
-      <select
-        id="earningsPropertyFilter"
-        onchange="loadEarnings(this.value)"
-        style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 260px;"
-      >
-        <option value="">All properties</option>
-        ${buildPropertyFilterOptions(propertyId)}
-      </select>
-    </div>
-
-    <div class="earnings-summary">
-      <div class="summary-card">
-        <div class="summary-label">Pending Commissions</div>
-        <div class="summary-value">
-          ${formatMoney(summary.total_pending_amount)}
-        </div>
-        <div class="summary-subtext">
-          ${summary.total_pending_commissions || 0} check-ins
-        </div>
-      </div>
-
-      <div class="summary-card">
-        <div class="summary-label">Not Requested</div>
-        <div class="summary-value">
-          ${formatMoney(summary.total_unrequested_amount)}
-        </div>
-        <div class="summary-subtext">
-          ${summary.total_unrequested_commissions || 0} ready to request
-        </div>
-      </div>
-
-      <div class="summary-card">
-        <div class="summary-label">Requested</div>
-        <div class="summary-value">
-          ${formatMoney(summary.total_requested_amount)}
-        </div>
-        <div class="summary-subtext">
-          ${summary.total_requested_commissions || 0} awaiting owner payment
-        </div>
-      </div>
-
-      <div class="summary-card">
-        <div class="summary-label">Paid Commission</div>
-        <div class="summary-value paid">
-          ${formatMoney(summary.total_paid_amount)}
-        </div>
-        <div class="summary-subtext">
-          ${summary.total_paid_commissions || 0} paid
-        </div>
-      </div>
-
-      <div class="summary-card">
-        <div class="summary-label">Total Earnings</div>
-        <div class="summary-value total">
-          ${formatMoney(toNumber(summary.total_pending_amount) + toNumber(summary.total_paid_amount))}
+  const propertyFilterHTML = `
+    <div class="earnings-control-row">
+      <div class="filter-group">
+        <label for="earningsPropertyFilter" class="filter-label">Filter by Property</label>
+        <div class="select-wrapper">
+          <select
+            id="earningsPropertyFilter"
+            onchange="loadEarnings(this.value)"
+            class="premium-select"
+          >
+            <option value="">All Properties</option>
+            ${buildPropertyFilterOptions(propertyId)}
+          </select>
         </div>
       </div>
     </div>
-
-    <h2 style="margin-top: 30px;">Commission Details</h2>
   `;
 
-  if(commissions.length === 0){
+  // Render Stats Grid
+  const statsHTML = `
+    <div class="earnings-stats-grid">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pending Commissions</span>
+          <span class="stat-value">${formatMoney(summary.total_pending_amount)}</span>
+          <span class="stat-subtext">${summary.total_pending_commissions || 0} check-ins awaiting confirmation</span>
+        </div>
+      </div>
 
-    applicationsContainer.innerHTML += `
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper not-requested">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Ready to Request</span>
+          <span class="stat-value">${formatMoney(summary.total_unrequested_amount)}</span>
+          <span class="stat-subtext">${summary.total_unrequested_commissions || 0} not requested yet</span>
+        </div>
+      </div>
 
-      <p style="padding: 20px; text-align: center;">
-        No commission records found
-      </p>
-    `;
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper requested">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Awaiting Payment</span>
+          <span class="stat-value">${formatMoney(summary.total_requested_amount)}</span>
+          <span class="stat-subtext">${summary.total_requested_commissions || 0} awaiting owner action</span>
+        </div>
+      </div>
 
-    return;
-  }
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Paid Commission</span>
+          <span class="stat-value paid-val">${formatMoney(summary.total_paid_amount)}</span>
+          <span class="stat-subtext">${summary.total_paid_commissions || 0} settled invoices</span>
+        </div>
+      </div>
 
-  commissions.forEach(commission => {
+      <div class="earnings-stat-card total-earnings-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Platform Earnings</span>
+          <span class="stat-value total-val">${formatMoney(toNumber(summary.total_pending_amount) + toNumber(summary.total_paid_amount))}</span>
+          <span class="stat-subtext">Total platform revenue</span>
+        </div>
+      </div>
+    </div>
+  `;
 
-    const isPending =
-    commission.payment_status === "PENDING";
+  // Section header for details
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Commission Details</h3>
+        <span class="badge-count">${commissions.length} records</span>
+      </div>
+    </div>
+  `;
 
-    const isRequested =
-    Boolean(commission.payment_requested_at);
-
-    applicationsContainer.innerHTML += `
-
-      <div class="card">
-
-        <h3>${commission.property_name}</h3>
-
-        <p>
-          <strong>Booking Code:</strong>
-          ${commission.booking_code}
-        </p>
-
-        <p>
-          <strong>Guest:</strong>
-          ${commission.guest_name}
-        </p>
-
-        <p>
-          <strong>Owner:</strong>
-          ${commission.owner_name}
-        </p>
-
-        <p>
-          <strong>Customer Total:</strong>
-          ${formatMoney(commission.booking_total_amount)}
-        </p>
-
-        <p>
-          <strong>Owner Base Amount:</strong>
-          ${formatMoney(commission.booking_base_amount)}
-        </p>
-
-        <p>
-          <strong>Commission Amount:</strong>
-          <span class="commission-value">
-            ${formatMoney(commission.commission_amount)}
-          </span>
-        </p>
-
-        <p>
-          <strong>Earned Date:</strong>
-          ${formatDate(commission.earned_at)}
-        </p>
-
-        <p>
-          <strong>Request Status:</strong>
-          ${getCommissionState(commission)}
-        </p>
-
-        <p>
-          <strong>Requested Date:</strong>
-          ${formatDate(commission.payment_requested_at)}
-        </p>
-
-        <p>
-          <strong>Paid Date:</strong>
-          ${formatDate(commission.payment_confirmed_at || commission.paid_at)}
-        </p>
-
-        <span class="status ${commission.payment_status.toLowerCase()}">
-          ${commission.payment_status}
-        </span>
-
-        ${
-          isPending
-          ?
-          `
-          <div class="actions">
-            ${
-              isRequested
-              ?
-              `
-              <button
-                class="approveBtn"
-                onclick="confirmCommissionPaymentModal(${commission.id}, ${toNumber(commission.commission_amount)})"
-              >
-                Confirm Manual Payment
-              </button>
-              `
-              :
-              `
-              <button
-                class="commissionBtn"
-                onclick="requestCommissionPayment(${commission.id})"
-              >
-                Send Payment Request
-              </button>
-              `
-            }
-          </div>
-          `
-          :
-          ""
-        }
-
+  let detailsHTML = "";
+  if (commissions.length === 0) {
+    detailsHTML = `
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No commission records found for the selected property filter.</p>
       </div>
     `;
-  });
+  } else {
+    // Build table view for Desktop, and custom modern cards for mobile view
+    let tableRows = "";
+    let mobileCards = "";
+
+    commissions.forEach(commission => {
+      const isPending = commission.payment_status === "PENDING";
+      const isRequested = Boolean(commission.payment_requested_at);
+      const statusClass = commission.payment_status.toLowerCase();
+
+      // Action buttons
+      let actionBtn = "";
+      if (isPending) {
+        if (isRequested) {
+          actionBtn = `
+            <button
+              class="action-btn-confirm"
+              onclick="confirmCommissionPaymentModal(${commission.id}, ${toNumber(commission.commission_amount)})"
+            >
+              Confirm Payment
+            </button>
+          `;
+        } else {
+          actionBtn = `
+            <button
+              class="action-btn-request"
+              onclick="requestCommissionPayment(${commission.id})"
+            >
+              Request Payment
+            </button>
+          `;
+        }
+      } else {
+        actionBtn = `<span class="settled-label">No Actions</span>`;
+      }
+
+      // Format dates
+      const earnedDate = formatDate(commission.earned_at);
+      const requestedDate = commission.payment_requested_at ? formatDate(commission.payment_requested_at) : "—";
+      const confirmedDate = (commission.payment_confirmed_at || commission.paid_at) 
+        ? formatDate(commission.payment_confirmed_at || commission.paid_at) 
+        : "—";
+
+      // Row for desktop table
+      tableRows += `
+        <tr>
+          <td>
+            <div class="table-property-cell">
+              <span class="property-title-name">${escapeHTML(commission.property_name)}</span>
+              <span class="property-subtitle-owner">Owner: ${escapeHTML(commission.owner_name)}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table-booking-cell">
+              <span class="booking-code">${escapeHTML(commission.booking_code)}</span>
+              <span class="guest-name">Guest: ${escapeHTML(commission.guest_name)}</span>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="table-financials-cell">
+              <div class="financial-row">
+                <span class="fin-lbl">Total Booking:</span>
+                <span class="fin-val">${formatMoney(commission.booking_total_amount)}</span>
+              </div>
+              <div class="financial-row">
+                <span class="fin-lbl">Base Amount:</span>
+                <span class="fin-val">${formatMoney(commission.booking_base_amount)}</span>
+              </div>
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="commission-amount-highlight">
+              ${formatMoney(commission.commission_amount)}
+            </div>
+          </td>
+          <td>
+            <div class="table-timeline-cell">
+              <span class="status-pill-badge ${statusClass}">${escapeHTML(commission.payment_status)}</span>
+              <div class="timeline-dates">
+                <span>Earned: ${earnedDate}</span>
+                ${isRequested ? `<span>Req: ${requestedDate}</span>` : ""}
+                ${commission.payment_status === "PAID" ? `<span>Paid: ${confirmedDate}</span>` : ""}
+              </div>
+            </div>
+          </td>
+          <td class="text-center">
+            <div class="action-btn-cell">
+              ${actionBtn}
+            </div>
+          </td>
+        </tr>
+      `;
+
+      // Card for mobile list view
+      mobileCards += `
+        <div class="mobile-commission-card ${statusClass}">
+          <div class="mobile-card-header">
+            <div class="property-info">
+              <h4>${escapeHTML(commission.property_name)}</h4>
+              <span class="owner-lbl">Owner: ${escapeHTML(commission.owner_name)}</span>
+            </div>
+            <span class="status-pill-badge ${statusClass}">${escapeHTML(commission.payment_status)}</span>
+          </div>
+
+          <div class="mobile-card-body">
+            <div class="detail-row">
+              <span class="lbl">Booking Code</span>
+              <span class="val font-semibold">${escapeHTML(commission.booking_code)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="lbl">Guest Name</span>
+              <span class="val">${escapeHTML(commission.guest_name)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="lbl">Booking Total</span>
+              <span class="val">${formatMoney(commission.booking_total_amount)}</span>
+            </div>
+            <div class="detail-row">
+              <span class="lbl">Base Amount</span>
+              <span class="val">${formatMoney(commission.booking_base_amount)}</span>
+            </div>
+            <div class="detail-row highlight-row">
+              <span class="lbl">Commission</span>
+              <span class="val commission-val">${formatMoney(commission.commission_amount)}</span>
+            </div>
+
+            <div class="mobile-timeline">
+              <div class="timeline-item">
+                <span class="lbl">Earned:</span>
+                <span class="val">${earnedDate}</span>
+              </div>
+              ${isRequested ? `
+              <div class="timeline-item">
+                <span class="lbl">Requested:</span>
+                <span class="val">${requestedDate}</span>
+              </div>` : ""}
+              ${commission.payment_status === "PAID" ? `
+              <div class="timeline-item">
+                <span class="lbl">Settled:</span>
+                <span class="val">${confirmedDate}</span>
+              </div>` : ""}
+            </div>
+          </div>
+
+          ${isPending ? `
+          <div class="mobile-card-actions">
+            ${actionBtn}
+          </div>` : ""}
+        </div>
+      `;
+    });
+
+    detailsHTML = `
+      <div class="desktop-table-view-wrapper">
+        <table class="premium-earnings-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Booking & Guest</th>
+              <th class="text-right">Financial Details</th>
+              <th class="text-right">Commission</th>
+              <th>Status & Timeline</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards-view-wrapper">
+        ${mobileCards}
+      </div>
+    `;
+  }
+
+  earningsContainer.innerHTML = `
+    ${propertyFilterHTML}
+    ${statsHTML}
+    ${detailsHeaderHTML}
+    ${detailsHTML}
+  `;
 }
 
 
