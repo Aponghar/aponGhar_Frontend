@@ -1091,145 +1091,313 @@ async function loadAllProperties(){
 }
 
 function renderAllProperties(properties) {
+  applicationsContainer.style.display = "block";
   applicationsContainer.innerHTML = "";
 
   adminPropertiesCache = properties;
 
   if(properties.length === 0){
-
-    applicationsContainer.innerHTML =
-
-    `
-    <h2>
-      No Properties Found
-    </h2>
+    applicationsContainer.innerHTML = `
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No properties found.</p>
+      </div>
     `;
-
     return;
   }
 
-  properties.forEach(property => {
+  // Calculate statistics
+  const totalProps = properties.length;
+  const activeProps = properties.filter(p => p.is_active).length;
+  const pendingApprovalProps = properties.filter(p => p.approval_status === 'PENDING').length;
+  const inactiveProps = totalProps - activeProps;
 
-    const commission = property.commission_percentage || 0;
-
-    applicationsContainer.innerHTML += `
-
-    <div class="card">
-
-      ${
-        property.property_image
-        ?
-        `
-        <img
-          src="${resolveImageUrl(property.property_image)}"
-          class="propertyImage"
-          onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';"
-        >
-        `
-        :
-        `
-        <div class="noImage">
-          No Image
+  // Stats Grid
+  const statsHTML = `
+    <div class="earnings-stats-grid four-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
         </div>
-        `
-      }
-
-      <h3>
-        ${property.property_name}
-      </h3>
-
-      <p>
-        <strong>Type:</strong>
-        ${property.property_type}
-      </p>
-
-      <p>
-        <strong>City:</strong>
-        ${property.city}
-      </p>
-
-      <p>
-        <strong>State:</strong>
-        ${property.state}
-      </p>
-
-      <p>
-        <strong>Country:</strong>
-        ${property.country}
-      </p>
-
-      <span class="status
-        ${property.approval_status
-          .toLowerCase()}">
-
-        ${property.approval_status}
-
-      </span>
-
-      <p>
-        <strong>Active:</strong>
-        ${property.is_active ? "Yes" : "No"}
-      </p>
-
-      <div class="commission-section">
-        <div class="commission-header">
-          <strong>Commission</strong>
-          <span class="commission-badge">${commission}%</span>
-        </div>
-        <div class="commission-edit">
-          <input
-            type="number"
-            id="commission-${property.id}"
-            value="${commission}"
-            min="0"
-            max="100"
-            step="0.5"
-            class="commission-input"
-            placeholder="0-100"
-          >
-          <button
-            class="commissionBtn"
-            onclick="setCommission(${property.id})"
-          >
-            Set
-          </button>
+        <div class="stat-content">
+          <span class="stat-label">Total Properties</span>
+          <span class="stat-value">${totalProps}</span>
+          <span class="stat-subtext">Registered on platform</span>
         </div>
       </div>
 
-      <div class="actions">
-        ${
-          property.is_active
-          ?
-          `
-          <button
-            class="deactivateBtn"
-            onclick="deactivateProperty(${property.id})"
-          >
-            Deactivate
-          </button>
-          `
-          :
-          `
-          <button
-            class="activateBtn"
-            onclick="activateProperty(${property.id})"
-          >
-            Activate
-          </button>
-          `
-        }
-
-        <button
-          class="rejectBtn"
-          onclick="deletePropertyByAdmin(${property.id})"
-        >
-          Delete
-        </button>
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Active Properties</span>
+          <span class="stat-value paid-val">${activeProps}</span>
+          <span class="stat-subtext">Currently online</span>
+        </div>
       </div>
 
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pending Approval</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${pendingApprovalProps}</span>
+          <span class="stat-subtext">Awaiting verification</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper requested">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="15" y1="9" x2="9" y2="15"></line>
+            <line x1="9" y1="9" x2="15" y2="15"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Inactive Properties</span>
+          <span class="stat-value" style="color: hsl(28, 95%, 45%);">${inactiveProps}</span>
+          <span class="stat-subtext">Offline or deactivated</span>
+        </div>
+      </div>
     </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>All Registered Properties</h3>
+        <span class="badge-count">${properties.length} properties</span>
+      </div>
+    </div>
+  `;
+
+  // Table & Mobile Cards building
+  let tableRows = "";
+  let mobileCards = "";
+
+  properties.forEach(property => {
+    const commission = property.commission_percentage || 0;
+    const approvalClass = property.approval_status ? property.approval_status.toLowerCase() : "pending";
+    const activeStatusClass = property.is_active ? "paid" : "pending";
+
+    tableRows += `
+      <tr>
+        <td>
+          <div style="display: flex; align-items: center; gap: 14px;">
+            ${property.property_image ? `
+              <img src="${resolveImageUrl(property.property_image)}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--border-color);" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+            ` : `
+              <div style="width: 50px; height: 50px; background: hsl(220, 20%, 95%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--dark-muted); font-weight: 600; border: 1.5px solid var(--border-color);">No Image</div>
+            `}
+            <div class="table-property-cell">
+              <span class="property-title-name">${escapeHTML(property.property_name || 'N/A')}</span>
+              <span class="property-subtitle-owner">${escapeHTML(property.property_type || 'N/A')}</span>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 600; color: var(--dark);">${escapeHTML(property.city || 'N/A')}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(property.state || 'N/A')}, ${escapeHTML(property.country || 'N/A')}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+            <span class="status-pill-badge ${approvalClass}">${escapeHTML(property.approval_status || 'PENDING')}</span>
+            <span class="status-pill-badge ${activeStatusClass}" style="${property.is_active ? '' : 'background: hsl(220, 15%, 93%); color: hsl(220, 15%, 45%);'}">
+              ${property.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 8px; max-width: 180px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--dark-muted); letter-spacing: 0.5px;">Commission</span>
+              <span class="commission-badge" style="padding: 2px 8px; font-size: 11px;">${commission}%</span>
+            </div>
+            <div class="commission-edit" style="margin-top: 0;">
+              <input
+                type="number"
+                id="commission-${property.id}"
+                value="${commission}"
+                min="0"
+                max="100"
+                step="0.5"
+                class="commission-input"
+                style="padding: 6px 10px; font-size: 13px;"
+                placeholder="0-100"
+              >
+              <button
+                class="commissionBtn"
+                style="padding: 6px 12px; font-size: 12px;"
+                onclick="setCommission(${property.id})"
+              >
+                Set
+              </button>
+            </div>
+          </div>
+        </td>
+        <td class="text-center">
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            ${property.is_active ? `
+              <button
+                class="deactivateBtn"
+                style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+                onclick="deactivateProperty(${property.id})"
+              >
+                Deactivate
+              </button>
+            ` : `
+              <button
+                class="approveBtn"
+                style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+                onclick="activateProperty(${property.id})"
+              >
+                Activate
+              </button>
+            `}
+            <button
+              class="rejectBtn"
+              style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+              onclick="deletePropertyByAdmin(${property.id})"
+            >
+              Delete
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
+      <div class="mobile-commission-card ${property.is_active ? 'paid' : 'pending'}" style="${property.is_active ? '' : 'border-left-color: hsl(220, 15%, 60%);'}">
+        <div class="mobile-card-header">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            ${property.property_image ? `
+              <img src="${resolveImageUrl(property.property_image)}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color);" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+            ` : `
+              <div style="width: 44px; height: 44px; background: hsl(220, 20%, 95%); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--dark-muted); border: 1px solid var(--border-color);">No Image</div>
+            `}
+            <div>
+              <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(property.property_name || 'N/A')}</h4>
+              <span class="owner-lbl">${escapeHTML(property.property_type || 'N/A')}</span>
+            </div>
+          </div>
+          <span class="status-pill-badge ${approvalClass}">${escapeHTML(property.approval_status || 'PENDING')}</span>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Location</span>
+            <span class="val">${escapeHTML(property.city || 'N/A')}, ${escapeHTML(property.state || 'N/A')}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Active Status</span>
+            <span class="val" style="font-weight: 700; color: ${property.is_active ? 'hsl(142, 72%, 29%)' : 'hsl(220, 9%, 40%)'};">
+              ${property.is_active ? 'Active' : 'Inactive'}
+            </span>
+          </div>
+          <div class="detail-row highlight-row" style="flex-direction: column; gap: 8px; align-items: stretch; padding-top: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <span class="lbl">Commission</span>
+              <span class="val commission-val" style="font-size: 15px;">${commission}%</span>
+            </div>
+            <div class="commission-edit" style="margin-top: 0; width: 100%;">
+              <input
+                type="number"
+                id="commission-mobile-${property.id}"
+                value="${commission}"
+                min="0"
+                max="100"
+                step="0.5"
+                class="commission-input"
+                style="padding: 6px 10px; font-size: 13px;"
+                placeholder="0-100"
+              >
+              <button
+                class="commissionBtn"
+                style="padding: 6px 12px; font-size: 12px;"
+                onclick="setCommission(${property.id})"
+              >
+                Set
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobile-card-actions" style="gap: 8px; justify-content: stretch;">
+          ${property.is_active ? `
+            <button
+              class="deactivateBtn"
+              style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+              onclick="deactivateProperty(${property.id})"
+            >
+              Deactivate
+            </button>
+          ` : `
+            <button
+              class="approveBtn"
+              style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+              onclick="activateProperty(${property.id})"
+            >
+              Activate
+            </button>
+          `}
+          <button
+            class="rejectBtn"
+            style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="deletePropertyByAdmin(${property.id})"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     `;
   });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property Details</th>
+            <th>Location</th>
+            <th>Status & Activity</th>
+            <th>Commission settings</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  applicationsContainer.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 }
 
 async function deactivateProperty(propertyId){
@@ -1417,8 +1585,17 @@ document.getElementById("logoutBtn")
 
 async function setCommission(propertyId){
 
-  const input =
-  document.getElementById(`commission-${propertyId}`);
+  const desktopInput = document.getElementById(`commission-${propertyId}`);
+  const mobileInput = document.getElementById(`commission-mobile-${propertyId}`);
+  
+  // Choose input based on responsiveness/viewport size (max-width: 1024px is mobile)
+  const isMobile = window.innerWidth <= 1024;
+  const input = (isMobile && mobileInput) ? mobileInput : (desktopInput || mobileInput);
+
+  if (!input) {
+    alert("Error: Commission input not found");
+    return;
+  }
 
   const value = parseFloat(input.value);
 
@@ -2231,172 +2408,444 @@ function renderCommissionRequests(commissions, propertyId) {
     c => c.payment_status === 'PAID'
   );
 
-  let html = `
-    <div style="margin-bottom: 30px;">
-      <div class="commission-filter-row" style="margin-bottom: 20px;">
-        <label for="requestsPropertyFilter">
-          Filter by property
-        </label>
-        <select
-          id="requestsPropertyFilter"
-          onchange="loadCommissionRequests(this.value)"
-          style="padding: 10px; border: 1px solid #ddd; border-radius: 6px; min-width: 260px;"
-        >
-          <option value="">All properties</option>
-          ${buildPropertyFilterOptions(propertyId)}
-        </select>
-      </div>
-      <h2>Pending Payment Requests</h2>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px; margin-bottom: 20px;">
-        <div style="background: #e8f4ff; padding: 15px; border-radius: 8px; border-left: 4px solid #1976d2;">
-          <div style="font-size: 12px; color: #666;">READY TO REQUEST</div>
-          <div style="font-size: 24px; font-weight: bold; color: #1976d2;">${unrequested.length}</div>
-          <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            ${formatMoney(unrequested.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}
-          </div>
-        </div>
-        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
-          <div style="font-size: 12px; color: #666;">AWAITING PAYMENT</div>
-          <div style="font-size: 24px; font-weight: bold; color: #ff9800;">${pendingRequests.length}</div>
-          <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            ${formatMoney(pendingRequests.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}
-          </div>
-        </div>
-        <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
-          <div style="font-size: 12px; color: #666;">CONFIRMED PAID</div>
-          <div style="font-size: 24px; font-weight: bold; color: #28a745;">${paidRequests.length}</div>
-          <div style="font-size: 12px; color: #666; margin-top: 5px;">
-            ${formatMoney(paidRequests.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}
-          </div>
+  // Filter Bar
+  const propertyFilterHTML = `
+    <div class="earnings-control-row">
+      <div class="filter-group">
+        <label for="requestsPropertyFilter" class="filter-label">Filter by Property</label>
+        <div class="select-wrapper">
+          <select
+            id="requestsPropertyFilter"
+            onchange="loadCommissionRequests(this.value)"
+            class="premium-select"
+          >
+            <option value="">All Properties</option>
+            ${buildPropertyFilterOptions(propertyId)}
+          </select>
         </div>
       </div>
-
-      <h2>Ready To Request</h2>
-      <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 25px;">
-        <thead>
-          <tr style="background: #f5f5f5; border-bottom: 1px solid #ddd;">
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Property</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Booking</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Owner</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Amount</th>
-            <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+    </div>
   `;
 
-  if (unrequested.length === 0) {
-    html += `<tr><td colspan="5" style="padding: 20px; text-align: center; color: #999;">No commissions waiting for request</td></tr>`;
-  } else {
+  // Stats Grid (3 columns)
+  const statsHTML = `
+    <div class="earnings-stats-grid three-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Ready to Request</span>
+          <span class="stat-value">${formatMoney(unrequested.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}</span>
+          <span class="stat-subtext">${unrequested.length} commissions waiting</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper requested">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Awaiting Payment</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${formatMoney(pendingRequests.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}</span>
+          <span class="stat-subtext">${pendingRequests.length} pending manual payments</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Confirmed Paid</span>
+          <span class="stat-value paid-val">${formatMoney(paidRequests.reduce((sum, c) => sum + toNumber(c.commission_amount), 0))}</span>
+          <span class="stat-subtext">${paidRequests.length} settled requests</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // 1. Ready To Request HTML
+  let unrequestedTableRows = "";
+  let unrequestedMobileCards = "";
+  if (unrequested.length > 0) {
     unrequested.forEach(commission => {
-      html += `
-        <tr style="border-bottom: 1px solid #ddd;">
-          <td style="padding: 12px; border: 1px solid #ddd;">${escapeHTML(commission.property_name || 'N/A')}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${escapeHTML(commission.booking_code || 'N/A')}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${escapeHTML(commission.owner_name || 'N/A')}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${formatMoney(commission.commission_amount)}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">
+      unrequestedTableRows += `
+        <tr>
+          <td>
+            <div class="table-property-cell">
+              <span class="property-title-name">${escapeHTML(commission.property_name || 'N/A')}</span>
+              <span class="property-subtitle-owner">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table-booking-cell">
+              <span class="booking-code">${escapeHTML(commission.booking_code || 'N/A')}</span>
+              ${commission.guest_name ? `<span class="guest-name">Guest: ${escapeHTML(commission.guest_name)}</span>` : ''}
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="commission-amount-highlight">
+              ${formatMoney(commission.commission_amount)}
+            </div>
+          </td>
+          <td class="text-center">
+            <div class="action-btn-cell">
+              <button
+                class="action-btn-request"
+                onclick="requestCommissionPayment(${commission.id})"
+              >
+                Send Request
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      unrequestedMobileCards += `
+        <div class="mobile-commission-card pending">
+          <div class="mobile-card-header">
+            <div class="property-info">
+              <h4>${escapeHTML(commission.property_name || 'N/A')}</h4>
+              <span class="owner-lbl">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+            <span class="status-pill-badge pending">Ready</span>
+          </div>
+          <div class="mobile-card-body">
+            <div class="detail-row">
+              <span class="lbl">Booking Code</span>
+              <span class="val font-semibold">${escapeHTML(commission.booking_code || 'N/A')}</span>
+            </div>
+            ${commission.guest_name ? `
+            <div class="detail-row">
+              <span class="lbl">Guest Name</span>
+              <span class="val">${escapeHTML(commission.guest_name)}</span>
+            </div>` : ''}
+            <div class="detail-row highlight-row">
+              <span class="lbl">Commission</span>
+              <span class="val commission-val">${formatMoney(commission.commission_amount)}</span>
+            </div>
+          </div>
+          <div class="mobile-card-actions">
             <button
+              class="action-btn-request"
               onclick="requestCommissionPayment(${commission.id})"
-              style="padding: 6px 12px; background: #1976d2; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
             >
               Send Request
             </button>
-          </td>
-        </tr>
+          </div>
+        </div>
       `;
     });
   }
 
-  html += `
-        </tbody>
-      </table>
-
-      <h2>Awaiting Manual Payment</h2>
-      <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <thead>
-          <tr style="background: #f5f5f5; border-bottom: 1px solid #ddd;">
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Property</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Booking</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Owner</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Amount</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Requested Date</th>
-            <th style="padding: 12px; text-align: center; border: 1px solid #ddd;">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
+  const unrequestedHTML = `
+    <div class="earnings-details-header" style="margin-top: 32px;">
+      <div class="header-info">
+        <h3>Ready To Request</h3>
+        <span class="badge-count">${unrequested.length} records</span>
+      </div>
+    </div>
+    ${unrequested.length === 0 ? `
+      <div class="no-records-view" style="margin-bottom: 30px;">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No commissions waiting for request.</p>
+      </div>
+    ` : `
+      <div class="desktop-table-view-wrapper">
+        <table class="premium-earnings-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Booking & Guest</th>
+              <th class="text-right">Commission Amount</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${unrequestedTableRows}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards-view-wrapper">
+        ${unrequestedMobileCards}
+      </div>
+    `}
   `;
 
-  if (pendingRequests.length === 0) {
-    html += `<tr><td colspan="6" style="padding: 20px; text-align: center; color: #999;">No pending payment requests</td></tr>`;
-  } else {
+  // 2. Awaiting Manual Payment HTML
+  let pendingTableRows = "";
+  let pendingMobileCards = "";
+  if (pendingRequests.length > 0) {
     pendingRequests.forEach(commission => {
       const requestedDate = formatDate(commission.payment_requested_at);
-      html += `
-        <tr style="border-bottom: 1px solid #ddd;">
-          <td style="padding: 12px; border: 1px solid #ddd;">${commission.property_name || 'N/A'}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${commission.booking_code || 'N/A'}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${commission.owner_name || 'N/A'}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${formatMoney(commission.commission_amount)}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${requestedDate}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; text-align: center;">
+      pendingTableRows += `
+        <tr>
+          <td>
+            <div class="table-property-cell">
+              <span class="property-title-name">${escapeHTML(commission.property_name || 'N/A')}</span>
+              <span class="property-subtitle-owner">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table-booking-cell">
+              <span class="booking-code">${escapeHTML(commission.booking_code || 'N/A')}</span>
+              ${commission.guest_name ? `<span class="guest-name">Guest: ${escapeHTML(commission.guest_name)}</span>` : ''}
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="commission-amount-highlight" style="color: hsl(38, 92%, 40%);">
+              ${formatMoney(commission.commission_amount)}
+            </div>
+          </td>
+          <td>
+            <div class="table-timeline-cell">
+              <span class="status-pill-badge pending">Awaiting Payment</span>
+              <div class="timeline-dates">
+                <span>Requested: ${requestedDate}</span>
+              </div>
+            </div>
+          </td>
+          <td class="text-center">
+            <div class="action-btn-cell">
+              <button
+                class="action-btn-confirm"
+                onclick="confirmCommissionPaymentModal(${commission.id}, ${toNumber(commission.commission_amount)})"
+              >
+                Confirm Receipt
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+
+      pendingMobileCards += `
+        <div class="mobile-commission-card pending">
+          <div class="mobile-card-header">
+            <div class="property-info">
+              <h4>${escapeHTML(commission.property_name || 'N/A')}</h4>
+              <span class="owner-lbl">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+            <span class="status-pill-badge pending">Awaiting Payment</span>
+          </div>
+          <div class="mobile-card-body">
+            <div class="detail-row">
+              <span class="lbl">Booking Code</span>
+              <span class="val font-semibold">${escapeHTML(commission.booking_code || 'N/A')}</span>
+            </div>
+            ${commission.guest_name ? `
+            <div class="detail-row">
+              <span class="lbl">Guest Name</span>
+              <span class="val">${escapeHTML(commission.guest_name)}</span>
+            </div>` : ''}
+            <div class="detail-row highlight-row">
+              <span class="lbl">Commission</span>
+              <span class="val commission-val" style="color: hsl(38, 92%, 40%);">${formatMoney(commission.commission_amount)}</span>
+            </div>
+            <div class="mobile-timeline">
+              <div class="timeline-item">
+                <span class="lbl">Requested:</span>
+                <span class="val">${requestedDate}</span>
+              </div>
+            </div>
+          </div>
+          <div class="mobile-card-actions">
             <button
+              class="action-btn-confirm"
               onclick="confirmCommissionPaymentModal(${commission.id}, ${toNumber(commission.commission_amount)})"
-              style="padding: 6px 12px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;"
             >
               Confirm Receipt
             </button>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  const pendingHTML = `
+    <div class="earnings-details-header" style="margin-top: 40px;">
+      <div class="header-info">
+        <h3>Awaiting Manual Payment</h3>
+        <span class="badge-count">${pendingRequests.length} records</span>
+      </div>
+    </div>
+    ${pendingRequests.length === 0 ? `
+      <div class="no-records-view" style="margin-bottom: 30px;">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No pending payment requests.</p>
+      </div>
+    ` : `
+      <div class="desktop-table-view-wrapper">
+        <table class="premium-earnings-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Booking & Guest</th>
+              <th class="text-right">Commission Amount</th>
+              <th>Requested Date</th>
+              <th class="text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${pendingTableRows}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards-view-wrapper">
+        ${pendingMobileCards}
+      </div>
+    `}
+  `;
+
+  // 3. Paid Commissions HTML
+  let paidTableRows = "";
+  let paidMobileCards = "";
+  if (paidRequests.length > 0) {
+    paidRequests.forEach(commission => {
+      const confirmedDate = commission.payment_confirmed_at ? formatDate(commission.payment_confirmed_at) : 'N/A';
+      const methodBadge = commission.payment_method ? `<strong>[${escapeHTML(commission.payment_method)}]</strong> ` : '';
+      
+      paidTableRows += `
+        <tr>
+          <td>
+            <div class="table-property-cell">
+              <span class="property-title-name">${escapeHTML(commission.property_name || 'N/A')}</span>
+              <span class="property-subtitle-owner">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+          </td>
+          <td>
+            <div class="table-booking-cell">
+              <span class="booking-code">${escapeHTML(commission.booking_code || 'N/A')}</span>
+              ${commission.guest_name ? `<span class="guest-name">Guest: ${escapeHTML(commission.guest_name)}</span>` : ''}
+            </div>
+          </td>
+          <td class="text-right">
+            <div class="commission-amount-highlight" style="color: hsl(142, 72%, 29%);">
+              ${formatMoney(commission.commission_amount)}
+            </div>
+          </td>
+          <td>
+            <div class="table-timeline-cell">
+              <span class="status-pill-badge paid">Paid</span>
+              <div class="timeline-dates">
+                <span>Confirmed: ${confirmedDate}</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div style="font-size: 13px; color: var(--dark-muted); line-height: 1.4;">
+              ${methodBadge}${escapeHTML(commission.payment_proof_notes || '-')}
+            </div>
           </td>
         </tr>
       `;
-    });
-  }
 
-  html += `
-        </tbody>
-      </table>
-    </div>
-
-    <div>
-      <h2>Paid Commissions</h2>
-      <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <thead>
-          <tr style="background: #f5f5f5; border-bottom: 1px solid #ddd;">
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Property</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Owner</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Amount</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Confirmed Date</th>
-            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Payment Notes</th>
-          </tr>
-        </thead>
-        <tbody>
-  `;
-
-  if (paidRequests.length === 0) {
-    html += `<tr><td colspan="5" style="padding: 20px; text-align: center; color: #999;">No paid commissions yet</td></tr>`;
-  } else {
-    paidRequests.forEach(commission => {
-      const confirmedDate = commission.payment_confirmed_at ? new Date(commission.payment_confirmed_at).toLocaleDateString() : 'N/A';
-      const methodBadge = commission.payment_method ? `<strong>[${escapeHTML(commission.payment_method)}]</strong> ` : '';
-      html += `
-        <tr style="border-bottom: 1px solid #ddd;">
-          <td style="padding: 12px; border: 1px solid #ddd;">${escapeHTML(commission.property_name || 'N/A')}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${escapeHTML(commission.owner_name || 'N/A')}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; font-weight: bold;">${formatMoney(commission.commission_amount)}</td>
-          <td style="padding: 12px; border: 1px solid #ddd;">${confirmedDate}</td>
-          <td style="padding: 12px; border: 1px solid #ddd; font-size: 12px;">${methodBadge}${escapeHTML(commission.payment_proof_notes || '-')}</td>
-        </tr>
+      paidMobileCards += `
+        <div class="mobile-commission-card paid">
+          <div class="mobile-card-header">
+            <div class="property-info">
+              <h4>${escapeHTML(commission.property_name || 'N/A')}</h4>
+              <span class="owner-lbl">Owner: ${escapeHTML(commission.owner_name || 'N/A')}</span>
+            </div>
+            <span class="status-pill-badge paid">Paid</span>
+          </div>
+          <div class="mobile-card-body">
+            <div class="detail-row">
+              <span class="lbl">Booking Code</span>
+              <span class="val font-semibold">${escapeHTML(commission.booking_code || 'N/A')}</span>
+            </div>
+            ${commission.guest_name ? `
+            <div class="detail-row">
+              <span class="lbl">Guest Name</span>
+              <span class="val">${escapeHTML(commission.guest_name)}</span>
+            </div>` : ''}
+            <div class="detail-row highlight-row">
+              <span class="lbl">Commission</span>
+              <span class="val commission-val" style="color: hsl(142, 72%, 29%);">${formatMoney(commission.commission_amount)}</span>
+            </div>
+            <div class="mobile-timeline">
+              <div class="timeline-item">
+                <span class="lbl">Confirmed Date:</span>
+                <span class="val">${confirmedDate}</span>
+              </div>
+              ${commission.payment_method ? `
+              <div class="timeline-item">
+                <span class="lbl">Payment Method:</span>
+                <span class="val">${escapeHTML(commission.payment_method)}</span>
+              </div>` : ''}
+              ${commission.payment_proof_notes ? `
+              <div class="timeline-item" style="flex-direction: column; align-items: flex-start; gap: 4px; border-top: 1px dashed var(--border-color); padding-top: 6px; margin-top: 4px;">
+                <span class="lbl">Payment Notes:</span>
+                <span class="val" style="font-weight: normal; text-align: left;">${escapeHTML(commission.payment_proof_notes)}</span>
+              </div>` : ''}
+            </div>
+          </div>
+        </div>
       `;
     });
   }
 
-  html += `
-        </tbody>
-      </table>
+  const paidHTML = `
+    <div class="earnings-details-header" style="margin-top: 40px;">
+      <div class="header-info">
+        <h3>Paid Commissions</h3>
+        <span class="badge-count">${paidRequests.length} records</span>
+      </div>
     </div>
+    ${paidRequests.length === 0 ? `
+      <div class="no-records-view" style="margin-bottom: 30px;">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No paid commissions yet.</p>
+      </div>
+    ` : `
+      <div class="desktop-table-view-wrapper">
+        <table class="premium-earnings-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Booking & Guest</th>
+              <th class="text-right">Commission Amount</th>
+              <th>Confirmed Date</th>
+              <th>Payment Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${paidTableRows}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards-view-wrapper">
+        ${paidMobileCards}
+      </div>
+    `}
   `;
 
-  container.innerHTML = html;
+  container.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${propertyFilterHTML}
+      ${statsHTML}
+      ${unrequestedHTML}
+      ${pendingHTML}
+      ${paidHTML}
+    </div>
+  `;
 }
 
 

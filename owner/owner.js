@@ -336,24 +336,91 @@ const renderWalletDetails = (wallet, transactions) => {
     return;
   }
 
-  walletTransactionsList.innerHTML = transactions.map((transaction) => {
-    const creditClass = isCreditTransaction(transaction) ? "credit" : "debit";
+  let tableRows = "";
+  let mobileCards = "";
 
-    return `
-      <article class="detail-row">
-        <div>
-          <strong>${escapeHTML(transaction.transaction_type || "Transaction")}</strong>
-          <span>${escapeHTML(transaction.description || "Wallet update")}</span>
-          <small>Reference: ${escapeHTML(transaction.reference_id || "N/A")}</small>
-        </div>
-        <div class="detail-row-meta">
-          <b class="${creditClass}">${formatINR(transaction.amount)}</b>
-          <span>${formatDate(transaction.created_at)}</span>
-          <small>Balance: ${formatINR(transaction.balance_after)}</small>
-        </div>
-      </article>
+  transactions.forEach((transaction) => {
+    const isCredit = isCreditTransaction(transaction);
+    const amountSign = isCredit ? "+" : "-";
+    const amountClass = isCredit ? "credit" : "debit";
+
+    tableRows += `
+      <tr>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 4px;">
+            <span class="property-title-name">${escapeHTML(transaction.transaction_type || "Transaction")}</span>
+            <span style="font-size: 12.5px; color: var(--dark-muted);">${escapeHTML(transaction.description || "Wallet update")}</span>
+          </div>
+        </td>
+        <td>
+          <span class="booking-code">${escapeHTML(transaction.reference_id || "N/A")}</span>
+        </td>
+        <td>
+          <strong class="${amountClass}" style="font-size: 15px;">${amountSign} ${formatINR(transaction.amount)}</strong>
+        </td>
+        <td>
+          <span style="color: var(--dark-muted); font-size: 13.5px;">${formatDate(transaction.created_at)}</span>
+        </td>
+        <td>
+          <span style="font-weight: 600; color: var(--dark);">${formatINR(transaction.balance_after)}</span>
+        </td>
+      </tr>
     `;
-  }).join("");
+
+    mobileCards += `
+      <div class="mobile-commission-card ${amountClass}" style="border-left: 4px solid ${isCredit ? 'hsl(142, 72%, 29%)' : 'hsl(348, 83%, 47%)'};">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(transaction.transaction_type || "Transaction")}</h4>
+            <span class="owner-lbl">Ref: ${escapeHTML(transaction.reference_id || "N/A")}</span>
+          </div>
+          <strong class="${amountClass}" style="font-size: 16px;">${amountSign} ${formatINR(transaction.amount)}</strong>
+        </div>
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Description</span>
+            <span class="val">${escapeHTML(transaction.description || "Wallet update")}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Date</span>
+            <span class="val">${formatDate(transaction.created_at)}</span>
+          </div>
+          <div class="detail-row highlight-row">
+            <span class="lbl">Balance After</span>
+            <span class="val" style="color: var(--dark); font-size: 14px; font-weight: 700;">${formatINR(transaction.balance_after)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Transaction Info</th>
+            <th>Reference ID</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Balance After</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  walletTransactionsList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 const loadWithdrawalHistory = async () => {
@@ -377,47 +444,117 @@ const renderWithdrawalHistory = (withdrawals) => {
     return;
   }
 
-  withdrawalHistoryList.innerHTML = withdrawals.map((req) => {
+  let tableRows = "";
+  let mobileCards = "";
+
+  withdrawals.forEach((req) => {
     let statusClass = "pending";
     if (req.withdrawal_status === "APPROVED") statusClass = "approved";
     if (req.withdrawal_status === "REJECTED") statusClass = "rejected";
     if (req.withdrawal_status === "PAID") statusClass = "paid";
 
     let detailsHtml = "";
+    let mobileDetailsHtml = "";
     if (req.upi_id) {
-      detailsHtml = `<span>UPI: <strong>${escapeHTML(req.upi_id)}</strong></span>`;
+      detailsHtml = `<span style="font-size: 13.5px; color: var(--dark); font-weight: 500;">UPI: <strong>${escapeHTML(req.upi_id)}</strong></span>`;
+      mobileDetailsHtml = `<div class="detail-row"><span class="lbl">UPI ID</span><span class="val">${escapeHTML(req.upi_id)}</span></div>`;
     } else {
       detailsHtml = `
-        <span>Bank: <strong>${escapeHTML(req.bank_name || "N/A")}</strong></span>
-        <span>A/C: <strong>${escapeHTML(req.account_number || "N/A")}</strong></span>
-        <span>IFSC: <strong>${escapeHTML(req.ifsc_code || "N/A")}</strong></span>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-size: 13.5px; color: var(--dark); font-weight: 600;">${escapeHTML(req.bank_name || "N/A")}</span>
+          <span style="font-size: 12px; color: var(--dark-muted);">A/C: ${escapeHTML(req.account_number || "N/A")} | IFSC: ${escapeHTML(req.ifsc_code || "N/A")}</span>
+        </div>
+      `;
+      mobileDetailsHtml = `
+        <div class="detail-row"><span class="lbl">Bank</span><span class="val">${escapeHTML(req.bank_name || "N/A")}</span></div>
+        <div class="detail-row"><span class="lbl">A/C Number</span><span class="val">${escapeHTML(req.account_number || "N/A")}</span></div>
+        <div class="detail-row"><span class="lbl">IFSC</span><span class="val">${escapeHTML(req.ifsc_code || "N/A")}</span></div>
       `;
     }
 
     const notesHtml = req.admin_notes 
-      ? `<div class="withdrawal-card-notes"><strong>Admin Notes:</strong> ${escapeHTML(req.admin_notes)}</div>` 
+      ? `<div style="font-size: 11px; padding: 6px 10px; background: hsl(0, 0%, 96%); border-radius: 4px; color: var(--dark-muted); margin-top: 6px; width: fit-content; max-width: 280px; border-left: 3px solid var(--border-hover);"><strong>Admin Note:</strong> ${escapeHTML(req.admin_notes)}</div>` 
       : "";
 
-    return `
-      <article class="detail-row withdrawal-card">
-        <div>
-          <div class="withdrawal-card-header">
-            <strong>Payout Request</strong>
-            <span class="status-pill ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
-          </div>
-          <div class="withdrawal-card-details">
-            <span>Holder: <strong>${escapeHTML(req.account_holder_name)}</strong></span>
+    const mobileNotesHtml = req.admin_notes 
+      ? `<div class="withdrawal-card-notes" style="margin-top: 10px; padding: 8px; background: hsl(0, 0%, 96%); border-radius: 4px; font-size: 12px; color: var(--dark-muted);"><strong>Admin Notes:</strong> ${escapeHTML(req.admin_notes)}</div>` 
+      : "";
+
+    tableRows += `
+      <tr>
+        <td>
+          <span style="color: var(--dark-muted); font-size: 13.5px; font-weight: 500;">${formatDate(req.created_at)}</span>
+        </td>
+        <td>
+          <span style="font-weight: 700; color: var(--dark);">${escapeHTML(req.account_holder_name)}</span>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
             ${detailsHtml}
+            ${notesHtml}
           </div>
-          ${notesHtml}
-        </div>
-        <div class="detail-row-meta">
-          <b class="debit">${formatINR(req.amount)}</b>
-          <span>${formatDate(req.created_at)}</span>
-        </div>
-      </article>
+        </td>
+        <td>
+          <strong class="debit" style="font-size: 15px;">${formatINR(req.amount)}</strong>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
+        </td>
+      </tr>
     `;
-  }).join("");
+
+    mobileCards += `
+      <div class="mobile-commission-card ${statusClass}" style="border-left: 4px solid ${statusClass === 'approved' || statusClass === 'paid' ? 'hsl(142, 72%, 29%)' : statusClass === 'rejected' ? 'hsl(348, 83%, 47%)' : 'var(--primary)'};">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">Payout Request</h4>
+            <span class="owner-lbl">${formatDate(req.created_at)}</span>
+          </div>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
+        </div>
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Account Holder</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(req.account_holder_name)}</span>
+          </div>
+          ${mobileDetailsHtml}
+          <div class="detail-row highlight-row">
+            <span class="lbl">Amount</span>
+            <span class="val debit" style="font-size: 15px;">${formatINR(req.amount)}</span>
+          </div>
+          ${mobileNotesHtml}
+        </div>
+      </div>
+    `;
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Request Date</th>
+            <th>Account Holder</th>
+            <th>Payout Details</th>
+            <th>Amount</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  withdrawalHistoryList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 const renderBookingsDetails = (bookings) => {
@@ -434,90 +571,218 @@ const renderBookingsDetails = (bookings) => {
     return;
   }
 
-  bookingsList.innerHTML = bookings.map((booking) => {
+  let tableRows = "";
+  let mobileCards = "";
+
+  bookings.forEach((booking) => {
     const isPending = String(booking.booking_status || "").toUpperCase() === "PENDING";
     const guestName = booking.guest_name || booking.customer_name || booking.user_full_name || "Guest";
+    const statusClass = String(booking.booking_status || "").toLowerCase();
 
-    return `
-    <article class="booking-card" data-booking-id="${booking.id}">
-      <div class="booking-card-header">
-        <div class="booking-card-header-left">
-          <div class="booking-code-row">
+    // Sibling table structure for desktop
+    tableRows += `
+      <tr class="booking-card" data-booking-id="${booking.id}">
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(booking.property_name || 'N/A')}</span>
+            <span class="property-subtitle-owner">${escapeHTML(booking.room_name || 'N/A')}</span>
+          </div>
+        </td>
+        <td>
+          <div class="table-booking-cell">
             <span class="booking-code">${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}</span>
-            <span class="status-pill ${String(booking.booking_status || "").toLowerCase()}">${escapeHTML(booking.booking_status || "NEW")}</span>
+            <span class="guest-name" style="font-weight: 600; font-size: 13px;">${escapeHTML(guestName)}</span>
           </div>
-          <h3>${escapeHTML(booking.property_name || "Property")}</h3>
-          <p class="booking-subheader">${escapeHTML(booking.room_name || "Room")} for <strong>${escapeHTML(guestName)}</strong></p>
-          
-          <div class="booking-quick-info">
-            <span class="info-badge">📅 ${formatDate(booking.check_in_date)} - ${formatDate(booking.check_out_date)}</span>
-            <span class="info-badge">👤 ${escapeHTML(booking.guests || 0)} Guests</span>
-            <span class="info-badge">⏰ ${escapeHTML(formatLabel(booking.booking_type))}</span>
+        </td>
+        <td>
+          <div class="table-timeline-cell">
+            <div class="timeline-dates">
+              <span>In: ${formatDate(booking.check_in_date)}</span>
+              <span>Out: ${formatDate(booking.check_out_date)}</span>
+            </div>
+            <span class="status-pill-badge approved" style="margin-top: 4px; padding: 2px 8px; font-size: 9px; width: fit-content;">${escapeHTML(formatLabel(booking.booking_type))}</span>
           </div>
-        </div>
-        <div class="booking-card-header-right">
-          <div class="booking-amount">
-            <strong>${formatINR(booking.total_amount)}</strong>
-            <small>Customer total</small>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 15px; color: var(--dark);">${formatINR(booking.total_amount)}</strong>
+            <small style="color: var(--dark-muted); font-size: 11px;">Customer Total</small>
           </div>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(booking.booking_status || 'NEW')}</span>
+        </td>
+        <td class="text-center">
           <div class="toggle-details-btn">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
           </div>
+        </td>
+      </tr>
+      <tr class="booking-details-row">
+        <td colspan="6" style="padding: 0; border: none; background: white;">
+          <div class="booking-card-details-collapse" style="padding: 0 20px;">
+            <div class="booking-detail-grid">
+              <p><strong>Check-in</strong><span>${formatDate(booking.check_in_date)}</span></p>
+              <p><strong>Check-out</strong><span>${formatDate(booking.check_out_date)}</span></p>
+              <p><strong>Arrival time</strong><span>${formatTime(booking.check_in_time)}</span></p>
+              <p><strong>Booking type</strong><span>${escapeHTML(formatLabel(booking.booking_type))}</span></p>
+              <p><strong>Price option</strong><span>${escapeHTML(formatLabel(booking.pricing_option))}</span></p>
+              <p><strong>Guests</strong><span>${escapeHTML(booking.guests || 0)}</span></p>
+              <p><strong>Rooms</strong><span>${escapeHTML(booking.booked_rooms || 0)}</span></p>
+              <p><strong>Payment</strong><span>${escapeHTML(formatLabel(booking.payment_method || booking.payment_status))}</span></p>
+              <p><strong>Booked On</strong><span>${formatDate(booking.created_at)}</span></p>
+              <p><strong>Owner Base Amount</strong><span>${formatINR(getBookingBaseAmount(booking))}</span></p>
+              <p><strong>Admin Commission</strong><span>${formatINR(booking.booking_commission_amount)}</span></p>
+              <p><strong>Coupon Discount</strong><span>${formatINR(booking.coupon_discount)}</span></p>
+              <p><strong>Payable After Discount</strong><span>${formatINR(getBookingPayableAmount(booking))}</span></p>
+            </div>
+
+            <div class="booking-guest">
+              <strong>Guest Contact</strong>
+              <span>${escapeHTML([
+                booking.guest_email || booking.user_email || "Email not available",
+                booking.guest_age ? `Age ${booking.guest_age}` : "",
+                booking.customer_name ? `User ${booking.customer_name}` : ""
+              ].filter(Boolean).join(" | "))}</span>
+            </div>
+
+            ${booking.special_requests ? `
+              <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+                <strong>Special Requests & Additional Guests</strong>
+                <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
+              </div>
+            ` : ""}
+
+            ${booking.rejection_reason ? `
+              <div class="booking-guest rejection-reason">
+                <strong>Rejection reason</strong>
+                <span>${escapeHTML(booking.rejection_reason)}</span>
+              </div>
+            ` : ""}
+
+            ${isPending ? `
+              <div class="booking-actions-row" style="margin-bottom: 20px;">
+                <button type="button" class="approve-booking-btn" data-booking-id="${booking.id}">Approve</button>
+                <button type="button" class="reject-booking-btn" data-booking-id="${booking.id}">Reject</button>
+              </div>
+            ` : ""}
+          </div>
+        </td>
+      </tr>
+    `;
+
+    // Mobile layout card
+    mobileCards += `
+      <div class="booking-card" data-booking-id="${booking.id}">
+        <div class="booking-card-header">
+          <div class="booking-card-header-left">
+            <div class="booking-code-row">
+              <span class="booking-code">${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}</span>
+              <span class="status-pill ${statusClass}">${escapeHTML(booking.booking_status || "NEW")}</span>
+            </div>
+            <h3>${escapeHTML(booking.property_name || "Property")}</h3>
+            <p class="booking-subheader">${escapeHTML(booking.room_name || "Room")} for <strong>${escapeHTML(guestName)}</strong></p>
+            
+            <div class="booking-quick-info">
+              <span class="info-badge">📅 ${formatDate(booking.check_in_date)} - ${formatDate(booking.check_out_date)}</span>
+              <span class="info-badge">👤 ${escapeHTML(booking.guests || 0)} Guests</span>
+              <span class="info-badge">⏰ ${escapeHTML(formatLabel(booking.booking_type))}</span>
+            </div>
+          </div>
+          <div class="booking-card-header-right">
+            <div class="booking-amount">
+              <strong>${formatINR(booking.total_amount)}</strong>
+              <small>Customer total</small>
+            </div>
+            <div class="toggle-details-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="booking-card-details-collapse">
+          <div class="booking-detail-grid">
+            <p><strong>Check-in</strong><span>${formatDate(booking.check_in_date)}</span></p>
+            <p><strong>Check-out</strong><span>${formatDate(booking.check_out_date)}</span></p>
+            <p><strong>Arrival time</strong><span>${formatTime(booking.check_in_time)}</span></p>
+            <p><strong>Booking type</strong><span>${escapeHTML(formatLabel(booking.booking_type))}</span></p>
+            <p><strong>Price option</strong><span>${escapeHTML(formatLabel(booking.pricing_option))}</span></p>
+            <p><strong>Guests</strong><span>${escapeHTML(booking.guests || 0)}</span></p>
+            <p><strong>Rooms</strong><span>${escapeHTML(booking.booked_rooms || 0)}</span></p>
+            <p><strong>Payment</strong><span>${escapeHTML(formatLabel(booking.payment_method || booking.payment_status))}</span></p>
+            <p><strong>Booked On</strong><span>${formatDate(booking.created_at)}</span></p>
+            <p><strong>Owner Base Amount</strong><span>${formatINR(getBookingBaseAmount(booking))}</span></p>
+            <p><strong>Admin Commission</strong><span>${formatINR(booking.booking_commission_amount)}</span></p>
+            <p><strong>Coupon Discount</strong><span>${formatINR(booking.coupon_discount)}</span></p>
+            <p><strong>Payable After Discount</strong><span>${formatINR(getBookingPayableAmount(booking))}</span></p>
+          </div>
+
+          <div class="booking-guest">
+            <strong>Guest Contact</strong>
+            <span>${escapeHTML([
+              booking.guest_email || booking.user_email || "Email not available",
+              booking.guest_age ? `Age ${booking.guest_age}` : "",
+              booking.customer_name ? `User ${booking.customer_name}` : ""
+            ].filter(Boolean).join(" | "))}</span>
+          </div>
+
+          ${booking.special_requests ? `
+            <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
+              <strong>Special Requests & Additional Guests</strong>
+              <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
+            </div>
+          ` : ""}
+
+          ${booking.rejection_reason ? `
+            <div class="booking-guest rejection-reason">
+              <strong>Rejection reason</strong>
+              <span>${escapeHTML(booking.rejection_reason)}</span>
+            </div>
+          ` : ""}
+
+          ${isPending ? `
+            <div class="booking-actions-row">
+              <button type="button" class="approve-booking-btn" data-booking-id="${booking.id}">Approve</button>
+              <button type="button" class="reject-booking-btn" data-booking-id="${booking.id}">Reject</button>
+            </div>
+          ` : ""}
         </div>
       </div>
+    `;
+  });
 
-      <div class="booking-card-details-collapse">
-        <div class="booking-detail-grid">
-          <p><strong>Check-in</strong><span>${formatDate(booking.check_in_date)}</span></p>
-          <p><strong>Check-out</strong><span>${formatDate(booking.check_out_date)}</span></p>
-          <p><strong>Arrival time</strong><span>${formatTime(booking.check_in_time)}</span></p>
-          <p><strong>Booking type</strong><span>${escapeHTML(formatLabel(booking.booking_type))}</span></p>
-          <p><strong>Price option</strong><span>${escapeHTML(formatLabel(booking.pricing_option))}</span></p>
-          <p><strong>Guests</strong><span>${escapeHTML(booking.guests || 0)}</span></p>
-          <p><strong>Rooms</strong><span>${escapeHTML(booking.booked_rooms || 0)}</span></p>
-          <p><strong>Payment</strong><span>${escapeHTML(formatLabel(booking.payment_method || booking.payment_status))}</span></p>
-          <p><strong>Booked On</strong><span>${formatDate(booking.created_at)}</span></p>
-          <p><strong>Owner Base Amount</strong><span>${formatINR(getBookingBaseAmount(booking))}</span></p>
-          <p><strong>Admin Commission</strong><span>${formatINR(booking.booking_commission_amount)}</span></p>
-          <p><strong>Coupon Discount</strong><span>${formatINR(booking.coupon_discount)}</span></p>
-          <p><strong>Payable After Discount</strong><span>${formatINR(getBookingPayableAmount(booking))}</span></p>
-        </div>
-
-        <div class="booking-guest">
-          <strong>Guest Contact</strong>
-          <span>${escapeHTML([
-            booking.guest_email || booking.user_email || "Email not available",
-            booking.guest_age ? `Age ${booking.guest_age}` : "",
-            booking.customer_name ? `User ${booking.customer_name}` : ""
-          ].filter(Boolean).join(" | "))}</span>
-        </div>
-
-        ${booking.special_requests ? `
-          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px;">
-            <strong>Special Requests & Additional Guests</strong>
-            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(booking.special_requests)}</span>
-          </div>
-        ` : ""}
-
-        ${booking.rejection_reason ? `
-          <div class="booking-guest rejection-reason">
-            <strong>Rejection reason</strong>
-            <span>${escapeHTML(booking.rejection_reason)}</span>
-          </div>
-        ` : ""}
-
-        ${isPending ? `
-          <div class="booking-actions-row">
-            <button type="button" class="approve-booking-btn" data-booking-id="${booking.id}">Approve</button>
-            <button type="button" class="reject-booking-btn" data-booking-id="${booking.id}">Reject</button>
-          </div>
-        ` : ""}
-      </div>
-    </article>
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property & Room</th>
+            <th>Booking & Guest</th>
+            <th>Stay Dates</th>
+            <th>Financial Summary</th>
+            <th>Status</th>
+            <th class="text-center">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
   `;
-  }).join("");
+
+  bookingsList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 // ============================================
@@ -838,11 +1103,11 @@ const renderCheckInHistory = (checkIns) => {
     return;
   }
 
-  checkInsHistoryList.innerHTML = checkIns.map((checkIn) => {
-    const guestName =
-      checkIn.guest_name ||
-      checkIn.customer_name ||
-      "Guest";
+  let tableRows = "";
+  let mobileCards = "";
+
+  checkIns.forEach((checkIn) => {
+    const guestName = checkIn.guest_name || checkIn.customer_name || "Guest";
     const paymentStatus =
       checkIn.commission_payment_status === "PAID"
         ? "Paid to admin"
@@ -852,15 +1117,92 @@ const renderCheckInHistory = (checkIns) => {
             ? "Not requested yet"
             : "Waiting for admin record";
 
-    return `
-      <article class="booking-card checkin-history-card" data-checkin-id="${checkIn.id}">
+    const statusClass = String(checkIn.status || "").toLowerCase();
+
+    tableRows += `
+      <tr class="booking-card" data-checkin-id="${checkIn.id}">
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(checkIn.property_name || 'N/A')}</span>
+            <span class="property-subtitle-owner">${escapeHTML(checkIn.room_name || 'N/A')}</span>
+          </div>
+        </td>
+        <td>
+          <div class="table-booking-cell">
+            <span class="booking-code">${escapeHTML(checkIn.booking_code || `Check-in #${checkIn.id}`)}</span>
+            <span class="guest-name" style="font-weight: 600; font-size: 13px;">${escapeHTML(guestName)}</span>
+          </div>
+        </td>
+        <td>
+          <div class="table-timeline-cell">
+            <div class="timeline-dates">
+              <span>In: ${formatDate(checkIn.check_in_date)}</span>
+              <span>Out: ${formatDate(checkIn.check_out_date)}</span>
+            </div>
+            <span class="status-pill-badge approved" style="margin-top: 4px; padding: 2px 8px; font-size: 9px; width: fit-content;">${escapeHTML(formatLabel(checkIn.booking_type || 'NIGHTLY'))}</span>
+          </div>
+        </td>
+        <td>
+          <strong style="font-size: 15px; color: var(--dark);">${formatINR(checkIn.booking_amount)}</strong>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 14.5px; color: var(--primary);">${formatINR(checkIn.commission_amount)}</strong>
+            <small style="color: var(--dark-muted); font-size: 11px;">(${toNumber(checkIn.commission_percentage).toFixed(1)}%)</small>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+            <span class="status-pill-badge ${statusClass}">${escapeHTML(formatLabel(checkIn.status))}</span>
+            <span style="font-size: 11px; color: var(--dark-muted); font-style: italic;">${escapeHTML(paymentStatus)}</span>
+          </div>
+        </td>
+        <td class="text-center">
+          <div class="toggle-details-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </td>
+      </tr>
+      <tr class="booking-details-row">
+        <td colspan="7" style="padding: 0; border: none; background: white;">
+          <div class="booking-card-details-collapse" style="padding: 0 20px;">
+            <div class="booking-detail-grid">
+              <p><strong>Check-in Date</strong><span>${formatDate(checkIn.check_in_date)}</span></p>
+              <p><strong>Check-out Date</strong><span>${formatDate(checkIn.check_out_date)}</span></p>
+              <p><strong>Booking Value</strong><span>${formatINR(checkIn.booking_amount)}</span></p>
+              <p><strong>Owner Base Amount</strong><span>${formatINR(checkIn.booking_base_amount)}</span></p>
+              <p><strong>Commission Rate</strong><span>${toNumber(checkIn.commission_percentage).toFixed(2)}%</span></p>
+              <p><strong>Commission</strong><span>${formatINR(checkIn.commission_amount)}</span></p>
+              <p><strong>Payment Status</strong><span>${escapeHTML(paymentStatus)}</span></p>
+              <p><strong>Assigned Room ID</strong><span>${escapeHTML(checkIn.assigned_room_code || "Not assigned")}</span></p>
+              <p><strong>Requested On</strong><span>${formatDateTime(checkIn.payment_requested_at)}</span></p>
+              <p><strong>Paid On</strong><span>${formatDateTime(checkIn.payment_confirmed_at)}</span></p>
+              <p><strong>Owner Confirmed</strong><span>${formatDateTime(checkIn.owner_confirmed_at)}</span></p>
+              <p><strong>Admin Recorded</strong><span>${formatDateTime(checkIn.admin_recorded_at)}</span></p>
+              <p><strong>Checked Out</strong><span>${formatDateTime(checkIn.checked_out_at)}</span></p>
+              <p><strong>Guest Email</strong><span>${escapeHTML(checkIn.guest_email || checkIn.user_email || "N/A")}</span></p>
+            </div>
+
+            ${checkIn.special_requests ? `
+              <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed var(--border-color); padding-top: 10px; padding-bottom: 20px; font-size: 14px;">
+                <strong>Special Requests & Additional Guests</strong>
+                <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+              </div>
+            ` : `<div style="height: 15px;"></div>`}
+          </div>
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
+      <div class="booking-card checkin-history-card" data-checkin-id="${checkIn.id}">
         <div class="booking-card-header">
           <div class="booking-card-header-left">
             <div class="booking-code-row">
               <span class="booking-code">${escapeHTML(checkIn.booking_code || `Check-in #${checkIn.id}`)}</span>
-              <span class="status-pill ${String(checkIn.status || "").toLowerCase()}">
-                ${escapeHTML(formatLabel(checkIn.status))}
-              </span>
+              <span class="status-pill ${statusClass}">${escapeHTML(formatLabel(checkIn.status))}</span>
             </div>
             <h3>${escapeHTML(checkIn.property_name || "Property")}</h3>
             <p class="booking-subheader">${escapeHTML(checkIn.room_name || "Room")} for <strong>${escapeHTML(guestName)}</strong></p>
@@ -909,9 +1251,39 @@ const renderCheckInHistory = (checkIns) => {
             </div>
           ` : ""}
         </div>
-      </article>
+      </div>
     `;
-  }).join("");
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property & Room</th>
+            <th>Booking & Guest</th>
+            <th>Stay Dates</th>
+            <th>Booking Value</th>
+            <th>Commission Due</th>
+            <th>Status</th>
+            <th class="text-center">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  checkInsHistoryList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 const loadCheckInHistory = async () => {
@@ -961,17 +1333,111 @@ const renderRoomManagement = (rooms) => {
     return;
   }
 
-  roomManagementList.innerHTML = rooms.map((room) => {
+  let tableRows = "";
+  let mobileCards = "";
+
+  rooms.forEach((room) => {
     const occupiedNow = room.occupancy_status === "OCCUPIED";
     const guestName = room.guest_name || room.customer_name || "Guest";
+    const statusClass = occupiedNow ? "occupied" : "available";
 
-    return `
-      <article class="booking-card room-management-card ${occupiedNow ? "occupied" : "available"}" data-room-id="${room.id}">
+    let occupantInfoHTML = "";
+    if (occupiedNow) {
+      occupantInfoHTML = `
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <span style="font-weight: 600; color: var(--dark); font-size: 13.5px;">${escapeHTML(guestName)}</span>
+          <span class="booking-code" style="align-self: flex-start; margin-top: 2px;">${escapeHTML(room.booking_code || "N/A")}</span>
+          <span style="font-size: 11px; color: var(--dark-muted); margin-top: 2px;">
+            Stay: ${formatDate(room.check_in_date)} - ${formatDate(room.check_out_date)}
+          </span>
+        </div>
+      `;
+    } else {
+      occupantInfoHTML = `<span style="color: var(--dark-muted); font-size: 13px; font-style: italic;">Vacant</span>`;
+    }
+
+    let actionButtonHTML = "";
+    if (occupiedNow) {
+      actionButtonHTML = `
+        <button type="button" class="approve-booking-btn checkout-room-btn" data-checkin-id="${room.checkin_id}" style="padding: 6px 12px; font-size: 12px; font-weight: bold;">
+          Mark Check-Out
+        </button>
+      `;
+    } else {
+      actionButtonHTML = `
+        <button type="button" class="action-btn-request book-manually-btn" data-room-id="${room.id}" data-room-name="${escapeHTML(room.room_id || `Room #${room.id}`)}" style="padding: 6px 12px; font-size: 12px; font-weight: bold;">
+          Book Manually
+        </button>
+      `;
+    }
+
+    tableRows += `
+      <tr class="booking-card" data-room-id="${room.id}">
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(room.property_name || 'N/A')}</span>
+            <span class="property-subtitle-owner">Room ID: <strong>${escapeHTML(room.room_id || `Room #${room.id}`)}</strong></span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 600; color: var(--dark); font-size: 13.5px;">${escapeHTML(room.room_name || room.room_type || "Room")}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(room.room_type || "N/A")} | Bed: ${escapeHTML(room.bed_type || "N/A")} | Size: ${escapeHTML(room.room_size || "N/A")}</span>
+          </div>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusClass}">${occupiedNow ? "Occupied" : "Available"}</span>
+        </td>
+        <td>
+          ${occupantInfoHTML}
+        </td>
+        <td class="text-center">
+          ${actionButtonHTML}
+        </td>
+        <td class="text-center">
+          <div class="toggle-details-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </td>
+      </tr>
+      <tr class="booking-details-row">
+        <td colspan="6" style="padding: 0; border: none; background: white;">
+          <div class="booking-card-details-collapse" style="padding: 0 20px;">
+            <div class="booking-detail-grid">
+              <p><strong>Room Name</strong><span>${escapeHTML(room.room_name || "N/A")}</span></p>
+              <p><strong>Room Type</strong><span>${escapeHTML(room.room_type || "N/A")}</span></p>
+              <p><strong>Bed</strong><span>${escapeHTML(room.bed_type || "N/A")}</span></p>
+              <p><strong>Size</strong><span>${escapeHTML(room.room_size || "N/A")}</span></p>
+              ${
+                occupiedNow
+                  ? `
+                    <p><strong>Guest</strong><span>${escapeHTML(guestName)}</span></p>
+                    <p><strong>Booking Code</strong><span>${escapeHTML(room.booking_code || "N/A")}</span></p>
+                    <p><strong>Check-in</strong><span>${formatDate(room.check_in_date)} ${formatTime(room.check_in_time)}</span></p>
+                    <p><strong>Check-out</strong><span>${formatDate(room.check_out_date)} ${formatTime(room.check_out_time)}</span></p>
+                    <p><strong>Guests</strong><span>${escapeHTML(room.guests || 0)}</span></p>
+                    <p><strong>Guest Email</strong><span>${escapeHTML(room.guest_email || "N/A")}</span></p>
+                  `
+                  : `
+                    <p><strong>Status</strong><span>Ready for check-in</span></p>
+                  `
+              }
+            </div>
+            <div style="height: 15px;"></div>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
+      <div class="booking-card room-management-card ${statusClass}" data-room-id="${room.id}">
         <div class="booking-card-header">
           <div class="booking-card-header-left">
             <div class="booking-code-row">
               <span class="booking-code">${escapeHTML(room.property_name || "Property")}</span>
-              <span class="status-pill ${occupiedNow ? "occupied" : "available"}">
+              <span class="status-pill ${statusClass}">
                 ${occupiedNow ? "Occupied" : "Available"}
               </span>
             </div>
@@ -1032,9 +1498,38 @@ const renderRoomManagement = (rooms) => {
               `
           }
         </div>
-      </article>
+      </div>
     `;
-  }).join("");
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property & Room ID</th>
+            <th>Room Details</th>
+            <th>Status</th>
+            <th>Current Occupant</th>
+            <th class="text-center">Action</th>
+            <th class="text-center">Details</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  roomManagementList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 const loadRoomManagement = async () => {
@@ -1508,7 +2003,10 @@ document.getElementById("propertyForm").addEventListener("submit", async (event)
 });
 
 async function uploadImages(propertyId) {
-  const files = document.getElementById(`image-${propertyId}`).files;
+  const desktopInput = document.getElementById(`image-${propertyId}`);
+  const mobileInput = document.getElementById(`image-mobile-${propertyId}`);
+  const input = desktopInput || mobileInput;
+  const files = input ? input.files : [];
 
   if (files.length === 0) {
     alert("Select images");
@@ -1538,6 +2036,9 @@ async function uploadImages(propertyId) {
 const statusClass = (status) => String(status || "pending").toLowerCase();
 
 async function loadProperties() {
+  propertiesContainer.style.display = "block";
+  propertiesContainer.innerHTML = "<p class='empty-state'>Loading properties...</p>";
+
   try {
     const data = await fetchJson(`${PROPERTY_BASE_URL}/my-properties`);
     const properties = data.data || [];
@@ -1546,9 +2047,20 @@ async function loadProperties() {
     ownerPropertiesCache = properties;
 
     if (properties.length === 0) {
-      propertiesContainer.innerHTML = "<div class='empty-state full'>No properties found. Create your first property to get started.</div>";
+      propertiesContainer.innerHTML = `
+        <div class="no-records-view">
+          <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+          </svg>
+          <p>No properties found. Create your first property to get started.</p>
+        </div>
+      `;
       return;
     }
+
+    let tableRows = "";
+    let mobileCards = "";
 
     properties.forEach((property) => {
       const roomAccessAllowed = canManageRoomsForProperty(property);
@@ -1557,42 +2069,137 @@ async function loadProperties() {
         ? "Rooms can be managed only for approved properties."
         : "Property deactivated by admin. Room management disabled.";
       const imageUrl = resolveImageUrl(property.property_image);
+      const approvalClass = property.approval_status ? property.approval_status.toLowerCase() : "pending";
+      const activeStatusClass = property.is_active ? "paid" : "pending";
 
-      propertiesContainer.innerHTML += `
-        <div class="card">
-          ${
-            imageUrl
-              ? `<img src="${imageUrl}" class="propertyImage" alt="${escapeHTML(property.property_name)}" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">`
-              : "<div class='noImage'>No Image</div>"
-          }
-
-          <div class="card-header-row">
-            <div>
-              <h3>${escapeHTML(property.property_name)}</h3>
-              <p>${escapeHTML([property.city, property.state].filter(Boolean).join(", ") || "Location not set")}</p>
+      tableRows += `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 14px;">
+              ${imageUrl ? `
+                <img src="${imageUrl}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1.5px solid var(--border-color);" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+              ` : `
+                <div style="width: 50px; height: 50px; background: hsl(220, 20%, 95%); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--dark-muted); font-weight: 600; border: 1.5px solid var(--border-color);">No Image</div>
+              `}
+              <div class="table-property-cell">
+                <span class="property-title-name">${escapeHTML(property.property_name || 'N/A')}</span>
+                <span class="property-subtitle-owner">${escapeHTML(property.property_type || 'N/A')}</span>
+              </div>
             </div>
-            <span class="status ${statusClass(property.approval_status)}">${escapeHTML(property.approval_status || "PENDING")}</span>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 2px;">
+              <span style="font-weight: 600; color: var(--dark);">${escapeHTML(property.city || 'N/A')}</span>
+              <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(property.state || 'N/A')}</span>
+            </div>
+          </td>
+          <td>
+            <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start;">
+              <span class="status-pill-badge ${approvalClass}">${escapeHTML(property.approval_status || 'PENDING')}</span>
+              <span class="status-pill-badge ${activeStatusClass}" style="${property.is_active ? '' : 'background: hsl(220, 15%, 93%); color: hsl(220, 15%, 45%);'}">
+                ${property.is_active ? 'Active' : 'Inactive'}
+              </span>
+            </div>
+          </td>
+          <td>
+            <div class="upload-row" style="margin: 0; padding: 0; box-shadow: none; border: none; background: transparent; display: flex; flex-direction: column; gap: 6px;">
+              <input type="file" id="image-${property.id}" multiple style="font-size: 12px; max-width: 180px;">
+              <button onclick="uploadImages(${property.id})" style="padding: 6px 12px; font-size: 12px; background: var(--primary); color: white; border-radius: 4px; font-weight: bold; width: fit-content; margin-top: 4px;">Upload Images</button>
+            </div>
+          </td>
+          <td class="text-center">
+            <div style="display: flex; gap: 8px; justify-content: center; flex-direction: column; align-items: center;">
+              <div style="display: flex; gap: 8px;">
+                <button onclick="openAddRoom(${property.id})" class="approve-booking-btn" style="padding: 6px 12px; font-size: 12px; border-radius: 4px; font-weight: bold;" ${roomButtonsDisabledAttr}>Add Rooms</button>
+                <button onclick="openMyRooms(${property.id})" class="reject-booking-btn" style="padding: 6px 12px; font-size: 12px; border-radius: 4px; font-weight: bold;" ${roomButtonsDisabledAttr}>My Rooms</button>
+              </div>
+              ${roomAccessAllowed ? "" : `<p class="propertyInactiveNotice" style="margin: 4px 0 0 0; font-size: 11px; color: var(--debit); font-style: italic;">${roomAccessMessage}</p>`}
+            </div>
+          </td>
+        </tr>
+      `;
+
+      mobileCards += `
+        <div class="mobile-commission-card ${property.is_active ? 'paid' : 'pending'}" style="${property.is_active ? '' : 'border-left-color: hsl(220, 15%, 60%);'}">
+          <div class="mobile-card-header">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              ${imageUrl ? `
+                <img src="${imageUrl}" style="width: 44px; height: 44px; object-fit: cover; border-radius: 6px; border: 1px solid var(--border-color);" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+              ` : `
+                <div style="width: 44px; height: 44px; background: hsl(220, 20%, 95%); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 9px; color: var(--dark-muted); border: 1px solid var(--border-color);">No Image</div>
+              `}
+              <div>
+                <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(property.property_name || 'N/A')}</h4>
+                <span class="owner-lbl">${escapeHTML(property.property_type || 'N/A')}</span>
+              </div>
+            </div>
+            <span class="status-pill-badge ${approvalClass}">${escapeHTML(property.approval_status || 'PENDING')}</span>
           </div>
 
-          <div class="property-details">
-            <p><strong>Type</strong><span>${escapeHTML(property.property_type || "Property")}</span></p>
-            <p><strong>Active</strong><span>${property.is_active ? "Yes" : "No"}</span></p>
+          <div class="mobile-card-body">
+            <div class="detail-row">
+              <span class="lbl">Location</span>
+              <span class="val">${escapeHTML(property.city || 'N/A')}, ${escapeHTML(property.state || 'N/A')}</span>
+            </div>
+            <div class="detail-row">
+              <span class="lbl">Active</span>
+              <span class="val">${property.is_active ? 'Yes' : 'No'}</span>
+            </div>
+            <div class="detail-row highlight-row" style="flex-direction: column; gap: 8px; align-items: stretch; padding-top: 12px;">
+              <span class="lbl">Upload Images</span>
+              <div class="upload-row" style="margin: 0; padding: 0; box-shadow: none; border: none; background: transparent; display: flex; gap: 8px; align-items: center; justify-content: space-between;">
+                <input type="file" id="image-mobile-${property.id}" multiple style="font-size: 12px; max-width: 140px;">
+                <button onclick="uploadImages(${property.id})" style="padding: 6px 10px; font-size: 11px; background: var(--primary); color: white; border-radius: 4px; font-weight: bold; margin-top: 0;">Upload</button>
+              </div>
+            </div>
           </div>
 
-          <div class="upload-row">
-            <input type="file" id="image-${property.id}" multiple>
-            <button onclick="uploadImages(${property.id})">Upload Images</button>
+          <div class="mobile-card-actions" style="gap: 8px; justify-content: stretch;">
+            <button onclick="openAddRoom(${property.id})" class="approve-booking-btn" style="flex: 1; padding: 10px; font-size: 12px; border-radius: var(--radius-sm); font-weight: bold;" ${roomButtonsDisabledAttr}>Add Rooms</button>
+            <button onclick="openMyRooms(${property.id})" class="reject-booking-btn" style="flex: 1; padding: 10px; font-size: 12px; border-radius: var(--radius-sm); font-weight: bold;" ${roomButtonsDisabledAttr}>My Rooms</button>
           </div>
-
-          <div class="roomButtons">
-            <button onclick="openAddRoom(${property.id})" class="roomBtn" ${roomButtonsDisabledAttr}>Add Rooms</button>
-            <button onclick="openMyRooms(${property.id})" class="roomBtn secondaryBtn" ${roomButtonsDisabledAttr}>My Rooms</button>
-          </div>
-
-          ${roomAccessAllowed ? "" : `<p class="propertyInactiveNotice">${roomAccessMessage}</p>`}
+          ${roomAccessAllowed ? "" : `<p class="propertyInactiveNotice" style="margin-top: 8px; font-size: 11px; color: var(--debit); text-align: center; font-style: italic;">${roomAccessMessage}</p>`}
         </div>
       `;
     });
+
+    const detailsHeaderHTML = `
+      <div class="earnings-details-header">
+        <div class="header-info">
+          <h3>Your Registered Properties</h3>
+          <span class="badge-count">${properties.length} properties</span>
+        </div>
+      </div>
+    `;
+
+    const detailsHTML = `
+      <div class="desktop-table-view-wrapper">
+        <table class="premium-earnings-table">
+          <thead>
+            <tr>
+              <th>Property Details</th>
+              <th>Location</th>
+              <th>Status & Activity</th>
+              <th>Upload Gallery</th>
+              <th class="text-center">Room Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+      </div>
+      <div class="mobile-cards-view-wrapper">
+        ${mobileCards}
+      </div>
+    `;
+
+    propertiesContainer.innerHTML = `
+      <div class="earnings-section-wrapper">
+        ${detailsHeaderHTML}
+        ${detailsHTML}
+      </div>
+    `;
   } catch (error) {
     console.error(error);
     alert(error.message || "Failed to load properties");
@@ -1961,7 +2568,10 @@ const renderCouponsList = (coupons) => {
     return;
   }
 
-  couponsList.innerHTML = coupons.map((coupon) => {
+  let tableRows = "";
+  let mobileCards = "";
+
+  coupons.forEach((coupon) => {
     const usagePercent = getUsagePercent(coupon);
     const statusCls = couponStatusClass(coupon.computed_status);
     const isPercentage = coupon.discount_type === "PERCENTAGE";
@@ -1972,7 +2582,57 @@ const renderCouponsList = (coupons) => {
       ? `${coupon.used_count} / ${coupon.usage_limit}`
       : `${coupon.used_count} / \u221e`;
 
-    return `
+    tableRows += `
+      <tr class="booking-card">
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(coupon.property_name || 'All Properties')}</span>
+            <span class="booking-code" style="margin-top: 4px; align-self: flex-start;">${escapeHTML(coupon.coupon_code)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <strong style="font-size: 15px; color: var(--dark);">${discountDisplay} OFF</strong>
+            <span style="font-size: 11px; color: var(--dark-muted);">${isPercentage ? "Percentage Discount" : "Flat Discount"}</span>
+            <span style="font-size: 11px; color: var(--dark-muted);">Min Booking: \u20b9${toNumber(coupon.minimum_booking_amount).toFixed(0)}</span>
+          </div>
+        </td>
+        <td>
+          <div class="coupon-usage-bar-wrapper" style="width: 150px; margin: 0;">
+            <div class="coupon-usage-label" style="margin-bottom: 4px; display: flex; justify-content: space-between;">
+              <span style="font-size: 11.5px; font-weight: 600;">Usage</span>
+              <span style="font-size: 11.5px; font-weight: 700; color: var(--dark);">${usageLimitText}</span>
+            </div>
+            <div class="coupon-usage-track" style="height: 6px; background: hsl(220, 15%, 90%); border-radius: 4px; overflow: hidden;">
+              <div class="coupon-usage-fill" style="width: ${usagePercent}%; height: 100%; background: var(--primary);"></div>
+            </div>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px; font-size: 12.5px; color: var(--dark-muted);">
+            <span>Start: ${formatDate(coupon.start_date)}</span>
+            <span>Expiry: ${formatDate(coupon.expiry_date)}</span>
+          </div>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusCls}">${escapeHTML(coupon.computed_status)}</span>
+        </td>
+        <td>
+          <div style="display: flex; gap: 6px; justify-content: center;">
+            <button onclick="viewCouponDetails(${coupon.id})" class="approve-booking-btn" style="padding: 6px 12px; font-size: 12px; font-weight: bold;">Details</button>
+            <button onclick="toggleCoupon(${coupon.id})" class="reject-booking-btn" style="padding: 6px 12px; font-size: 12px; font-weight: bold; background: var(--dark-muted); color: white; border-color: var(--dark-muted);">${coupon.is_active ? "Deactivate" : "Activate"}</button>
+            <button onclick="deleteCouponAction(${coupon.id})" class="reject-booking-btn" style="padding: 6px 12px; font-size: 12px; font-weight: bold; background: var(--debit); color: white; border-color: var(--debit);">Delete</button>
+          </div>
+        </td>
+      </tr>
+      <tr class="booking-details-row" id="couponDetailRow-${coupon.id}">
+        <td colspan="6" style="padding: 0; border: none; background: white;">
+          <div id="couponDetail-${coupon.id}" class="coupon-detail-panel hidden" style="padding: 24px; border-top: 1px dashed var(--border-color);"></div>
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
       <article class="coupon-card">
         <div class="coupon-card-top">
           <div class="coupon-code-display">
@@ -2015,7 +2675,36 @@ const renderCouponsList = (coupons) => {
         <div id="couponDetail-${coupon.id}" class="coupon-detail-panel hidden"></div>
       </article>
     `;
-  }).join("");
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property & Code</th>
+            <th>Discount Value</th>
+            <th>Usage Tracker</th>
+            <th>Validity</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  couponsList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 async function toggleCoupon(couponId) {
@@ -2350,7 +3039,10 @@ const renderOwnerCommissions = (commissions) => {
     return;
   }
 
-  commissionsList.innerHTML = commissions.map((commission) => {
+  let tableRows = "";
+  let mobileCards = "";
+
+  commissions.forEach((commission) => {
     const isPending = commission.payment_status === "PENDING";
     const guestName = commission.guest_name || "Guest";
     
@@ -2364,58 +3056,149 @@ const renderOwnerCommissions = (commissions) => {
     let actionButtonHTML = "";
     if (isPending) {
       actionButtonHTML = `
-        <div style="margin-top: 15px; display: flex; justify-content: flex-end;">
-          <button class="btn btn-primary pay-commission-btn" data-id="${commission.id}" data-amount="${commission.commission_amount}" style="padding: 8px 16px; background-color: #1a73e8; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: 500;">
-            Pay Commission
-          </button>
-        </div>
+        <button class="btn btn-primary pay-commission-btn action-btn-request" data-id="${commission.id}" data-amount="${commission.commission_amount}" style="padding: 6px 12px; font-size: 12px; font-weight: bold;">
+          Pay Commission
+        </button>
       `;
     }
 
     let paymentDetailsHTML = "";
+    let mobilePaymentDetailsHTML = "";
     if (commission.payment_status === "PAID") {
       paymentDetailsHTML = `
-        <p><strong>Payment Method</strong><span>${escapeHTML(commission.payment_method || "N/A")}</span></p>
-        <p><strong>Paid On</strong><span>${formatDateTime(commission.paid_at)}</span></p>
-        <p><strong>Proof Notes</strong><span>${escapeHTML(commission.payment_proof_notes || "None")}</span></p>
+        <span style="font-size: 11px; color: var(--dark-muted);">Method: ${escapeHTML(commission.payment_method || "N/A")}</span>
+        <span style="font-size: 11px; color: var(--dark-muted);">Paid: ${formatDate(commission.paid_at)}</span>
+      `;
+      mobilePaymentDetailsHTML = `
+        <div class="detail-row"><span class="lbl">Payment Method</span><span class="val">${escapeHTML(commission.payment_method || "N/A")}</span></div>
+        <div class="detail-row"><span class="lbl">Paid On</span><span class="val">${formatDateTime(commission.paid_at)}</span></div>
+        <div class="detail-row"><span class="lbl">Proof Notes</span><span class="val">${escapeHTML(commission.payment_proof_notes || "None")}</span></div>
       `;
     } else if (commission.payment_requested_at) {
       paymentDetailsHTML = `
-        <p><strong>Payment Requested</strong><span>${formatDateTime(commission.payment_requested_at)}</span></p>
+        <span style="font-size: 11px; color: var(--dark-muted);">Requested: ${formatDate(commission.payment_requested_at)}</span>
+      `;
+      mobilePaymentDetailsHTML = `
+        <div class="detail-row"><span class="lbl">Requested On</span><span class="val">${formatDateTime(commission.payment_requested_at)}</span></div>
       `;
     }
 
     if (commission.razorpay_payment_status === "FAILED") {
       paymentDetailsHTML += `
-        <p><strong>Last Payment Attempt</strong><span>${escapeHTML(commission.razorpay_failure_reason || "Failed")}</span></p>
+        <span style="font-size: 11.5px; color: var(--debit); font-weight: 500;">Failed: ${escapeHTML(commission.razorpay_failure_reason || "Payment failed")}</span>
+      `;
+      mobilePaymentDetailsHTML += `
+        <div class="detail-row"><span class="lbl">Last Attempt</span><span class="val" style="color: var(--debit);">${escapeHTML(commission.razorpay_failure_reason || "Failed")}</span></div>
       `;
     }
 
-    return `
-      <article class="checkin-history-card">
-        <div class="checkin-booking-header">
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(commission.property_name || 'N/A')}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">Earned: ${formatDate(commission.earned_at)}</span>
+          </div>
+        </td>
+        <td>
+          <div class="table-booking-cell">
+            <span class="booking-code">${escapeHTML(commission.booking_code || `Commission #${commission.id}`)}</span>
+            <span class="guest-name" style="font-weight: 600; font-size: 13px;">${escapeHTML(guestName)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-size: 13px; color: var(--dark-muted);">Total: ${formatINR(commission.booking_total_amount)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">Base: ${formatINR(commission.booking_base_amount)} (${toNumber(commission.booking_commission_percentage).toFixed(1)}%)</span>
+          </div>
+        </td>
+        <td>
+          <strong style="font-size: 15.5px; color: var(--primary);">${formatINR(commission.commission_amount)}</strong>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 4px; align-items: flex-start;">
+            <span class="status-pill-badge ${statusClass}">${escapeHTML(commission.payment_status)}</span>
+            ${paymentDetailsHTML}
+          </div>
+        </td>
+        <td class="text-center">
+          ${actionButtonHTML}
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
+      <div class="mobile-commission-card ${statusClass}" style="border-left: 4px solid ${statusClass === 'approved' ? 'hsl(142, 72%, 29%)' : statusClass === 'cancelled' ? 'hsl(348, 83%, 47%)' : 'var(--primary)'};">
+        <div class="mobile-card-header">
           <div>
             <span class="booking-code">${escapeHTML(commission.booking_code || `Commission #${commission.id}`)}</span>
-            <h3>${escapeHTML(commission.property_name || "Property")}</h3>
-            <p>Guest: ${escapeHTML(guestName)}</p>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark); margin-top: 6px;">${escapeHTML(commission.property_name || "Property")}</h4>
+            <span class="owner-lbl">Guest: ${escapeHTML(guestName)}</span>
           </div>
-          <span class="status-pill ${statusClass}">
-            ${escapeHTML(commission.payment_status)}
-          </span>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(commission.payment_status)}</span>
         </div>
-
-        <div class="booking-detail-grid">
-          <p><strong>Booking Total</strong><span>${formatINR(commission.booking_total_amount)}</span></p>
-          <p><strong>Base Amount</strong><span>${formatINR(commission.booking_base_amount)}</span></p>
-          <p><strong>Commission Rate</strong><span>${toNumber(commission.booking_commission_percentage).toFixed(2)}%</span></p>
-          <p><strong>Commission Due</strong><span style="font-weight: bold; color: #1a73e8;">${formatINR(commission.commission_amount)}</span></p>
-          <p><strong>Earned On</strong><span>${formatDate(commission.earned_at)}</span></p>
-          ${paymentDetailsHTML}
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Booking Total</span>
+            <span class="val">${formatINR(commission.booking_total_amount)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Base Amount</span>
+            <span class="val">${formatINR(commission.booking_base_amount)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Commission Rate</span>
+            <span class="val">${toNumber(commission.booking_commission_percentage).toFixed(2)}%</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Earned On</span>
+            <span class="val">${formatDate(commission.earned_at)}</span>
+          </div>
+          ${mobilePaymentDetailsHTML}
+          <div class="detail-row highlight-row">
+            <span class="lbl">Commission Due</span>
+            <span class="val" style="color: var(--primary); font-size: 16px; font-weight: 800;">${formatINR(commission.commission_amount)}</span>
+          </div>
         </div>
-        ${actionButtonHTML}
-      </article>
+        ${isPending ? `
+          <div class="mobile-card-actions" style="margin-top: 8px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+            <button class="btn btn-primary pay-commission-btn action-btn-request" data-id="${commission.id}" data-amount="${commission.commission_amount}" style="padding: 10px; font-size: 13px; font-weight: bold; width: 100%;">
+              Pay Commission
+            </button>
+          </div>
+        ` : ""}
+      </div>
     `;
-  }).join("");
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property Details</th>
+            <th>Booking & Guest</th>
+            <th>Financials</th>
+            <th>Commission Due</th>
+            <th>Status Details</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  commissionsList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${detailsHTML}
+    </div>
+  `;
 
   // Attach event listeners to buttons
   document.querySelectorAll(".pay-commission-btn").forEach((btn) => {

@@ -500,6 +500,48 @@ body{
   }
 }
 
+.earnings-stats-grid.three-cols {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 800px) {
+  .earnings-stats-grid.three-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .earnings-stats-grid.three-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.earnings-stats-grid.four-cols {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1200px) {
+  .earnings-stats-grid.four-cols {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .earnings-stats-grid.four-cols {
+    grid-template-columns: 1fr;
+  }
+}
+
+.status-pill-badge.approved {
+  background: hsl(142, 72%, 94%);
+  color: hsl(142, 72%, 29%);
+}
+
+.status-pill-badge.rejected {
+  background: hsl(348, 83%, 95%);
+  color: hsl(348, 83%, 47%);
+}
+
 .earnings-stat-card {
   background: white;
   padding: 20px;
