@@ -3159,7 +3159,55 @@ const loadWalletForm = async () => {
   setupSearch("Wallet", "");
   creditWalletForm.reset();
   walletMessage.style.display = "none";
-  walletHistoryList.innerHTML = '<p class="empty-state">No credits yet</p>';
+  walletHistoryList.innerHTML = '<p class="empty-state">Loading credits...</p>';
+  await loadRecentCredits();
+};
+
+const loadRecentCredits = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/wallets/credits`, {
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
+    const data = await res.json();
+    if (data.success && data.data) {
+      renderWalletHistory(data.data);
+    } else {
+      walletHistoryList.innerHTML = `<p class="empty-state">${escapeHTML(data.message || "Failed to load credits")}</p>`;
+    }
+  } catch (error) {
+    console.error("Error loading wallet history:", error);
+    walletHistoryList.innerHTML = `<p class="empty-state error">Error loading credits: ${escapeHTML(error.message)}</p>`;
+  }
+};
+
+const renderWalletHistory = (credits) => {
+  if (!credits || credits.length === 0) {
+    walletHistoryList.innerHTML = '<p class="empty-state">No credits yet</p>';
+    return;
+  }
+  
+  walletHistoryList.innerHTML = "";
+  credits.forEach(credit => {
+    let adminMsg = credit.description || "";
+    if (adminMsg.startsWith("Admin credit: ")) {
+      adminMsg = adminMsg.substring("Admin credit: ".length);
+    }
+    
+    const historyItem = document.createElement("div");
+    historyItem.className = "history-item";
+    historyItem.innerHTML = `
+      <div class="history-card">
+        <p><strong>User/Owner ID:</strong> ${credit.user_id}</p>
+        <p><strong>Amount Credited:</strong> ₹${toNumber(credit.amount).toFixed(2)}</p>
+        <p><strong>New Balance:</strong> ₹${toNumber(credit.balance_after).toFixed(2)}</p>
+        <p><strong>Message:</strong> ${escapeHTML(adminMsg)}</p>
+        <p><strong>Time:</strong> ${new Date(credit.created_at).toLocaleString("en-IN")}</p>
+      </div>
+    `;
+    walletHistoryList.appendChild(historyItem);
+  });
 };
 
 const submitCreditForm = async (e) => {
@@ -3197,7 +3245,7 @@ const submitCreditForm = async (e) => {
     
     showWalletMessage(`Wallet credited successfully! New Balance: ₹${data.data.newBalance}`, "success");
     creditWalletForm.reset();
-    addToWalletHistory(data.data);
+    await loadRecentCredits();
     
   } catch (error) {
     console.error("Error crediting wallet:", error);
@@ -3217,27 +3265,9 @@ const showWalletMessage = (text, type) => {
   }
 };
 
-const addToWalletHistory = (credit) => {
-  const historyItem = document.createElement("div");
-  historyItem.className = "history-item";
-  historyItem.innerHTML = `
-    <div class="history-card">
-      <p><strong>User/Owner ID:</strong> ${credit.userId}</p>
-      <p><strong>Amount Credited:</strong> ₹${credit.amount}</p>
-      <p><strong>New Balance:</strong> ₹${credit.newBalance}</p>
-      <p><strong>Time:</strong> ${new Date().toLocaleString("en-IN")}</p>
-    </div>
-  `;
-  
-  if (walletHistoryList.innerHTML.includes("No credits yet")) {
-    walletHistoryList.innerHTML = "";
-  }
-  
-  walletHistoryList.insertBefore(historyItem, walletHistoryList.firstChild);
-};
-
 window.loadWalletForm = loadWalletForm;
 window.submitCreditForm = submitCreditForm;
+
 
 if (creditWalletForm) {
   creditWalletForm.addEventListener("submit", submitCreditForm);
