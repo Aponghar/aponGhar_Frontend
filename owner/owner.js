@@ -966,55 +966,72 @@ const renderRoomManagement = (rooms) => {
     const guestName = room.guest_name || room.customer_name || "Guest";
 
     return `
-      <article class="room-management-card ${occupiedNow ? "occupied" : "available"}">
-        <div class="room-management-main">
-          <div>
-            <span class="booking-code">${escapeHTML(room.property_name || "Property")}</span>
+      <article class="booking-card room-management-card ${occupiedNow ? "occupied" : "available"}" data-room-id="${room.id}">
+        <div class="booking-card-header">
+          <div class="booking-card-header-left">
+            <div class="booking-code-row">
+              <span class="booking-code">${escapeHTML(room.property_name || "Property")}</span>
+              <span class="status-pill ${occupiedNow ? "occupied" : "available"}">
+                ${occupiedNow ? "Occupied" : "Available"}
+              </span>
+            </div>
             <h3>${escapeHTML(room.room_id || `Room #${room.id}`)}</h3>
-            <p>${escapeHTML(room.room_name || room.room_type || "Room")}</p>
+            <p class="booking-subheader">${escapeHTML(room.room_name || room.room_type || "Room")}</p>
+            
+            <div class="booking-quick-info">
+              <span class="info-badge">🚪 ${escapeHTML(room.room_type || "N/A")}</span>
+              <span class="info-badge">🛏️ ${escapeHTML(room.bed_type || "N/A")}</span>
+              <span class="info-badge">📐 ${escapeHTML(room.room_size || "N/A")}</span>
+            </div>
           </div>
-          <span class="status-pill ${occupiedNow ? "occupied" : "available"}">
-            ${occupiedNow ? "Occupied" : "Available"}
-          </span>
+          <div class="booking-card-header-right">
+            <div class="toggle-details-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </div>
+          </div>
         </div>
 
-        <div class="booking-detail-grid">
-          <p><strong>Room Type</strong><span>${escapeHTML(room.room_type || "N/A")}</span></p>
-          <p><strong>Bed</strong><span>${escapeHTML(room.bed_type || "N/A")}</span></p>
-          <p><strong>Size</strong><span>${escapeHTML(room.room_size || "N/A")}</span></p>
+        <div class="booking-card-details-collapse">
+          <div class="booking-detail-grid">
+            <p><strong>Room Type</strong><span>${escapeHTML(room.room_type || "N/A")}</span></p>
+            <p><strong>Bed</strong><span>${escapeHTML(room.bed_type || "N/A")}</span></p>
+            <p><strong>Size</strong><span>${escapeHTML(room.room_size || "N/A")}</span></p>
+            ${
+              occupiedNow
+                ? `
+                  <p><strong>Guest</strong><span>${escapeHTML(guestName)}</span></p>
+                  <p><strong>Booking Code</strong><span>${escapeHTML(room.booking_code || "N/A")}</span></p>
+                  <p><strong>Check-in</strong><span>${formatDate(room.check_in_date)} ${formatTime(room.check_in_time)}</span></p>
+                  <p><strong>Check-out</strong><span>${formatDate(room.check_out_date)} ${formatTime(room.check_out_time)}</span></p>
+                  <p><strong>Guests</strong><span>${escapeHTML(room.guests || 0)}</span></p>
+                  <p><strong>Guest Email</strong><span>${escapeHTML(room.guest_email || "N/A")}</span></p>
+                `
+                : `
+                  <p><strong>Status</strong><span>Ready for check-in</span></p>
+                `
+            }
+          </div>
+
           ${
             occupiedNow
               ? `
-                <p><strong>Guest</strong><span>${escapeHTML(guestName)}</span></p>
-                <p><strong>Booking Code</strong><span>${escapeHTML(room.booking_code || "N/A")}</span></p>
-                <p><strong>Check-in</strong><span>${formatDate(room.check_in_date)} ${formatTime(room.check_in_time)}</span></p>
-                <p><strong>Check-out</strong><span>${formatDate(room.check_out_date)} ${formatTime(room.check_out_time)}</span></p>
-                <p><strong>Guests</strong><span>${escapeHTML(room.guests || 0)}</span></p>
-                <p><strong>Guest Email</strong><span>${escapeHTML(room.guest_email || "N/A")}</span></p>
+                <div class="booking-actions-row">
+                  <button type="button" class="approve-booking-btn checkout-room-btn" data-checkin-id="${room.checkin_id}">
+                    Mark Check-Out
+                  </button>
+                </div>
               `
               : `
-                <p><strong>Status</strong><span>Ready for check-in</span></p>
+                <div class="booking-actions-row">
+                  <button type="button" class="approve-booking-btn book-manually-btn" data-room-id="${room.id}" data-room-name="${escapeHTML(room.room_id || `Room #${room.id}`)}">
+                    Book Manually
+                  </button>
+                </div>
               `
           }
         </div>
-
-        ${
-          occupiedNow
-            ? `
-              <div class="booking-actions-row">
-                <button type="button" class="approve-booking-btn checkout-room-btn" data-checkin-id="${room.checkin_id}">
-                  Mark Check-Out
-                </button>
-              </div>
-            `
-            : `
-              <div class="booking-actions-row">
-                <button type="button" class="approve-booking-btn book-manually-btn" data-room-id="${room.id}" data-room-name="${escapeHTML(room.room_id || `Room #${room.id}`)}">
-                  Book Manually
-                </button>
-              </div>
-            `
-        }
       </article>
     `;
   }).join("");
@@ -1799,6 +1816,16 @@ roomManagementList.addEventListener("click", (event) => {
   const bookManuallyBtn = event.target.closest(".book-manually-btn");
   if (bookManuallyBtn?.dataset.roomId) {
     openManualBookModal(bookManuallyBtn.dataset.roomId, bookManuallyBtn.dataset.roomName);
+    return;
+  }
+
+  // Handle collapsible state. Only toggle if clicked outside the expanded details content
+  const isDetailsClick = event.target.closest(".booking-card-details-collapse");
+  if (!isDetailsClick) {
+    const card = event.target.closest(".booking-card");
+    if (card) {
+      card.classList.toggle("expanded");
+    }
   }
 });
 
