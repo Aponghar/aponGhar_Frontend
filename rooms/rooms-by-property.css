@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: hsl(165, 80%, 23%);
-  --primary-hover: hsl(165, 80%, 17%);
-  --primary-light: hsla(165, 80%, 23%, 0.05);
-  --primary-glow: hsla(165, 80%, 23%, 0.12);
-  --dark: hsl(224, 60%, 12%);
-  --dark-muted: hsl(220, 14%, 40%);
-  --bg-body: hsl(210, 40%, 98%);
+  --primary: hsl(41, 52%, 52%);
+  --primary-hover: hsl(41, 55%, 45%);
+  --primary-light: hsla(41, 52%, 52%, 0.08);
+  --primary-glow: hsla(41, 52%, 52%, 0.15);
+  --dark: hsl(220, 16%, 14%);
+  --dark-muted: hsl(220, 9%, 40%);
+  --bg-body: hsl(40, 25%, 98%);
   --bg-card: #ffffff;
-  --border-color: hsl(220, 20%, 91%);
-  --border-hover: hsl(220, 20%, 85%);
+  --border-color: hsl(40, 18%, 91%);
+  --border-hover: hsl(40, 18%, 80%);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 24px;
@@ -92,7 +92,7 @@ nav {
 #profileBtn:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 12px 20px hsla(41, 52%, 52%, 0.25);
 }
 
 /* DROPDOWN */
@@ -387,11 +387,11 @@ main {
   display: flex;
   align-items: center;
   gap: 14px;
-  background: linear-gradient(135deg, hsla(165, 80%, 23%, 0.08) 0%, hsla(165, 80%, 23%, 0.02) 100%);
-  border: 1px solid hsla(165, 80%, 23%, 0.15);
+  background: linear-gradient(135deg, hsla(41, 52%, 52%, 0.08) 0%, hsla(41, 52%, 52%, 0.02) 100%);
+  border: 1px solid hsla(41, 52%, 52%, 0.15);
   padding: 14px 18px;
   border-radius: var(--radius-md);
-  box-shadow: 0 2px 8px hsla(165, 80%, 23%, 0.04);
+  box-shadow: 0 2px 8px hsla(41, 52%, 52%, 0.04);
 }
 
 .trust-icon {
@@ -1380,7 +1380,7 @@ main {
 
 .book-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 20px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 12px 20px hsla(41, 52%, 52%, 0.25);
 }
 
 /* BOOKING MODAL */
@@ -1951,7 +1951,7 @@ footer {
 
 #propertyMapExternalLink:hover {
   background: var(--primary-glow);
-  border-color: hsla(165, 80%, 23%, 0.15);
+  border-color: hsla(41, 52%, 52%, 0.15);
   color: var(--primary-hover);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px var(--primary-glow);

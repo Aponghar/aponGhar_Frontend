@@ -1,16 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: hsl(165, 80%, 23%);
-  --primary-hover: hsl(165, 80%, 17%);
-  --primary-light: hsla(165, 80%, 23%, 0.05);
-  --primary-glow: hsla(165, 80%, 23%, 0.12);
-  --dark: hsl(224, 60%, 12%);
-  --dark-muted: hsl(220, 14%, 40%);
-  --bg-body: hsl(210, 40%, 98%);
+  --primary: hsl(41, 52%, 52%);
+  --primary-hover: hsl(41, 55%, 45%);
+  --primary-light: hsla(41, 52%, 52%, 0.08);
+  --primary-glow: hsla(41, 52%, 52%, 0.15);
+  --dark: hsl(220, 16%, 14%);
+  --dark-muted: hsl(220, 9%, 40%);
+  --bg-body: hsl(40, 25%, 98%);
   --bg-card: #ffffff;
-  --border-color: hsl(220, 20%, 91%);
-  --border-hover: hsl(220, 20%, 85%);
+  --border-color: hsl(40, 18%, 91%);
+  --border-hover: hsl(40, 18%, 80%);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 24px;
@@ -104,15 +104,14 @@ nav {
 
 .nav-actions a:hover,
 .panel-heading button:hover {
-  background: hsla(165, 80%, 23%, 0.12);
-  transform: translateY(-1px);
+  background: hsla(41, 52%, 52%, 0.12);
 }
 
 .nav-actions button:hover,
 .cancel-btn:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 10px 18px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 10px 18px hsla(41, 52%, 52%, 0.25);
 }
 
 .page-shell {
@@ -174,7 +173,7 @@ nav {
   padding: 28px;
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 75%, hsl(45, 90%, 45%) 100%);
+  background: linear-gradient(135deg, var(--dark) 0%, var(--primary) 75%, hsl(41, 52%, 52%) 100%);
   color: white;
   border: none;
   box-shadow: var(--shadow-md);
@@ -192,7 +191,7 @@ nav {
 }
 
 .balance-card.secondary {
-  background: linear-gradient(135deg, var(--dark) 0%, hsl(165, 30%, 15%) 50%, hsl(45, 90%, 35%) 100%);
+  background: linear-gradient(135deg, var(--dark) 0%, hsl(41, 20%, 20%) 50%, hsl(41, 52%, 40%) 100%);
 }
 
 .card-label {

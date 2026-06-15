@@ -420,7 +420,7 @@
 .view-btn:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 14px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 6px 14px hsla(41, 52%, 52%, 0.25);
 }
 
 /* Empty wishlist display */

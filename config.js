@@ -132,7 +132,7 @@ console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
             width: 56px;
             height: 56px;
             border-radius: 50%;
-            background: hsl(165, 80%, 96%);
+            background: hsl(40, 25%, 95%);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -181,13 +181,13 @@ console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
         }
 
         .custom-global-modal-btn.primary {
-            background: hsl(165, 80%, 23%);
+            background: hsl(41, 52%, 52%);
             color: #ffffff;
-            box-shadow: 0 4px 12px rgba(9, 79, 61, 0.15);
+            box-shadow: 0 4px 12px rgba(196, 155, 69, 0.15);
         }
-
+ 
         .custom-global-modal-btn.primary:hover {
-            background: hsl(165, 80%, 17%);
+            background: hsl(41, 55%, 45%);
             transform: translateY(-1px);
         }
 

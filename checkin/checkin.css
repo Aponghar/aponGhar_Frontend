@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: hsl(165, 80%, 23%);
-  --primary-hover: hsl(165, 80%, 17%);
-  --primary-light: hsla(165, 80%, 23%, 0.05);
-  --dark: hsl(224, 60%, 12%);
-  --bg-body: hsl(210, 40%, 98%);
+  --primary: hsl(41, 52%, 52%);
+  --primary-hover: hsl(41, 55%, 45%);
+  --primary-light: hsla(41, 52%, 52%, 0.08);
+  --dark: hsl(220, 16%, 14%);
+  --bg-body: hsl(40, 25%, 98%);
   --bg-card: #ffffff;
-  --border-color: hsl(220, 20%, 91%);
+  --border-color: hsl(40, 18%, 91%);
   --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.03);
   --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
   --success: hsl(142, 72%, 29%);
@@ -83,7 +83,7 @@ input[type="text"] {
 
 input[type="text"]:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px hsla(165, 80%, 23%, 0.1);
+  box-shadow: 0 0 0 3px hsla(41, 52%, 52%, 0.1);
 }
 
 small {
@@ -104,13 +104,13 @@ small {
   font-weight: 700;
   cursor: pointer;
   transition: all 0.25s ease;
-  box-shadow: 0 4px 10px hsla(165, 80%, 23%, 0.15);
+  box-shadow: 0 4px 10px hsla(41, 52%, 52%, 0.15);
 }
 
 .btn-primary:hover {
   background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 6px 16px hsla(41, 52%, 52%, 0.25);
 }
 
 .btn-primary:active {

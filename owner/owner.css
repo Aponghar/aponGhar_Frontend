@@ -1,17 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: hsl(165, 80%, 23%);
-  --primary-hover: hsl(165, 80%, 17%);
-  --primary-light: hsla(165, 80%, 23%, 0.05);
-  --primary-glow: hsla(165, 80%, 23%, 0.12);
-  --dark: hsl(224, 60%, 12%);
-  --dark-sidebar: linear-gradient(180deg, hsl(165, 80%, 8%) 0%, hsl(165, 80%, 14%) 100%);
-  --dark-muted: hsl(220, 14%, 40%);
-  --bg-body: hsl(210, 40%, 98%);
+  --primary: hsl(41, 52%, 52%);
+  --primary-hover: hsl(41, 55%, 45%);
+  --primary-light: hsla(41, 52%, 52%, 0.08);
+  --primary-glow: hsla(41, 52%, 52%, 0.15);
+  --dark: hsl(220, 16%, 14%);
+  --dark-sidebar: linear-gradient(180deg, hsl(220, 16%, 10%) 0%, hsl(220, 16%, 16%) 100%);
+  --dark-muted: hsl(220, 9%, 40%);
+  --bg-body: hsl(40, 25%, 98%);
   --bg-card: #ffffff;
-  --border-color: hsl(220, 20%, 91%);
-  --border-hover: hsl(220, 20%, 85%);
+  --border-color: hsl(40, 18%, 91%);
+  --border-hover: hsl(40, 18%, 80%);
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 24px;
@@ -168,7 +168,7 @@ form button,
 }
 
 .topbar button:hover {
-  background: hsla(165, 80%, 23%, 0.12);
+  background: hsla(41, 52%, 52%, 0.12);
   transform: translateY(-1px);
 }
 
@@ -214,7 +214,7 @@ form button,
 
 /* WALLET CARD */
 .wallet-card {
-  background: linear-gradient(135deg, hsl(165, 80%, 23%) 0%, hsl(165, 47%, 12%) 100%);
+  background: linear-gradient(135deg, hsl(41, 52%, 52%) 0%, hsl(220, 16%, 14%) 100%);
   color: #fff;
   border-radius: var(--radius-md);
   padding: 24px;
@@ -553,7 +553,7 @@ form,
   font-weight: 600;
   padding: 6px 12px;
   border-radius: 20px;
-  border: 1px solid hsla(165, 80%, 23%, 0.1);
+  border: 1px solid hsla(41, 52%, 52%, 0.1);
 }
 
 .booking-card-header-right {
@@ -1262,7 +1262,7 @@ form button:hover,
   align-items: center;
   gap: 18px;
   padding: 28px 30px;
-  background: linear-gradient(135deg, hsla(224, 60%, 12%, 0.06) 0%, hsla(165, 80%, 23%, 0.06) 50%, hsla(45, 90%, 55%, 0.06) 100%);
+  background: linear-gradient(135deg, hsla(220, 16%, 14%, 0.06) 0%, hsla(41, 52%, 52%, 0.06) 50%, hsla(40, 25%, 98%, 0.06) 100%);
   border-bottom: 1px solid var(--border-color);
 }
 
@@ -1276,7 +1276,7 @@ form button:hover,
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 6px 16px hsla(165, 80%, 23%, 0.25);
+  box-shadow: 0 6px 16px hsla(41, 52%, 52%, 0.25);
 }
 
 .coupon-form-header h3 {
@@ -1336,12 +1336,11 @@ form button:hover,
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
-  box-shadow: 0 6px 20px hsla(165, 80%, 23%, 0.2);
+  box-shadow: 0 6px 20px hsla(41, 52%, 52%, 0.2);
 }
 
-.coupon-submit-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 28px hsla(165, 80%, 23%, 0.3);
+.metric-card.withdrawal:hover {
+  box-shadow: 0 8px 28px hsla(41, 52%, 52%, 0.3);
 }
 
 /* ============================================
@@ -1392,7 +1391,7 @@ form button:hover,
   justify-content: space-between;
   align-items: center;
   padding: 20px 24px;
-  background: linear-gradient(135deg, hsla(224, 60%, 12%, 0.03) 0%, hsla(165, 80%, 23%, 0.03) 50%, hsla(45, 90%, 55%, 0.03) 100%);
+  background: linear-gradient(135deg, hsla(220, 16%, 14%, 0.03) 0%, hsla(41, 52%, 52%, 0.03) 50%, hsla(40, 25%, 98%, 0.03) 100%);
   border-bottom: 1px dashed var(--border-color);
 }
 
@@ -1459,7 +1458,7 @@ form button:hover,
   background: linear-gradient(135deg, var(--primary) 0%, hsl(45, 90%, 45%) 100%);
   color: #fff;
   min-width: 80px;
-  box-shadow: 0 4px 12px hsla(165, 80%, 23%, 0.2);
+  box-shadow: 0 4px 12px hsla(41, 52%, 52%, 0.2);
 }
 
 .coupon-discount-badge strong {
@@ -2182,11 +2181,11 @@ form button:hover,
 }
 
 .notification-item.unread {
-  background: hsla(165, 80%, 23%, 0.03);
+  background: hsla(41, 52%, 52%, 0.03);
 }
 
-.notification-item.unread:hover {
-  background: hsla(165, 80%, 23%, 0.06);
+.withdrawal-card:hover {
+  background: hsla(41, 52%, 52%, 0.06);
 }
 
 .notification-item-content {
