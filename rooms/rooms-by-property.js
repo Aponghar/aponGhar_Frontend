@@ -64,6 +64,7 @@ const user = JSON.parse(localStorage.getItem("user"));
 const amenityIdToName = new Map();
 let allRooms = [];
 let selectedBookingRoom = null;
+let currentProperty = null;
 let userWalletBalance = 0;
 let appliedCouponDiscount = 0;
 let appliedCouponCode = "";
@@ -592,6 +593,7 @@ const loadPropertyAndRooms = async () => {
 
 const displayPropertyDetails = (data) => {
   const property = data.property || {};
+  currentProperty = property;
   const gallery = data.gallery || [];
   const amenities = data.amenities || [];
   const rules = data.rules || [];
@@ -1413,6 +1415,101 @@ const revalidateCouponIfNeeded = async () => {
   }
 };
 
+const parseTimeToMinutes = (timeStr, isCheckOut = false) => {
+  if (!timeStr) return isCheckOut ? 1440 : 0;
+  const parts = timeStr.split(":");
+  const h = parseInt(parts[0], 10) || 0;
+  const m = parseInt(parts[1], 10) || 0;
+  if (isCheckOut && h === 0 && m === 0) {
+    return 1440;
+  }
+  return h * 60 + m;
+};
+
+const populateCheckInTimes = () => {
+  if (!selectedBookingRoom) return;
+
+  const duration = getHourlyDuration(selectedBookingRoom.pricing?.key);
+  const isHourly = duration > 0;
+
+  // Save currently selected value to try to restore it
+  const currentVal = bookingCheckInTime.value || "12:00";
+
+  // Clear existing options
+  bookingCheckInTime.innerHTML = "";
+
+  const allHours = [
+    { value: "00:00", label: "12:00 AM" },
+    { value: "01:00", label: "01:00 AM" },
+    { value: "02:00", label: "02:00 AM" },
+    { value: "03:00", label: "03:00 AM" },
+    { value: "04:00", label: "04:00 AM" },
+    { value: "05:00", label: "05:00 AM" },
+    { value: "06:00", label: "06:00 AM" },
+    { value: "07:00", label: "07:00 AM" },
+    { value: "08:00", label: "08:00 AM" },
+    { value: "09:00", label: "09:00 AM" },
+    { value: "10:00", label: "10:00 AM" },
+    { value: "11:00", label: "11:00 AM" },
+    { value: "12:00", label: "12:00 PM" },
+    { value: "13:00", label: "01:00 PM" },
+    { value: "14:00", label: "02:00 PM" },
+    { value: "15:00", label: "03:00 PM" },
+    { value: "16:00", label: "04:00 PM" },
+    { value: "17:00", label: "05:00 PM" },
+    { value: "18:00", label: "06:00 PM" },
+    { value: "19:00", label: "07:00 PM" },
+    { value: "20:00", label: "08:00 PM" },
+    { value: "21:00", label: "09:00 PM" },
+    { value: "22:00", label: "10:00 PM" },
+    { value: "23:00", label: "11:00 PM" }
+  ];
+
+  if (isHourly && currentProperty) {
+    const propCheckInMinutes = parseTimeToMinutes(currentProperty.check_in_time || "00:00", false);
+    const propCheckOutMinutes = parseTimeToMinutes(currentProperty.check_out_time || "24:00", true);
+
+    let hasValidOption = false;
+
+    allHours.forEach((hourObj) => {
+      const checkInMinutes = parseTimeToMinutes(hourObj.value, false);
+      const checkOutMinutes = checkInMinutes + duration * 60;
+
+      if (checkInMinutes >= propCheckInMinutes && checkOutMinutes <= propCheckOutMinutes) {
+        const option = document.createElement("option");
+        option.value = hourObj.value;
+        option.textContent = hourObj.label;
+        bookingCheckInTime.appendChild(option);
+        hasValidOption = true;
+      }
+    });
+
+    if (!hasValidOption) {
+      const option = document.createElement("option");
+      option.value = "";
+      option.textContent = "No valid hours for this option";
+      option.disabled = true;
+      bookingCheckInTime.appendChild(option);
+    }
+  } else {
+    // Populate all hours for nightly bookings
+    allHours.forEach((hourObj) => {
+      const option = document.createElement("option");
+      option.value = hourObj.value;
+      option.textContent = hourObj.label;
+      bookingCheckInTime.appendChild(option);
+    });
+  }
+
+  // Restore previously selected value if it still exists in the newly populated list
+  const hasCurrentVal = Array.from(bookingCheckInTime.options).some(opt => opt.value === currentVal);
+  if (hasCurrentVal) {
+    bookingCheckInTime.value = currentVal;
+  } else if (bookingCheckInTime.options.length > 0) {
+    bookingCheckInTime.value = bookingCheckInTime.options[0].value;
+  }
+};
+
 const handleBookingDetailsChange = async () => {
   updateBookingDateTimeFields();
   if (appliedCouponCode) {
@@ -1445,14 +1542,15 @@ function bookRoom(buttonElement) {
 
   const defaultCheckIn = urlParams.get("checkIn") || "";
   const defaultCheckOut = urlParams.get("checkOut") || defaultCheckIn;
-  const defaultTime = "12:00";
 
   bookingRoomName.textContent = selectedBookingRoom.name;
   bookingPricingSummary.textContent = `${selectedPricing.label} - ${formatINRText(selectedPricing.amount)}${selectedPricing.period}`;
   bookingCheckIn.value = defaultCheckIn;
   bookingCheckOut.value = defaultCheckOut;
-  bookingCheckInTime.value = defaultTime;
-  bookingCheckOutTime.value = addHoursToTime(defaultTime, getHourlyDuration(selectedPricing.key));
+  
+  populateCheckInTimes();
+  bookingCheckOutTime.value = addHoursToTime(bookingCheckInTime.value, getHourlyDuration(selectedPricing.key));
+
   bookingGuests.value = urlParams.get("guests") || "1";
   bookingRooms.value = "1";
   bookingGuestName.value = user.full_name || "";
@@ -1579,7 +1677,7 @@ const showBookingStatus = (state, data = {}) => {
       document.getElementById("detailBookingCode").textContent = data.bookingCode || "N/A";
       document.getElementById("detailPaymentMethod").textContent = data.paymentMethod || "OFFLINE";
       document.getElementById("detailPaymentStatus").textContent = data.paymentStatus || "PENDING";
-      document.getElementById("detailAmount").textContent = data.amount || "N/A";
+      document.getElementById("detailAmount").innerHTML = data.amount || "N/A";
     }
 
     actions.classList.remove("hidden");
