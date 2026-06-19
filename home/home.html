@@ -510,12 +510,14 @@
         required
       />
 
-      <input
-        type="text"
-        id="propertyType"
-        placeholder="Property Type"
-        required
-      />
+      <select id="propertyType" required>
+        <option value="">Select Property Type</option>
+        <option value="HOTEL">Hotel</option>
+        <option value="HOMESTAY">Homestay</option>
+        <option value="RESORT">Resort</option>
+        <option value="VILLA">Villa</option>
+        <option value="APARTMENT">Apartment</option>
+      </select>
 
       <input
         type="text"
@@ -546,7 +548,7 @@
 
       <textarea
         id="description"
-        placeholder="Description"
+        placeholder="Tell me about your property in details (e.g. size, number of rooms, or a short description)"
       ></textarea>
 
       <button type="submit">
