@@ -493,7 +493,7 @@ const fetchRoomGallery = async (roomDbId) => {
   }
 
   try {
-    const response = await fetch(`${BASE_URL}/rooms/${roomDbId}/gallery`);
+    const response = await fetch(`${BASE_URL}/rooms/${roomDbId}/gallery?all=true`);
     const data = await response.json();
     return data.success && Array.isArray(data.data) ? data.data : [];
   } catch (error) {
