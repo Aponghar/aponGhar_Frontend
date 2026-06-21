@@ -1321,6 +1321,35 @@
   </div>
 </div>
 
+<!-- Property Creation Status Overlay -->
+<div id="propertyStatusOverlay" class="booking-status-overlay hidden">
+  <div class="booking-status-card">
+    <div class="status-icon-container">
+      <div id="propertyStatusSpinner" class="status-spinner"></div>
+      <div id="propertyStatusSuccessIcon" class="status-success-icon hidden">
+        <svg viewBox="0 0 52 52">
+          <circle class="success-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="success-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+        </svg>
+      </div>
+      <div id="propertyStatusErrorIcon" class="status-error-icon hidden">
+        <svg viewBox="0 0 52 52">
+          <circle class="error-circle" cx="26" cy="26" r="25" fill="none"/>
+          <path class="error-cross-line1" fill="none" d="M16 16 36 36"/>
+          <path class="error-cross-line2" fill="none" d="M36 16 16 36"/>
+        </svg>
+      </div>
+    </div>
+    
+    <h3 id="propertyStatusTitle">Creating Property</h3>
+    <p id="propertyStatusDescription">Please wait while we create your property listing.</p>
+    
+    <div id="propertyStatusActions" class="status-actions hidden">
+      <button id="propertyStatusCloseBtn" class="status-btn secondary">Close</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="owner.js"></script>
 

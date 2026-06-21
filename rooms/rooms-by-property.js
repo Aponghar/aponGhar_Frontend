@@ -706,7 +706,7 @@ const displayPropertyDetails = (data) => {
       ? rulesValues
       : [
           "Government ID is required for all guests at check-in.",
-          "Standard check-in time is 12:00 PM and check-out is 11:00 AM.",
+          `Standard check-in time is ${property.check_in_time ? formatTime12h(property.check_in_time) : "12:00 PM"} and check-out is ${property.check_out_time ? formatTime12h(property.check_out_time) : "11:00 AM"}.`,
           "Couples and families are welcome.",
           "Please check specific room capacities and extra bed rules before booking."
         ];

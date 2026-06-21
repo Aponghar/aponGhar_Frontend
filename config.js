@@ -2,49 +2,49 @@
 // This file determines the correct API base URL based on the environment
 
 const getApiBaseUrl = () => {
-    const hostname = window.location.hostname;
-    const protocol = window.location.protocol;
-    
-    // Production domains
-    if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
-        return 'https://api.aponghar.in/api';
-    }
-    // Render deployment
-    if (hostname.includes('onrender.com')) {
-        return 'https://api.aponghar.in/api';
-    }
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
 
-    
-    // Development
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://127.0.0.1:5000/api';
-    }
-    
-    // Default fallback
-    return `${protocol}//api.aponghar.in/api`;
+  // Production domains
+  if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
+    return 'https://api.aponghar.in/api';
+  }
+  // Render deployment
+  if (hostname.includes('onrender.com')) {
+    return 'https://api.aponghar.in/api';
+  }
+
+
+  // Development
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://127.0.0.1:5000/api';
+  }
+
+  // Default fallback
+  return `${protocol}//api.aponghar.in/api`;
 };
 
 const getAssetBaseUrl = () => {
-    const hostname = window.location.hostname;
-    const protocol = window.location.protocol;
-    
-    // Production domains
-    if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
-        return 'https://api.aponghar.in';
-    }
+  const hostname = window.location.hostname;
+  const protocol = window.location.protocol;
 
-    // Render deployment
-    if (hostname.includes('onrender.com')) {
-        return 'https://api.aponghar.in';
-    }
-    
-    // Development
-    if (hostname === 'localhost' || hostname === '127.0.0.1') {
-        return 'http://127.0.0.1:5000';
-    }
-    
-    // Default fallback
-    return `${protocol}//api.aponghar.in`;
+  // Production domains
+  if (hostname === 'aponghar.in' || hostname === 'www.aponghar.in') {
+    return 'https://api.aponghar.in';
+  }
+
+  // Render deployment
+  if (hostname.includes('onrender.com')) {
+    return 'https://api.aponghar.in ';
+  }
+
+  // Development
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return 'http://127.0.0.1:5000';
+  }
+
+  // Default fallback
+  return `${protocol}//api.aponghar.in`;
 };
 
 const API_BASE_URL = getApiBaseUrl();
@@ -56,41 +56,41 @@ console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
 
 // Automatically sync user session/role from the server to local storage
 (async function syncUserSession() {
-    try {
-        const token = localStorage.getItem("token");
-        const localUserStr = localStorage.getItem("user");
-        if (!token || !localUserStr) return;
+  try {
+    const token = localStorage.getItem("token");
+    const localUserStr = localStorage.getItem("user");
+    if (!token || !localUserStr) return;
 
-        const localUser = JSON.parse(localUserStr);
-        const res = await fetch(`${API_BASE_URL}/users/profile`, {
-            method: "GET",
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
+    const localUser = JSON.parse(localUserStr);
+    const res = await fetch(`${API_BASE_URL}/users/profile`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`
+      }
+    });
 
-        if (res.status === 200) {
-            const data = await res.json();
-            if (data.success && data.data) {
-                const dbUser = data.data;
-                if (dbUser.role !== localUser.role) {
-                    // Update role in locally stored user object while preserving other stored fields
-                    const updatedUser = { ...localUser, ...dbUser };
-                    localStorage.setItem("user", JSON.stringify(updatedUser));
-                    console.log(`[API Config] User role updated from ${localUser.role} to ${dbUser.role}. Reloading page...`);
-                    window.location.reload();
-                }
-            }
+    if (res.status === 200) {
+      const data = await res.json();
+      if (data.success && data.data) {
+        const dbUser = data.data;
+        if (dbUser.role !== localUser.role) {
+          // Update role in locally stored user object while preserving other stored fields
+          const updatedUser = { ...localUser, ...dbUser };
+          localStorage.setItem("user", JSON.stringify(updatedUser));
+          console.log(`[API Config] User role updated from ${localUser.role} to ${dbUser.role}. Reloading page...`);
+          window.location.reload();
         }
-    } catch (err) {
-        console.error("[API Config] Failed to sync user session:", err);
+      }
     }
+  } catch (err) {
+    console.error("[API Config] Failed to sync user session:", err);
+  }
 })();
 
 // Inject Global Styles for Toasts, Custom Modals & Skeletons
 (function injectGlobalUIStyles() {
-    const style = document.createElement("style");
-    style.textContent = `
+  const style = document.createElement("style");
+  style.textContent = `
         /* GLOBAL CUSTOM ALERT/CONFIRM MODALS AND TOASTS */
         .custom-global-modal {
             position: fixed;
@@ -301,7 +301,7 @@ console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
             width: 45%;
         }
     `;
-    document.head.appendChild(style);
+  document.head.appendChild(style);
 })();
 
 // Helper HTML escaping for dialogs
@@ -336,7 +336,7 @@ window.showCustomAlertModal = (message, title = "Notice") => {
 
   const iconSpan = document.getElementById("customGlobalAlertIcon");
   const lowerMsg = String(message).toLowerCase();
-  
+
   // Set icons & styling classes
   iconSpan.className = "custom-global-modal-icon-wrap";
   if (lowerMsg.includes("success") || lowerMsg.includes("confirm") || lowerMsg.includes("complete") || lowerMsg.includes("thank")) {
@@ -354,7 +354,7 @@ window.showCustomAlertModal = (message, title = "Notice") => {
   document.getElementById("customGlobalAlertTitle").textContent = title;
   document.getElementById("customGlobalAlertMessage").innerHTML = escapeGlobalHTML(message).replace(/\n/g, '<br>');
   modal.classList.remove("hidden");
-  
+
   return new Promise((resolve) => {
     document.getElementById("customGlobalAlertBtn").onclick = () => {
       modal.classList.add("hidden");
@@ -403,10 +403,10 @@ window.customConfirm = (message, title = "Confirm Action") => {
 };
 
 // Overwrite window.alert with custom UI
-window.alert = function(message) {
-    if (message !== undefined && message !== null) {
-        window.showCustomAlertModal(String(message));
-    }
+window.alert = function (message) {
+  if (message !== undefined && message !== null) {
+    window.showCustomAlertModal(String(message));
+  }
 };
 
 // global Toast Notification helper
@@ -418,26 +418,26 @@ window.showToast = (message, type = "info") => {
     container.className = "toast-container";
     document.body.appendChild(container);
   }
-  
+
   const toast = document.createElement("div");
   toast.className = `toast-item ${type}`;
-  
+
   let icon = "ℹ️";
   if (type === "success") icon = "✅";
   if (type === "error") icon = "❌";
   if (type === "warning") icon = "⚠️";
-  
+
   toast.innerHTML = `
     <span class="toast-icon">${icon}</span>
     <span class="toast-message">${escapeGlobalHTML(message)}</span>
   `;
-  
+
   container.appendChild(toast);
-  
+
   setTimeout(() => {
     toast.classList.add("show");
   }, 10);
-  
+
   setTimeout(() => {
     toast.classList.remove("show");
     setTimeout(() => {

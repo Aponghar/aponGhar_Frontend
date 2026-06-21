@@ -179,8 +179,55 @@ if (closeModal) {
   });
 }
 
+const showPartnerStatus = (state, data = {}) => {
+  const overlay = document.getElementById("partnerStatusOverlay");
+  const spinner = document.getElementById("partnerStatusSpinner");
+  const successIcon = document.getElementById("partnerStatusSuccessIcon");
+  const errorIcon = document.getElementById("partnerStatusErrorIcon");
+  const title = document.getElementById("partnerStatusTitle");
+  const description = document.getElementById("partnerStatusDescription");
+  const actions = document.getElementById("partnerStatusActions");
+  const closeBtn = document.getElementById("partnerStatusCloseBtn");
+
+  overlay.classList.remove("hidden");
+  spinner.classList.add("hidden");
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+  actions.classList.add("hidden");
+
+  if (state === "processing") {
+    spinner.classList.remove("hidden");
+    title.textContent = data.title || "Submitting Application";
+    description.textContent = data.description || "Please wait while we process your request.";
+  } 
+  else if (state === "success") {
+    successIcon.classList.remove("hidden");
+    title.textContent = data.title || "Application Submitted! 🎉";
+    description.textContent = data.description || "Your application was submitted successfully.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+      ownerModal.classList.remove("active");
+    };
+  } 
+  else if (state === "error") {
+    errorIcon.classList.remove("hidden");
+    title.textContent = data.title || "Submission Failed";
+    description.textContent = data.errorMessage || "An error occurred. Please try again.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+    };
+  }
+};
+
 document.getElementById("ownerForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+  }
 
   const body = {
     property_name: document.getElementById("propertyName").value,
@@ -191,6 +238,11 @@ document.getElementById("ownerForm").addEventListener("submit", async (event) =>
     contact_number: document.getElementById("contactNumber").value,
     description: document.getElementById("description").value
   };
+
+  showPartnerStatus("processing", {
+    title: "Submitting Application",
+    description: "Please wait while we submit your application request..."
+  });
 
   try {
     const response = await fetch(`${BASE_URL}/owners/apply`, {
@@ -205,15 +257,27 @@ document.getElementById("ownerForm").addEventListener("submit", async (event) =>
     const data = await response.json();
 
     if (data.success) {
-      alert("Application submitted successfully!");
-      ownerModal.classList.remove("active");
+      showPartnerStatus("success", {
+        title: "Application Submitted! 🎉",
+        description: "Your application to become a partner has been submitted successfully. Our team will review your application soon."
+      });
+      document.getElementById("ownerForm").reset();
+      if (submitBtn) {
+        submitBtn.disabled = false;
+      }
       return;
     }
 
-    alert(data.message || "Unable to submit application.");
+    throw new Error(data.message || "Unable to submit application.");
   } catch (error) {
     console.error(error);
-    alert("Server Error");
+    showPartnerStatus("error", {
+      title: "Submission Failed",
+      errorMessage: error.message || "Failed to submit application. Please try again."
+    });
+    if (submitBtn) {
+      submitBtn.disabled = false;
+    }
   }
 });
 

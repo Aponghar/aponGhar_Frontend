@@ -1923,8 +1923,55 @@ if (mapsLinkInput) {
   });
 }
 
+const showPropertyStatus = (state, data = {}) => {
+  const overlay = document.getElementById("propertyStatusOverlay");
+  const spinner = document.getElementById("propertyStatusSpinner");
+  const successIcon = document.getElementById("propertyStatusSuccessIcon");
+  const errorIcon = document.getElementById("propertyStatusErrorIcon");
+  const title = document.getElementById("propertyStatusTitle");
+  const description = document.getElementById("propertyStatusDescription");
+  const actions = document.getElementById("propertyStatusActions");
+  const closeBtn = document.getElementById("propertyStatusCloseBtn");
+
+  overlay.classList.remove("hidden");
+  spinner.classList.add("hidden");
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+  actions.classList.add("hidden");
+
+  if (state === "processing") {
+    spinner.classList.remove("hidden");
+    title.textContent = data.title || "Creating Property";
+    description.textContent = data.description || "Please wait while we process your request.";
+  } 
+  else if (state === "success") {
+    successIcon.classList.remove("hidden");
+    title.textContent = data.title || "Property Created! 🎉";
+    description.textContent = data.description || "Your property listing has been created successfully.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+      myPropertiesTab.click();
+    };
+  } 
+  else if (state === "error") {
+    errorIcon.classList.remove("hidden");
+    title.textContent = data.title || "Creation Failed";
+    description.textContent = data.errorMessage || "An error occurred. Please try again.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+    };
+  }
+};
+
 document.getElementById("propertyForm").addEventListener("submit", async (event) => {
   event.preventDefault();
+
+  const submitBtn = event.target.querySelector('button[type="submit"]');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+  }
 
   const formData = new FormData();
   const propertyFields = [
@@ -1949,6 +1996,11 @@ document.getElementById("propertyForm").addEventListener("submit", async (event)
   });
 
   formData.append("property_image", document.getElementById("property_image").files[0]);
+
+  showPropertyStatus("processing", {
+    title: "Creating Property",
+    description: "Please wait while we register your property..."
+  });
 
   try {
     const data = await fetchJson(PROPERTY_BASE_URL, {
@@ -1979,6 +2031,10 @@ document.getElementById("propertyForm").addEventListener("submit", async (event)
 
     // POST rules if any are selected/created
     if (selectedRules.length > 0) {
+      showPropertyStatus("processing", {
+        title: "Setting Up House Rules",
+        description: "Applying selected house rules to your property..."
+      });
       await fetchJson(`${PROPERTY_BASE_URL}/${propertyId}/rules`, {
         method: "POST",
         headers: {
@@ -1988,14 +2044,31 @@ document.getElementById("propertyForm").addEventListener("submit", async (event)
       });
     }
 
-    alert("Property and stay rules created successfully!");
+    showPropertyStatus("success", {
+      title: "Property Created! 🎉",
+      description: "Your property has been successfully created. We will review it for approval. You can upload additional room details shortly."
+    });
+
     document.getElementById("propertyForm").reset();
     customRules = [];
     renderCustomRules();
+    const mapContainerEl = document.getElementById("mapContainer");
+    if (mapContainerEl) {
+      mapContainerEl.style.display = "none";
+    }
     dashboardLoaded = false;
+    if (submitBtn) {
+      submitBtn.disabled = false;
+    }
   } catch (error) {
     console.error(error);
-    alert(error.message || "Failed to create property");
+    showPropertyStatus("error", {
+      title: "Creation Failed",
+      errorMessage: error.message || "Failed to create property. Please verify your details and try again."
+    });
+    if (submitBtn) {
+      submitBtn.disabled = false;
+    }
   }
 });
 
