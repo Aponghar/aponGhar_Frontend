@@ -2032,6 +2032,10 @@ footer {
     padding: 16px;
   }
 
+  .room-gallery {
+    height: 280px;
+  }
+
   .section-heading-row {
     align-items: stretch;
     flex-direction: column;
