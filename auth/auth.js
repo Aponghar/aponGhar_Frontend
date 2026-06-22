@@ -8,7 +8,12 @@ const mode = localStorage.getItem("authMode");
 
 window.onload = () => {
 
-  if(mode === "register"){
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get("token");
+
+  if (token) {
+    showForm("resetForm");
+  } else if(mode === "register"){
 
     showForm("registerForm");
 
