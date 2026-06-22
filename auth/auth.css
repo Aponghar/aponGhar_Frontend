@@ -513,3 +513,38 @@ body::after {
   transform: none !important;
   box-shadow: none !important;
 }
+
+/* Password eye visibility toggle */
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.password-wrapper input {
+  width: 100% !important;
+  padding-right: 48px !important;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: hsl(220, 10%, 65%);
+  user-select: none;
+  font-size: 0; /* hides any standard space/text */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  z-index: 5;
+}
+
+.password-toggle:hover {
+  color: var(--primary);
+}
+
+.password-toggle svg {
+  display: block;
+}
