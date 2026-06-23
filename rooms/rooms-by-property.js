@@ -1543,10 +1543,31 @@ function bookRoom(buttonElement) {
   const defaultCheckIn = urlParams.get("checkIn") || "";
   const defaultCheckOut = urlParams.get("checkOut") || defaultCheckIn;
 
+  const getTodayDateString = () => {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  const todayStr = getTodayDateString();
+  bookingCheckIn.min = todayStr;
+  bookingCheckOut.min = todayStr;
+
   bookingRoomName.textContent = selectedBookingRoom.name;
   bookingPricingSummary.textContent = `${selectedPricing.label} - ${formatINRText(selectedPricing.amount)}${selectedPricing.period}`;
-  bookingCheckIn.value = defaultCheckIn;
-  bookingCheckOut.value = defaultCheckOut;
+  
+  if (defaultCheckIn && defaultCheckIn < todayStr) {
+    bookingCheckIn.value = todayStr;
+  } else {
+    bookingCheckIn.value = defaultCheckIn;
+  }
+
+  if (defaultCheckOut && defaultCheckOut < todayStr) {
+    bookingCheckOut.value = todayStr;
+  } else {
+    bookingCheckOut.value = defaultCheckOut;
+  }
   
   populateCheckInTimes();
   bookingCheckOutTime.value = addHoursToTime(bookingCheckInTime.value, getHourlyDuration(selectedPricing.key));
@@ -1613,6 +1634,13 @@ const updateBookingDateTimeFields = () => {
 
   const duration = getHourlyDuration(selectedBookingRoom.pricing?.key);
   const isHourly = duration > 0;
+
+  if (bookingCheckIn.value) {
+    bookingCheckOut.min = bookingCheckIn.value;
+    if (!isHourly && bookingCheckOut.value < bookingCheckIn.value) {
+      bookingCheckOut.value = bookingCheckIn.value;
+    }
+  }
 
   if (isHourly) {
     bookingCheckOut.value = bookingCheckIn.value;

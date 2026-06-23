@@ -640,6 +640,7 @@ const renderBookingsDetails = (bookings) => {
               <strong>Guest Contact</strong>
               <span>${escapeHTML([
                 booking.guest_email || booking.user_email || "Email not available",
+                booking.user_phone ? `Phone: ${booking.user_phone}` : "",
                 booking.guest_age ? `Age ${booking.guest_age}` : "",
                 booking.customer_name ? `User ${booking.customer_name}` : ""
               ].filter(Boolean).join(" | "))}</span>
@@ -722,6 +723,7 @@ const renderBookingsDetails = (bookings) => {
             <strong>Guest Contact</strong>
             <span>${escapeHTML([
               booking.guest_email || booking.user_email || "Email not available",
+              booking.user_phone ? `Phone: ${booking.user_phone}` : "",
               booking.guest_age ? `Age ${booking.guest_age}` : "",
               booking.customer_name ? `User ${booking.customer_name}` : ""
             ].filter(Boolean).join(" | "))}</span>
@@ -955,7 +957,7 @@ const renderCheckInBookingPreview = (booking) => {
         <strong>Guest Contact</strong>
         <span>${escapeHTML([
           booking.guest_email || booking.user_email || "Email not available",
-          booking.user_phone || "",
+          booking.user_phone ? `Phone: ${booking.user_phone}` : "",
           booking.guest_age ? `Age ${booking.guest_age}` : ""
         ].filter(Boolean).join(" | "))}</span>
       </div>
