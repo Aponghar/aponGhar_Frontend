@@ -1324,4 +1324,11 @@ document.addEventListener("DOMContentLoaded", () => {
   loadProperties();
   updateSlider();
   loadBanners();
+
+  if (localStorage.getItem("triggerOwnerOnboarding") === "true") {
+    localStorage.removeItem("triggerOwnerOnboarding");
+    setTimeout(() => {
+      if (joinBtn) joinBtn.click();
+    }, 300);
+  }
 });

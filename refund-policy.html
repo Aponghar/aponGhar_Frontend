@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Refund Policy - AponGhar</title>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: hsl(41, 52%, 52%);
+      --primary-hover: hsl(41, 55%, 45%);
+      --primary-light: hsla(41, 52%, 52%, 0.08);
+      --dark: hsl(220, 16%, 14%);
+      --dark-muted: hsl(220, 9%, 40%);
+      --bg-body: hsl(40, 25%, 98%);
+      --bg-card: #ffffff;
+      --border-color: hsl(40, 18%, 91%);
+      --radius-md: 12px;
+      --radius-lg: 24px;
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(15, 23, 42, 0.02);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--dark-muted);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto 80px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .last-updated {
+      font-size: 14px;
+      color: var(--dark-muted);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 32px 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      font-size: 13px;
+      color: var(--dark-muted);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 24px;
+      }
+      .container {
+        margin: 20px;
+        padding: 24px;
+        border-radius: var(--radius-md);
+      }
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./home/home.html" class="logo-link">
+    <img src="./assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <a href="./home/home.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <h1>Refund Policy</h1>
+  <div class="last-updated">Last Updated: June 2026</div>
+
+  <h2>1. Introduction</h2>
+  <p>This Refund Policy explains how refunds are processed for bookings made through AponGhar.</p>
+  <p>By making a booking through AponGhar, you agree to this Refund Policy.</p>
+
+  <hr>
+
+  <h2>2. Eligibility for Refunds</h2>
+  <p>Refund eligibility depends on the cancellation timing and booking status.</p>
+  <p>Users may be eligible for a refund if:</p>
+  <ul>
+    <li>A booking is canceled according to the Cancellation Policy.</li>
+    <li>A duplicate payment occurs.</li>
+    <li>A payment is successfully charged but no booking is created.</li>
+    <li>A technical issue results in an incorrect charge.</li>
+    <li>AponGhar determines that a refund is appropriate under special circumstances.</li>
+  </ul>
+
+  <hr>
+
+  <h2>3. Standard Refund Rules</h2>
+  <h3>Cancellation More Than 24 Hours Before Check-in</h3>
+  <p>Guests are eligible for:</p>
+  <p><strong>100% Refund of the Booking Amount</strong></p>
+  <p>provided that the booking is canceled at least 24 hours before the scheduled check-in time.</p>
+
+  <h3>Cancellation Within 24 Hours Before Check-in</h3>
+  <p>Guests are eligible for:</p>
+  <p><strong>50% Refund of the Booking Amount</strong></p>
+  <p>when cancellation occurs within 24 hours of the scheduled check-in time.</p>
+
+  <hr>
+
+  <h2>4. Non-Refundable Situations</h2>
+  <p>Refunds may not be issued when:</p>
+  <ul>
+    <li>A guest fails to arrive at the property (No-Show).</li>
+    <li>False information was provided during booking.</li>
+    <li>Fraudulent activity is detected.</li>
+    <li>Platform policies have been violated.</li>
+    <li>Payment disputes are initiated through unauthorized methods.</li>
+  </ul>
+  <p>AponGhar reserves the right to investigate such cases.</p>
+
+  <hr>
+
+  <h2>5. Duplicate Payments</h2>
+  <p>If a user is charged more than once for the same booking:</p>
+  <ul>
+    <li>The duplicate amount will be reviewed.</li>
+    <li>Eligible duplicate payments will be refunded.</li>
+  </ul>
+  <p>Users should contact support with transaction details.</p>
+
+  <hr>
+
+  <h2>6. Failed Bookings</h2>
+  <p>If payment is completed but the booking is not successfully created due to a technical issue:</p>
+  <ul>
+    <li>The payment may automatically reverse.</li>
+    <li>If automatic reversal does not occur, a manual refund may be processed.</li>
+  </ul>
+
+  <hr>
+
+  <h2>7. Refund Processing Time</h2>
+  <p>Approved refunds are generally processed within:</p>
+  <p><strong>1–7 business days</strong></p>
+  <p>depending on:</p>
+  <ul>
+    <li>Banking partner</li>
+    <li>Payment method</li>
+    <li>Razorpay processing timelines</li>
+    <li>Issuing bank policies</li>
+  </ul>
+  <p>Some banks may require additional time.</p>
+
+  <hr>
+
+  <h2>8. Refund Method</h2>
+  <p>Refunds will generally be issued through the original payment method used for the booking.</p>
+  <p>Examples include:</p>
+  <ul>
+    <li>UPI</li>
+    <li>Credit Card</li>
+    <li>Debit Card</li>
+    <li>Net Banking</li>
+    <li>Digital Wallet</li>
+  </ul>
+  <p>Alternative refund methods may be used where required.</p>
+
+  <hr>
+
+  <h2>9. Wallet Transactions</h2>
+  <p>Wallet balances used during a booking may be returned to the user's AponGhar wallet where applicable.</p>
+  <p>Wallet balances:</p>
+  <ul>
+    <li>Are non-transferable.</li>
+    <li>Cannot be withdrawn as cash.</li>
+    <li>May only be used for eligible bookings on AponGhar.</li>
+  </ul>
+
+  <hr>
+
+  <h2>10. Special Circumstances</h2>
+  <p>AponGhar may review refund requests involving:</p>
+  <ul>
+    <li>Natural disasters</li>
+    <li>Government restrictions</li>
+    <li>Property closure</li>
+    <li>Safety concerns</li>
+    <li>Force majeure events</li>
+  </ul>
+  <p>Additional documentation may be requested.</p>
+
+  <hr>
+
+  <h2>11. Contact Us</h2>
+  <p>For refund-related inquiries, please contact:</p>
+  <p><strong>AponGhar</strong></p>
+  <p><strong>Website:</strong> <a href="https://aponghar.in" target="_blank">https://aponghar.in</a></p>
+  <p><strong>Support Email:</strong> <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a></p>
+  <p>Please include:</p>
+  <ul>
+    <li>Booking ID</li>
+    <li>Transaction ID</li>
+    <li>Registered Email Address</li>
+    <li>Refund Request Details</li>
+  </ul>
+  <p>for faster assistance.</p>
+
+  <hr>
+
+  <p><em>By using AponGhar, you acknowledge and agree to this Refund Policy.</em></p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AponGhar. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

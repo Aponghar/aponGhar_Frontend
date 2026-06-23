@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guest Agreement - AponGhar</title>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: hsl(41, 52%, 52%);
+      --primary-hover: hsl(41, 55%, 45%);
+      --primary-light: hsla(41, 52%, 52%, 0.08);
+      --dark: hsl(220, 16%, 14%);
+      --dark-muted: hsl(220, 9%, 40%);
+      --bg-body: hsl(40, 25%, 98%);
+      --bg-card: #ffffff;
+      --border-color: hsl(40, 18%, 91%);
+      --radius-md: 12px;
+      --radius-lg: 24px;
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(15, 23, 42, 0.02);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--dark-muted);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto 80px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .last-updated {
+      font-size: 14px;
+      color: var(--dark-muted);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 32px 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      font-size: 13px;
+      color: var(--dark-muted);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 24px;
+      }
+      .container {
+        margin: 20px;
+        padding: 24px;
+        border-radius: var(--radius-md);
+      }
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./home/home.html" class="logo-link">
+    <img src="./assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <a href="./home/home.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <h1>Guest Agreement</h1>
+  <div class="last-updated">Last Updated: June 2026</div>
+
+  <p>This Guest Agreement governs the use of AponGhar by travelers and guests.</p>
+  <p>By creating an account, making a booking, or using AponGhar services, you agree to this Agreement.</p>
+
+  <hr>
+
+  <h2>1. Eligibility</h2>
+  <p>Guests must:</p>
+  <ul>
+    <li>Be at least 18 years old.</li>
+    <li>Provide accurate information.</li>
+    <li>Use the platform lawfully.</li>
+  </ul>
+
+  <hr>
+
+  <h2>2. Account Responsibilities</h2>
+  <p>Guests are responsible for:</p>
+  <ul>
+    <li>Maintaining account security.</li>
+    <li>Protecting passwords and OTPs.</li>
+    <li>Keeping profile information accurate.</li>
+  </ul>
+  <p>Guests are responsible for activity occurring through their accounts.</p>
+
+  <hr>
+
+  <h2>3. Booking Rules</h2>
+  <p>Guests agree to:</p>
+  <ul>
+    <li>Provide correct booking details.</li>
+    <li>Respect property rules.</li>
+    <li>Follow check-in and check-out procedures.</li>
+    <li>Communicate honestly with property owners.</li>
+  </ul>
+  <p>Booking confirmation depends on successful payment processing.</p>
+
+  <hr>
+
+  <h2>4. Payments</h2>
+  <p>Guests may pay using:</p>
+  <ul>
+    <li>UPI</li>
+    <li>Debit Cards</li>
+    <li>Credit Cards</li>
+    <li>Net Banking</li>
+    <li>Supported Wallets</li>
+  </ul>
+  <p>All payments are processed through authorized payment partners.</p>
+
+  <hr>
+
+  <h2>5. Wallet Usage</h2>
+  <p>AponGhar wallet balances:</p>
+  <ul>
+    <li>Can be used toward bookings.</li>
+    <li>Cannot be withdrawn as cash.</li>
+    <li>Cannot be transferred between users.</li>
+  </ul>
+  <p>Wallet misuse may result in account restrictions.</p>
+
+  <hr>
+
+  <h2>6. Reviews and Ratings</h2>
+  <p>Only verified guests who complete a stay may leave reviews.</p>
+  <p>Reviews must:</p>
+  <ul>
+    <li>Be truthful.</li>
+    <li>Be respectful.</li>
+    <li>Reflect actual experiences.</li>
+  </ul>
+  <p>Guests may not submit:</p>
+  <ul>
+    <li>Fake reviews</li>
+    <li>Offensive content</li>
+    <li>Defamatory content</li>
+    <li>Misleading information</li>
+  </ul>
+
+  <hr>
+
+  <h2>7. Cancellations and Refunds</h2>
+  <p>Refund eligibility follows the AponGhar Refund Policy and Cancellation Policy.</p>
+  <p>Current standard policy:</p>
+  <ul>
+    <li>More than 24 hours before check-in &rarr; Full refund.</li>
+    <li>Within 24 hours before check-in &rarr; 50% refund.</li>
+  </ul>
+  <p>Additional conditions may apply.</p>
+
+  <hr>
+
+  <h2>8. Guest Conduct</h2>
+  <p>Guests must not:</p>
+  <ul>
+    <li>Damage property.</li>
+    <li>Disturb other guests.</li>
+    <li>Engage in illegal activity.</li>
+    <li>Harass staff or owners.</li>
+    <li>Misuse platform services.</li>
+  </ul>
+  <p>Property owners may take appropriate action where necessary.</p>
+
+  <hr>
+
+  <h2>9. Property Accuracy</h2>
+  <p>AponGhar works to maintain accurate listings.</p>
+  <p>However:</p>
+  <ul>
+    <li>Property descriptions are provided by owners.</li>
+    <li>Availability may change.</li>
+    <li>Certain amenities may vary.</li>
+  </ul>
+  <p>Guests should review property details before booking.</p>
+
+  <hr>
+
+  <h2>10. Limitation of Liability</h2>
+  <p>AponGhar operates as a booking platform connecting guests and property owners.</p>
+  <p>AponGhar is not responsible for:</p>
+  <ul>
+    <li>Property conditions</li>
+    <li>Owner conduct</li>
+    <li>Guest conduct</li>
+    <li>Personal losses</li>
+    <li>Travel disruptions</li>
+  </ul>
+  <p>To the maximum extent permitted by law.</p>
+
+  <hr>
+
+  <h2>11. Account Suspension</h2>
+  <p>Accounts may be suspended for:</p>
+  <ul>
+    <li>Fraudulent activity</li>
+    <li>Abuse of the platform</li>
+    <li>False information</li>
+    <li>Review manipulation</li>
+    <li>Policy violations</li>
+  </ul>
+
+  <hr>
+
+  <h2>12. Contact</h2>
+  <p><strong>Website:</strong> <a href="https://aponghar.in" target="_blank">https://aponghar.in</a></p>
+  <p><strong>Email:</strong> <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a></p>
+
+  <hr>
+
+  <p>By using AponGhar, you acknowledge that you have read, understood, and agreed to this Guest Agreement.</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AponGhar. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy - AponGhar</title>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: hsl(41, 52%, 52%);
+      --primary-hover: hsl(41, 55%, 45%);
+      --primary-light: hsla(41, 52%, 52%, 0.08);
+      --dark: hsl(220, 16%, 14%);
+      --dark-muted: hsl(220, 9%, 40%);
+      --bg-body: hsl(40, 25%, 98%);
+      --bg-card: #ffffff;
+      --border-color: hsl(40, 18%, 91%);
+      --radius-md: 12px;
+      --radius-lg: 24px;
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(15, 23, 42, 0.02);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--dark-muted);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto 80px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .last-updated {
+      font-size: 14px;
+      color: var(--dark-muted);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 32px 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      font-size: 13px;
+      color: var(--dark-muted);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 24px;
+      }
+      .container {
+        margin: 20px;
+        padding: 24px;
+        border-radius: var(--radius-md);
+      }
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./home/home.html" class="logo-link">
+    <img src="./assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <a href="./home/home.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <h1>Privacy Policy</h1>
+  <div class="last-updated">Last Updated: June 2026</div>
+
+  <h2>1. Introduction</h2>
+  <p>Welcome to AponGhar ("AponGhar", "we", "our", or "us").</p>
+  <p>AponGhar is an online platform that helps users discover, compare, and book homestays, hotels, resorts, villas, apartments, and other accommodation properties across India.</p>
+  <p>This Privacy Policy explains how we collect, use, store, share, and protect your information when you access or use our website, mobile applications, and related services.</p>
+  <p>By using AponGhar, you agree to the collection and use of information in accordance with this Privacy Policy.</p>
+
+  <hr>
+
+  <h2>2. Platform Information</h2>
+  <p><strong>Website:</strong> <a href="https://aponghar.in" target="_blank">https://aponghar.in</a></p>
+  <p><strong>Operated By:</strong> Anish Chakraborty</p>
+  <p><strong>Support Email:</strong> <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a></p>
+
+  <hr>
+
+  <h2>3. Information We Collect</h2>
+
+  <h3>3.1 Personal Information</h3>
+  <p>When you create an account, make a booking, list a property, or contact us, we may collect:</p>
+  <ul>
+    <li>Full name</li>
+    <li>Email address</li>
+    <li>Mobile phone number</li>
+    <li>Date of birth (if provided)</li>
+    <li>Address details</li>
+    <li>Government-issued identification information when required</li>
+    <li>Profile information</li>
+    <li>Property ownership details (for owners)</li>
+  </ul>
+
+  <h3>3.2 Booking Information</h3>
+  <p>When you make a booking, we may collect:</p>
+  <ul>
+    <li>Check-in date</li>
+    <li>Check-out date</li>
+    <li>Number of guests</li>
+    <li>Property selected</li>
+    <li>Booking history</li>
+    <li>Special requests</li>
+  </ul>
+
+  <h3>3.3 Payment Information</h3>
+  <p>Payments are processed through trusted third-party payment providers such as Razorpay.</p>
+  <p>AponGhar does not store complete credit card, debit card, UPI PIN, or banking credentials.</p>
+  <p>We may receive:</p>
+  <ul>
+    <li>Payment status</li>
+    <li>Transaction ID</li>
+    <li>Payment amount</li>
+    <li>Refund information</li>
+  </ul>
+
+  <h3>3.4 Wallet Information</h3>
+  <p>We may store:</p>
+  <ul>
+    <li>Wallet balance</li>
+    <li>Wallet transaction history</li>
+    <li>Credits used for bookings</li>
+    <li>Promotional rewards</li>
+  </ul>
+  <p>User wallet balances can only be used for bookings on AponGhar.</p>
+
+  <h3>3.5 Property Owner Information</h3>
+  <p>For property owners, we may collect:</p>
+  <ul>
+    <li>Property information</li>
+    <li>Room information</li>
+    <li>Pricing details</li>
+    <li>Bank account details for payouts</li>
+    <li>Withdrawal requests</li>
+    <li>Business-related information</li>
+  </ul>
+
+  <h3>3.6 Technical Information</h3>
+  <p>We may automatically collect:</p>
+  <ul>
+    <li>IP address</li>
+    <li>Browser type</li>
+    <li>Device information</li>
+    <li>Operating system</li>
+    <li>App version</li>
+    <li>Usage activity</li>
+    <li>Cookies and analytics data</li>
+  </ul>
+
+  <hr>
+
+  <h2>4. How We Use Your Information</h2>
+  <p>We use information to:</p>
+  <ul>
+    <li>Create and manage accounts</li>
+    <li>Process bookings</li>
+    <li>Process payments and refunds</li>
+    <li>Manage owner payouts</li>
+    <li>Verify users and property owners</li>
+    <li>Prevent fraud and abuse</li>
+    <li>Improve platform performance</li>
+    <li>Provide customer support</li>
+    <li>Send booking confirmations</li>
+    <li>Send transaction notifications</li>
+    <li>Comply with legal obligations</li>
+    <li>Improve user experience</li>
+  </ul>
+
+  <hr>
+
+  <h2>5. Property Verification and Reviews</h2>
+  <p>AponGhar reviews property submissions before publication.</p>
+  <p>Property listings may be reviewed by administrators to ensure quality, accuracy, and compliance.</p>
+  <p>Only verified guests who have completed a stay may submit reviews and ratings.</p>
+  <p>We reserve the right to remove reviews that violate platform policies.</p>
+
+  <hr>
+
+  <h2>6. Sharing of Information</h2>
+  <p>We do not sell personal information.</p>
+  <p>We may share information with:</p>
+  <h3>Payment Providers</h3>
+  <p>For processing payments and refunds.</p>
+  <h3>Property Owners</h3>
+  <p>Information necessary to complete bookings.</p>
+  <h3>Service Providers</h3>
+  <p>Trusted third-party providers that help operate the platform.</p>
+  <h3>Legal Authorities</h3>
+  <p>Where required by law, court order, or government request.</p>
+  <h3>Business Transfers</h3>
+  <p>If AponGhar undergoes a merger, acquisition, or restructuring.</p>
+
+  <hr>
+
+  <h2>7. Cookies and Tracking Technologies</h2>
+  <p>We use cookies and similar technologies to:</p>
+  <ul>
+    <li>Keep users logged in</li>
+    <li>Remember preferences</li>
+    <li>Improve website performance</li>
+    <li>Analyze traffic and usage</li>
+    <li>Enhance security</li>
+  </ul>
+  <p>Users may manage cookies through browser settings.</p>
+  <p>Some features may not function properly if cookies are disabled.</p>
+
+  <hr>
+
+  <h2>8. Data Security</h2>
+  <p>We implement reasonable security measures to protect information from:</p>
+  <ul>
+    <li>Unauthorized access</li>
+    <li>Loss</li>
+    <li>Misuse</li>
+    <li>Disclosure</li>
+    <li>Alteration</li>
+  </ul>
+  <p>While we strive to protect user information, no internet-based system can be guaranteed to be completely secure.</p>
+
+  <hr>
+
+  <h2>9. Data Retention</h2>
+  <p>We retain information for as long as necessary to:</p>
+  <ul>
+    <li>Provide services</li>
+    <li>Maintain booking records</li>
+    <li>Resolve disputes</li>
+    <li>Comply with legal obligations</li>
+    <li>Prevent fraud</li>
+  </ul>
+  <p>Information may be retained after account closure where legally required.</p>
+
+  <hr>
+
+  <h2>10. User Rights</h2>
+  <p>Users may request:</p>
+  <ul>
+    <li>Access to personal information</li>
+    <li>Correction of inaccurate information</li>
+    <li>Deletion of eligible information</li>
+    <li>Withdrawal of marketing communications</li>
+  </ul>
+  <p>Requests may be submitted through our support email.</p>
+
+  <hr>
+
+  <h2>11. Children's Privacy</h2>
+  <p>AponGhar services are intended only for individuals aged 18 years or older.</p>
+  <p>We do not knowingly collect information from children under 18 years of age.</p>
+  <p>If we become aware that such information has been collected, we may remove it.</p>
+
+  <hr>
+
+  <h2>12. Third-Party Services</h2>
+  <p>Our platform may integrate with third-party services including:</p>
+  <ul>
+    <li>Payment providers</li>
+    <li>Cloud storage providers</li>
+    <li>Analytics providers</li>
+    <li>Email service providers</li>
+  </ul>
+  <p>These services operate under their own privacy policies.</p>
+  <p>AponGhar is not responsible for the privacy practices of third-party services.</p>
+
+  <hr>
+
+  <h2>13. International Access</h2>
+  <p>Although AponGhar primarily serves users in India, information may be processed through service providers located in different regions.</p>
+  <p>By using the platform, users consent to such processing where applicable.</p>
+
+  <hr>
+
+  <h2>14. Changes to This Privacy Policy</h2>
+  <p>We may update this Privacy Policy from time to time.</p>
+  <p>Changes become effective when published on the website.</p>
+  <p>Users are encouraged to review this page periodically.</p>
+
+  <hr>
+
+  <h2>15. Contact Us</h2>
+  <p>If you have questions regarding this Privacy Policy, please contact:</p>
+  <p><strong>AponGhar</strong></p>
+  <p><strong>Support Email:</strong> <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a></p>
+  <p><strong>Website:</strong> <a href="https://aponghar.in" target="_blank">https://aponghar.in</a></p>
+
+  <hr>
+
+  <p><em>By accessing or using AponGhar, you acknowledge that you have read, understood, and agreed to this Privacy Policy.</em></p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AponGhar. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

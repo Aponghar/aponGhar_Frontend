@@ -1985,8 +1985,8 @@ bookingForm.addEventListener("submit", async (event) => {
       const order = await createPaymentOrder(booking.booking_id);
       if (order.payment_required === false) {
         showBookingStatus("success", {
-          title: "Booking Confirmed! 🎉",
-          description: order.message || "Your booking has been secured successfully.",
+          title: "Booking Requested! 🔑",
+          description: order.message || "Your booking request has been paid using wallet balance and submitted for owner approval.",
           bookingCode: booking.booking_code,
           paymentMethod: "WALLET",
           paymentStatus: "PAID",
@@ -2003,8 +2003,8 @@ bookingForm.addEventListener("submit", async (event) => {
       await openBookingRazorpayCheckout(order, booking);
       
       showBookingStatus("success", {
-        title: "Booking Confirmed! 🎉",
-        description: `Booking confirmed successfully. Payment complete.`,
+        title: "Booking Requested! 🔑",
+        description: `Your online payment was successful. The booking request has been submitted for owner approval.`,
         bookingCode: booking.booking_code,
         paymentMethod: "ONLINE",
         paymentStatus: "PAID",

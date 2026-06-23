@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Property Owner Agreement - AponGhar</title>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: hsl(41, 52%, 52%);
+      --primary-hover: hsl(41, 55%, 45%);
+      --primary-light: hsla(41, 52%, 52%, 0.08);
+      --dark: hsl(220, 16%, 14%);
+      --dark-muted: hsl(220, 9%, 40%);
+      --bg-body: hsl(40, 25%, 98%);
+      --bg-card: #ffffff;
+      --border-color: hsl(40, 18%, 91%);
+      --radius-md: 12px;
+      --radius-lg: 24px;
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(15, 23, 42, 0.02);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--dark-muted);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto 80px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .last-updated {
+      font-size: 14px;
+      color: var(--dark-muted);
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 16px;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 32px;
+      margin-bottom: 12px;
+      letter-spacing: -0.4px;
+    }
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 20px;
+      margin-bottom: 8px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 32px 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      font-size: 13px;
+      color: var(--dark-muted);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 24px;
+      }
+      .container {
+        margin: 20px;
+        padding: 24px;
+        border-radius: var(--radius-md);
+      }
+      h1 {
+        font-size: 26px;
+      }
+      h2 {
+        font-size: 18px;
+        margin-top: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./home/home.html" class="logo-link">
+    <img src="./assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <a href="./home/home.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <h1>Property Owner Agreement</h1>
+  <div class="last-updated">Last Updated: June 2026</div>
+
+  <p>This Property Owner Agreement ("Agreement") governs the relationship between AponGhar and property owners who list accommodations on the platform.</p>
+  <p>By creating an owner account, subscribing to any owner plan, or listing a property, you agree to this Agreement.</p>
+
+  <hr>
+
+  <h2>1. Eligibility</h2>
+  <p>To become a property owner on AponGhar, you must:</p>
+  <ul>
+    <li>Be at least 18 years old.</li>
+    <li>Have the legal authority to list the property.</li>
+    <li>Provide accurate property information.</li>
+    <li>Comply with all applicable laws.</li>
+  </ul>
+
+  <hr>
+
+  <h2>2. Property Listing Approval</h2>
+  <p>All submitted properties undergo a review process.</p>
+  <p>AponGhar may:</p>
+  <ul>
+    <li>Approve a property.</li>
+    <li>Reject a property.</li>
+    <li>Request additional information.</li>
+    <li>Remove a property from the platform.</li>
+  </ul>
+  <p>Approval is not guaranteed.</p>
+
+  <hr>
+
+  <h2>3. Property Information</h2>
+  <p>Owners agree that all information provided is:</p>
+  <ul>
+    <li>Accurate</li>
+    <li>Complete</li>
+    <li>Up to date</li>
+  </ul>
+  <p>Including:</p>
+  <ul>
+    <li>Property descriptions</li>
+    <li>Room details</li>
+    <li>Amenities</li>
+    <li>Photos</li>
+    <li>Pricing</li>
+    <li>Availability</li>
+  </ul>
+  <p>Providing false information may result in suspension or removal.</p>
+
+  <hr>
+
+  <h2>4. Owner Responsibilities</h2>
+  <p>Owners are responsible for:</p>
+  <ul>
+    <li>Maintaining property quality.</li>
+    <li>Honoring confirmed bookings.</li>
+    <li>Providing safe accommodations.</li>
+    <li>Managing guest check-in and check-out.</li>
+    <li>Updating room availability.</li>
+    <li>Maintaining pricing accuracy.</li>
+  </ul>
+
+  <hr>
+
+  <h2>5. Subscription Plans</h2>
+  <p>AponGhar may offer:</p>
+
+  <h3>Listing Plan</h3>
+  <ul>
+    <li>Free listing</li>
+    <li>Commission-based</li>
+  </ul>
+
+  <h3>Basic Plan</h3>
+  <ul>
+    <li>Monthly subscription</li>
+    <li>Reduced commission</li>
+    <li>Property management tools</li>
+  </ul>
+
+  <h3>Premium Plan</h3>
+  <ul>
+    <li>Monthly subscription</li>
+    <li>Advanced features</li>
+    <li>Zero platform commission</li>
+  </ul>
+  <p>Plan pricing and features may change in the future.</p>
+
+  <hr>
+
+  <h2>6. Commissions and Fees</h2>
+  <p>Owners agree to applicable commissions based on their selected plan.</p>
+  <p>Platform commission and payment gateway fees are separate charges.</p>
+  <p>Premium plan owners may still incur payment gateway processing fees from third-party providers.</p>
+
+  <hr>
+
+  <h2>7. Owner Wallet and Withdrawals</h2>
+  <p>Owner earnings are credited to the owner wallet.</p>
+  <p>Owners may:</p>
+  <ul>
+    <li>Request withdrawals at any time.</li>
+    <li>Withdraw any available amount.</li>
+    <li>Track earnings through the dashboard.</li>
+  </ul>
+  <p>Withdrawal requests are generally processed within 1–3 business days.</p>
+  <p>AponGhar reserves the right to delay withdrawals for verification or fraud prevention purposes.</p>
+
+  <hr>
+
+  <h2>8. Cancellations</h2>
+  <p>Owners should avoid canceling confirmed bookings.</p>
+  <p>Repeated cancellations may result in:</p>
+  <ul>
+    <li>Reduced visibility</li>
+    <li>Temporary suspension</li>
+    <li>Permanent removal from the platform</li>
+  </ul>
+
+  <hr>
+
+  <h2>9. Reviews</h2>
+  <p>Verified guests may submit reviews.</p>
+  <p>Owners may not:</p>
+  <ul>
+    <li>Post fake reviews.</li>
+    <li>Incentivize reviews.</li>
+    <li>Manipulate ratings.</li>
+  </ul>
+  <p>AponGhar reserves the right to remove fraudulent reviews.</p>
+
+  <hr>
+
+  <h2>10. Taxes and Compliance</h2>
+  <p>Property owners are solely responsible for:</p>
+  <ul>
+    <li>Tax obligations</li>
+    <li>Licenses</li>
+    <li>Registrations</li>
+    <li>Local legal compliance</li>
+  </ul>
+  <p>AponGhar does not provide legal or tax advice.</p>
+
+  <hr>
+
+  <h2>11. Suspension and Termination</h2>
+  <p>AponGhar may suspend or terminate owner accounts for:</p>
+  <ul>
+    <li>Fraud</li>
+    <li>False information</li>
+    <li>Guest complaints</li>
+    <li>Policy violations</li>
+    <li>Illegal activity</li>
+  </ul>
+
+  <hr>
+
+  <h2>12. Limitation of Liability</h2>
+  <p>AponGhar acts solely as a technology platform.</p>
+  <p>Property owners are fully responsible for:</p>
+  <ul>
+    <li>Guest experiences</li>
+    <li>Property operations</li>
+    <li>Property safety</li>
+    <li>Local compliance</li>
+  </ul>
+
+  <hr>
+
+  <h2>13. Contact</h2>
+  <p><strong>Website:</strong> <a href="https://aponghar.in" target="_blank">https://aponghar.in</a></p>
+  <p><strong>Email:</strong> <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a></p>
+
+  <hr>
+
+  <p>By listing a property on AponGhar, you agree to this Property Owner Agreement.</p>
+</div>
+
+<footer>
+  <p>&copy; 2026 AponGhar. All rights reserved.</p>
+</footer>
+
+</body>
+</html>

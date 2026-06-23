@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>List Your Property - AponGhar</title>
+  <script src="./config.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: hsl(41, 52%, 52%);
+      --primary-hover: hsl(41, 55%, 45%);
+      --primary-light: hsla(41, 52%, 52%, 0.08);
+      --dark: hsl(220, 16%, 14%);
+      --dark-muted: hsl(220, 9%, 40%);
+      --bg-body: hsl(40, 25%, 98%);
+      --bg-card: #ffffff;
+      --border-color: hsl(40, 18%, 91%);
+      --radius-md: 12px;
+      --radius-lg: 24px;
+      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
+      --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      background: var(--bg-body);
+      color: var(--dark);
+      line-height: 1.6;
+    }
+
+    nav {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 14px 48px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 20px rgba(15, 23, 42, 0.02);
+    }
+
+    .logo-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .nav-logo {
+      height: 48px;
+      width: auto;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      transition: all 0.25s ease;
+    }
+
+    .back-btn {
+      text-decoration: none;
+      color: var(--dark-muted);
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+      background: white;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: 1px solid var(--border-color);
+    }
+
+    .back-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-light);
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto 80px;
+      padding: 40px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+    }
+
+    h1 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--dark);
+      margin-bottom: 8px;
+      letter-spacing: -0.8px;
+    }
+
+    .subtitle {
+      font-size: 16px;
+      color: var(--dark-muted);
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--dark);
+      margin-top: 36px;
+      margin-bottom: 16px;
+      letter-spacing: -0.4px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    ul {
+      margin-bottom: 20px;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 8px;
+      color: hsl(220, 12%, 24%);
+    }
+
+    hr {
+      border: 0;
+      height: 1px;
+      background: var(--border-color);
+      margin: 32px 0;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Process steps block */
+    .steps-timeline {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin: 24px 0;
+    }
+
+    .step-card {
+      background: var(--bg-body);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      position: relative;
+    }
+
+    .step-num {
+      position: absolute;
+      top: 16px;
+      right: 20px;
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary-hover);
+      opacity: 0.25;
+    }
+
+    .step-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--dark);
+    }
+
+    .step-desc {
+      font-size: 14px;
+      color: var(--dark-muted);
+    }
+
+    /* CTA Section */
+    .cta-container {
+      text-align: center;
+      padding: 30px;
+      background: var(--primary-light);
+      border: 1.5px dashed var(--primary);
+      border-radius: var(--radius-md);
+      margin-top: 32px;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      background: var(--primary);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 14px 36px;
+      border-radius: 100px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.3);
+      transition: all 0.2s ease;
+      margin-bottom: 12px;
+    }
+
+    .cta-btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      text-decoration: none;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      border-top: 1px solid var(--border-color);
+      background: white;
+      font-size: 13px;
+      color: var(--dark-muted);
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        padding: 14px 24px;
+      }
+      .container {
+        margin: 20px;
+        padding: 24px;
+        border-radius: var(--radius-md);
+      }
+      .steps-timeline {
+        grid-template-columns: 1fr;
+      }
+      h1 {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="./home/home.html" class="logo-link">
+    <img src="./assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+  </a>
+  <a href="./home/home.html" class="back-btn">← Back to Home</a>
+</nav>
+
+<div class="container">
+  <h1>List Your Property</h1>
+  <div class="subtitle">Join AponGhar &bull; Turn your property into a professionally managed online business.</div>
+
+  <p>Whether you own a homestay, hotel, resort, villa, or apartment, AponGhar helps you attract guests and manage bookings efficiently.</p>
+
+  <hr>
+
+  <h2>How It Works</h2>
+  
+  <div class="steps-timeline">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-title">Create Account</div>
+      <div class="step-desc">Create a secure Owner Account on AponGhar.</div>
+    </div>
+    
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-title">Submit Details</div>
+      <div class="step-desc">Submit your property name, location, rooms, photos, amenities, and pricing details.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-title">Review Process</div>
+      <div class="step-desc">Our dedicated partner verification team will review your property information.</div>
+    </div>
+
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-title">Go Live</div>
+      <div class="step-desc">Once verified and approved, your property list becomes visible to thousands of travelers.</div>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>Benefits of Joining</h2>
+  <ul>
+    <li><strong>Online Booking Management:</strong> Accept automated online bookings.</li>
+    <li><strong>Room Availability Tracking:</strong> Manage room occupancy dynamically.</li>
+    <li><strong>Secure Payments:</strong> Get secure direct payments through wallet and gateway integrations.</li>
+    <li><strong>Coupon Creation:</strong> Launch custom marketing discount codes.</li>
+    <li><strong>Analytics Dashboard:</strong> Analyze your views, performance, and trends.</li>
+    <li><strong>Withdrawal Management:</strong> Withdraw your wallet earnings with speed.</li>
+  </ul>
+
+  <hr>
+
+  <h2>Requirements</h2>
+  <ul>
+    <li>Property Ownership Authorization (proof of listing authority).</li>
+    <li>Accurate Property Information &amp; verified photos.</li>
+    <li>Valid Contact Information for check-in coordination.</li>
+    <li>Compliance With Local Regulations &amp; licensing laws.</li>
+  </ul>
+
+  <hr>
+
+  <h2>Get Started Today</h2>
+  <div class="cta-container">
+    <button class="cta-btn" id="ctaActionBtn">Become a Partner</button>
+    <p style="margin-bottom: 0; font-size: 14px;">
+      Or reach out directly via support email: <a href="mailto:support.aponghar@gmail.com">support.aponghar@gmail.com</a>
+    </p>
+  </div>
+</div>
+
+<footer>
+  <p>&copy; 2026 AponGhar. All rights reserved.</p>
+</footer>
+
+<script>
+  // Simple interactive routing based on token and user role
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const ctaBtn = document.getElementById("ctaActionBtn");
+
+  if (token && user) {
+    if (user.role === "OWNER") {
+      ctaBtn.textContent = "Go to Owner Dashboard";
+      ctaBtn.onclick = () => {
+        window.location.href = "./owner/owner.html";
+      };
+    } else if (user.role === "USER") {
+      ctaBtn.textContent = "Apply Now";
+      ctaBtn.onclick = () => {
+        // Redirect to homepage with onboarding dialog open trigger
+        localStorage.setItem("triggerOwnerOnboarding", "true");
+        window.location.href = "./home/home.html";
+      };
+    } else {
+      ctaBtn.textContent = "Go to Dashboard";
+      ctaBtn.onclick = () => {
+        window.location.href = "./admin/admin.html";
+      };
+    }
+  } else {
+    ctaBtn.textContent = "Become a Partner";
+    ctaBtn.onclick = () => {
+      localStorage.setItem("authMode", "register");
+      window.location.href = "./auth/auth.html";
+    };
+  }
+</script>
+
+</body>
+</html>
