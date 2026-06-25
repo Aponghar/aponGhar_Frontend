@@ -373,9 +373,20 @@
 
   </main>
 
-</div>
+  <!-- Modal for showing owner's properties -->
+  <div id="ownerPropertiesModal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="modalOwnerName">Owner Properties</h2>
+        <span class="modal-close" onclick="closeOwnerPropertiesModal()">&times;</span>
+      </div>
+      <div class="modal-body" id="modalPropertiesList">
+        <!-- Content will be injected dynamically -->
+      </div>
+    </div>
+  </div>
 
-<script src="admin.js"></script>
+  <script src="admin.js"></script>
 
 </body>
 </html>

@@ -607,27 +607,21 @@ async function loadOwners(){
     showApplicationsContainer();
     setupSearch("Owners", "Search owners by name, email, property...");
 
-    const res = await fetch(
+    const [ownersRes, propertiesRes] = await Promise.all([
+      fetch(`${BASE_URL}/owners`, { headers: { "Authorization": `Bearer ${token}` } }),
+      fetch(`${BASE_URL}/properties`, { headers: { "Authorization": `Bearer ${token}` } })
+    ]);
 
-      `${BASE_URL}/owners`,
+    const ownersData = await ownersRes.json();
+    const propertiesData = await propertiesRes.json();
 
-      {
-        headers:{
-          "Authorization":
-          `Bearer ${token}`
-        }
-      }
-    );
+    console.log("OWNERS:", ownersData);
+    console.log("PROPERTIES:", propertiesData);
 
-    const data = await res.json();
-
-    console.log(
-      "OWNERS:",
-      data
-    );
-
-    currentOwnersList = data.data || [];
-    renderOwners(currentOwnersList);
+    currentOwnersList = ownersData.data || [];
+    currentAllPropertiesList = propertiesData.data || [];
+    
+    renderOwners(currentOwnersList, currentAllPropertiesList);
 
   } catch (error) {
 
@@ -639,66 +633,301 @@ async function loadOwners(){
   }
 }
 
-function renderOwners(owners) {
+function renderOwners(owners, allProperties = currentAllPropertiesList) {
+  applicationsContainer.style.display = "block";
   applicationsContainer.innerHTML = "";
 
   if(owners.length === 0){
-
     applicationsContainer.innerHTML = `
-
-      <h2>
-        No Approved Owners
-      </h2>
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No Approved Owners Found.</p>
+      </div>
     `;
-
     return;
   }
 
+  // Calculate statistics
+  const totalOwners = owners.length;
+  const totalProps = allProperties.length;
+  const avgProps = (totalProps / (totalOwners || 1)).toFixed(1);
+  const pendingProps = allProperties.filter(p => p.approval_status === 'PENDING').length;
+
+  const statsHTML = `
+    <div class="earnings-stats-grid four-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="9" cy="7" r="4"></circle>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Owners</span>
+          <span class="stat-value">${totalOwners}</span>
+          <span class="stat-subtext">Approved partners</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Properties</span>
+          <span class="stat-value">${totalProps}</span>
+          <span class="stat-subtext">Across all owners</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"></line>
+            <line x1="12" y1="20" x2="12" y2="4"></line>
+            <line x1="6" y1="20" x2="6" y2="14"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Avg Properties / Owner</span>
+          <span class="stat-value paid-val">${avgProps}</span>
+          <span class="stat-subtext">Average count</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pending Properties</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${pendingProps}</span>
+          <span class="stat-subtext">Awaiting approval</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Platform Partners</h3>
+        <span class="badge-count">${totalOwners} Owners</span>
+      </div>
+    </div>
+  `;
+
+  let tableRows = "";
+  let mobileCards = "";
+
   owners.forEach(owner => {
+    // Find properties for this owner using user_id
+    const ownerProperties = allProperties.filter(p => p.owner_id === owner.user_id);
+    const propertiesCount = ownerProperties.length;
 
-    applicationsContainer.innerHTML += `
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(owner.owner_name)}</span>
+            <span class="property-subtitle-owner">${escapeHTML(owner.email)}</span>
+          </div>
+        </td>
+        <td>
+          <span style="font-weight: 600; color: var(--dark);">${escapeHTML(owner.contact_number || 'N/A')}</span>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 600; color: var(--dark);">${escapeHTML(owner.property_name || 'N/A')}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(owner.location || 'N/A')}${owner.area ? `, ${escapeHTML(owner.area)}` : ''}</span>
+          </div>
+        </td>
+        <td>
+          <span class="badge-count" style="background: var(--primary-light); color: var(--primary); font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">
+            ${propertiesCount} ${propertiesCount === 1 ? 'property' : 'properties'}
+          </span>
+        </td>
+        <td class="text-center">
+          <button
+            class="approveBtn"
+            style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="showOwnerProperties(${owner.user_id}, '${escapeHTML(owner.owner_name)}')"
+          >
+            View Properties
+          </button>
+        </td>
+      </tr>
+    `;
 
-      <div class="card">
+    mobileCards += `
+      <div class="mobile-commission-card paid">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(owner.owner_name)}</h4>
+            <span class="owner-lbl">${escapeHTML(owner.email)}</span>
+          </div>
+          <span class="status-pill-badge approved">APPROVED</span>
+        </div>
 
-        <h3>
-          ${owner.property_name}
-        </h3>
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Contact</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(owner.contact_number || 'N/A')}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Initial Registration</span>
+            <span class="val">${escapeHTML(owner.property_name || 'N/A')} (${escapeHTML(owner.location || 'N/A')})</span>
+          </div>
+          <div class="detail-row highlight-row" style="padding-top: 12px;">
+            <span class="lbl" style="font-weight: 700; color: var(--dark);">Properties Registered</span>
+            <span class="val badge-count" style="background: var(--primary-light); color: var(--primary); font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 20px;">
+              ${propertiesCount}
+            </span>
+          </div>
+        </div>
 
-        <p>
-          <strong>Owner:</strong>
-          ${owner.owner_name}
-        </p>
-
-        <p>
-          <strong>Email:</strong>
-          ${owner.email}
-        </p>
-
-        <p>
-          <strong>Type:</strong>
-          ${owner.property_type}
-        </p>
-
-        <p>
-          <strong>Location:</strong>
-          ${owner.location}
-        </p>
-
-        <p>
-          <strong>Area:</strong>
-          ${owner.area}
-        </p>
-
-        <span class="status approved">
-
-          APPROVED
-
-        </span>
-
+        <div class="mobile-card-actions">
+          <button
+            class="approveBtn"
+            style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="showOwnerProperties(${owner.user_id}, '${escapeHTML(owner.owner_name)}')"
+          >
+            View Properties
+          </button>
+        </div>
       </div>
     `;
   });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Owner Details</th>
+            <th>Contact Phone</th>
+            <th>Initial Property Registration</th>
+            <th>Properties Count</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  applicationsContainer.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 }
+
+function showOwnerProperties(ownerId, ownerName) {
+  const modal = document.getElementById("ownerPropertiesModal");
+  const modalTitle = document.getElementById("modalOwnerName");
+  const modalList = document.getElementById("modalPropertiesList");
+
+  if (!modal || !modalTitle || !modalList) return;
+
+  modalTitle.innerText = `${ownerName}'s Properties`;
+  modalList.innerHTML = `<div style="text-align: center; padding: 20px; color: var(--dark-muted);">Loading properties...</div>`;
+  modal.style.display = "flex";
+
+  // Filter properties from our cache by ownerId
+  const ownerProperties = currentAllPropertiesList.filter(p => p.owner_id === ownerId);
+
+  if (ownerProperties.length === 0) {
+    modalList.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: var(--dark-muted);">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px; opacity: 0.5;">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No properties have been created by this owner yet.</p>
+      </div>
+    `;
+    return;
+  }
+
+  let html = `<div class="modal-properties-grid">`;
+
+  ownerProperties.forEach(p => {
+    const approvalClass = p.approval_status ? p.approval_status.toLowerCase() : "pending";
+    const activeStatusClass = p.is_active ? "paid" : "pending";
+
+    html += `
+      <div class="modal-property-item">
+        <div class="modal-property-info">
+          ${p.property_image ? `
+            <img src="${resolveImageUrl(p.property_image)}" class="modal-property-img" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+          ` : `
+            <div class="modal-property-no-img">No Image</div>
+          `}
+          <div class="modal-property-details">
+            <span class="modal-property-name">${escapeHTML(p.property_name)}</span>
+            <div class="modal-property-meta">
+              <span>Type: <strong>${escapeHTML(p.property_type)}</strong></span>
+              <span>Location: <strong>${escapeHTML(p.city)}, ${escapeHTML(p.state)}</strong></span>
+            </div>
+            <div class="modal-property-meta" style="margin-top: 4px;">
+              <span>Rating: <strong>⭐ ${p.average_rating || '0.00'}</strong></span>
+              <span>Total Bookings: <strong>${p.total_bookings || 0}</strong></span>
+              <span>Commission: <strong>${p.commission_percentage || 0}%</strong></span>
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 6px; align-items: flex-end;">
+          <span class="status-pill-badge ${approvalClass}">${escapeHTML(p.approval_status || 'PENDING')}</span>
+          <span class="status-pill-badge ${activeStatusClass}" style="${p.is_active ? '' : 'background: hsl(220, 15%, 93%); color: hsl(220, 15%, 45%);'}">
+            ${p.is_active ? 'Active' : 'Inactive'}
+          </span>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  modalList.innerHTML = html;
+}
+
+function closeOwnerPropertiesModal() {
+  const modal = document.getElementById("ownerPropertiesModal");
+  if (modal) {
+    modal.style.display = "none";
+  }
+}
+
+// Global click listener to close modal on background click
+window.addEventListener("click", (event) => {
+  const modal = document.getElementById("ownerPropertiesModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+});
+
+// Expose modal functions to the global window object for inline onclick triggers
+window.showOwnerProperties = showOwnerProperties;
+window.closeOwnerPropertiesModal = closeOwnerPropertiesModal;
 
 
 

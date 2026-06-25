@@ -538,6 +538,50 @@ async function uploadImagesToCreatedRooms(roomDbIds, files) {
   return { uploaded, failed };
 }
 
+const showRoomStatus = (state, data = {}) => {
+  const overlay = document.getElementById("roomStatusOverlay");
+  const spinner = document.getElementById("roomStatusSpinner");
+  const successIcon = document.getElementById("roomStatusSuccessIcon");
+  const errorIcon = document.getElementById("roomStatusErrorIcon");
+  const title = document.getElementById("roomStatusTitle");
+  const description = document.getElementById("roomStatusDescription");
+  const actions = document.getElementById("roomStatusActions");
+  const closeBtn = document.getElementById("roomStatusCloseBtn");
+
+  overlay.classList.remove("hidden");
+  spinner.classList.add("hidden");
+  successIcon.classList.add("hidden");
+  errorIcon.classList.add("hidden");
+  actions.classList.add("hidden");
+
+  if (state === "processing") {
+    spinner.classList.remove("hidden");
+    title.textContent = data.title || "Creating Room";
+    description.textContent = data.description || "Please wait while we process your request.";
+  } 
+  else if (state === "success") {
+    successIcon.classList.remove("hidden");
+    title.textContent = data.title || "Success! 🎉";
+    description.textContent = data.description || "Your room listing has been processed successfully.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+      if (data.onClose) {
+        data.onClose();
+      }
+    };
+  } 
+  else if (state === "error") {
+    errorIcon.classList.remove("hidden");
+    title.textContent = data.title || "Operation Failed";
+    description.textContent = data.errorMessage || "An error occurred. Please try again.";
+    actions.classList.remove("hidden");
+    closeBtn.onclick = () => {
+      overlay.classList.add("hidden");
+    };
+  }
+};
+
 roomQuantityInput.addEventListener("change", () => {
   const quantity = roomQuantityInput.value;
   if (quantity === "1") {
@@ -558,6 +602,13 @@ roomForm.addEventListener("submit", async (event) => {
   if (!validateRoomPayload(roomData)) {
     return;
   }
+
+  console.log("Room Creation request initiated for Property ID:", propertyId, "Payload:", roomData);
+
+  showRoomStatus("processing", {
+    title: quantity > 1 ? `Creating ${quantity} Rooms` : "Creating Room",
+    description: "Please wait while we process your request..."
+  });
 
   try {
     submitBtn.disabled = true;
@@ -583,9 +634,15 @@ roomForm.addEventListener("submit", async (event) => {
     const data = await res.json();
 
     if (!data.success) {
-      alert(data.message || "Failed to create room(s).");
+      console.warn("Room creation response error:", data.message || "Failed to create room(s).");
+      showRoomStatus("error", {
+        title: "Creation Failed",
+        errorMessage: data.message || "Failed to create room(s). Please try again."
+      });
       return;
     }
+
+    console.log("Room creation response received:", data);
 
     const createdRoomIds = [];
     if (data?.data?.id) {
@@ -602,6 +659,11 @@ roomForm.addEventListener("submit", async (event) => {
     let finalMessage = quantity > 1 ? `${quantity} rooms created successfully.` : "Room created successfully.";
 
     if (selectedFiles.length > 0 && createdRoomIds.length > 0) {
+      console.log("Starting image upload for created room IDs:", createdRoomIds);
+      showRoomStatus("processing", {
+        title: "Uploading Images",
+        description: `Uploading ${selectedFiles.length} photo(s) to the created room(s)...`
+      });
       submitBtn.textContent = "Uploading images...";
       const uploadResult = await uploadImagesToCreatedRooms(createdRoomIds, selectedFiles);
 
@@ -612,15 +674,26 @@ roomForm.addEventListener("submit", async (event) => {
       }
     }
 
-    alert(finalMessage);
-    roomForm.reset();
-    roomQuantityInput.value = "1";
-    quantityInfo.textContent = "1 room will be created with these details";
-    renderAmenitiesCheckboxes("amenitiesContainer");
-    renderBenefitCheckboxes("benefitsContainer");
+    console.log("Room creation workflow completed successfully. Success message:", finalMessage);
+
+    showRoomStatus("success", {
+      title: "Rooms Created! 🎉",
+      description: finalMessage,
+      onClose: () => {
+        roomForm.reset();
+        roomQuantityInput.value = "1";
+        quantityInfo.textContent = "1 room will be created with these details";
+        renderAmenitiesCheckboxes("amenitiesContainer");
+        renderBenefitCheckboxes("benefitsContainer");
+        window.location.href = "rooms.html?mode=my";
+      }
+    });
   } catch (error) {
-    console.error(error);
-    alert("Failed to create room(s).");
+    console.error("Room creation caught error:", error);
+    showRoomStatus("error", {
+      title: "Creation Failed",
+      errorMessage: error.message || "Failed to create room(s). Please check network connectivity and try again."
+    });
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = "Create Room";
@@ -845,6 +918,13 @@ editRoomForm.addEventListener("submit", async (event) => {
     return;
   }
 
+  console.log("Saving room edits initiated for Room DB ID:", roomDbId, "Payload:", payload);
+
+  showRoomStatus("processing", {
+    title: "Saving Changes",
+    description: "Please wait while we update your room..."
+  });
+
   try {
     editSubmitBtn.disabled = true;
     editSubmitBtn.textContent = "Saving...";
@@ -860,29 +940,50 @@ editRoomForm.addEventListener("submit", async (event) => {
 
     const data = await res.json();
     if (!data.success) {
-      alert(data.message || "Failed to update room.");
+      console.warn("Room edit response error:", data.message || "Failed to update room.");
+      showRoomStatus("error", {
+        title: "Save Failed",
+        errorMessage: data.message || "Failed to update room details. Please try again."
+      });
       return;
     }
+
+    console.log("Room update successful:", data);
 
     let editMessage = "Room updated successfully.";
 
     if (selectedEditFiles.length > 0) {
+      console.log("Uploading more images for Room DB ID:", roomDbId);
+      showRoomStatus("processing", {
+        title: "Uploading Images",
+        description: `Uploading ${selectedEditFiles.length} photo(s) to room...`
+      });
       editSubmitBtn.textContent = "Uploading images...";
       try {
         await uploadImagesToSingleRoom(roomDbId, selectedEditFiles);
         editMessage += ` ${selectedEditFiles.length} image(s) uploaded.`;
       } catch (uploadError) {
-        console.error(uploadError);
+        console.error("Room images upload failed:", uploadError);
         editMessage += " Room updated, but image upload failed.";
       }
     }
 
-    alert(editMessage);
-    closeEditModal();
-    await loadRooms();
+    console.log("Room edit workflow completed successfully. Message:", editMessage);
+
+    showRoomStatus("success", {
+      title: "Room Updated! 🎉",
+      description: editMessage,
+      onClose: async () => {
+        closeEditModal();
+        await loadRooms();
+      }
+    });
   } catch (error) {
-    console.error(error);
-    alert("Failed to update room.");
+    console.error("Room edit caught error:", error);
+    showRoomStatus("error", {
+      title: "Save Failed",
+      errorMessage: error.message || "Failed to update room details."
+    });
   } finally {
     editSubmitBtn.disabled = false;
     editSubmitBtn.textContent = "Save Changes";

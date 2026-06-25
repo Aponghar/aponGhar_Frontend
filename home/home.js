@@ -1333,8 +1333,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return `${year}-${month}-${day}`;
   };
   const todayStr = getTodayDateString();
-  if (checkInInput) checkInInput.min = todayStr;
-  if (checkOutInput) checkOutInput.min = todayStr;
+  if (checkInInput) {
+    checkInInput.min = todayStr;
+    checkInInput.addEventListener("change", () => {
+      if (checkOutInput) {
+        checkOutInput.min = checkInInput.value;
+        if (checkOutInput.value && checkOutInput.value < checkInInput.value) {
+          checkOutInput.value = checkInInput.value;
+        }
+      }
+    });
+  }
+  if (checkOutInput) {
+    checkOutInput.min = todayStr;
+  }
 
   if (localStorage.getItem("triggerOwnerOnboarding") === "true") {
     localStorage.removeItem("triggerOwnerOnboarding");

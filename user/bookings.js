@@ -19,6 +19,7 @@ const reviewPhotos = document.getElementById("reviewPhotos");
 const reviewFormMessage = document.getElementById("reviewFormMessage");
 
 let selectedRating = 5;
+let allBookings = [];
 
 if (!token || !user) {
   window.location.href = "../index.html";
@@ -87,7 +88,33 @@ const getRefundableAmount = (booking) => {
     ? safeNumber(booking.gateway_paid)
     : 0;
 
-  return walletUsed + gatewayPaid;
+  let refundAmount = walletUsed + gatewayPaid;
+  if (refundAmount > 0) {
+    const checkInDate = new Date(booking.check_in_date);
+    const checkInTimeStr = booking.check_in_time || "12:00:00";
+    const parts = checkInTimeStr.split(":");
+    const hours = parseInt(parts[0], 10) || 0;
+    const minutes = parseInt(parts[1], 10) || 0;
+    const seconds = parseInt(parts[2], 10) || 0;
+
+    const checkInDateTime = new Date(
+      checkInDate.getFullYear(),
+      checkInDate.getMonth(),
+      checkInDate.getDate(),
+      hours,
+      minutes,
+      seconds
+    );
+
+    const now = new Date();
+    const msDiff = checkInDateTime.getTime() - now.getTime();
+    const hoursDiff = msDiff / (1000 * 60 * 60);
+
+    if (hoursDiff <= 24) {
+      refundAmount = Math.round(refundAmount * 0.5);
+    }
+  }
+  return refundAmount;
 };
 
 const getPayableAmount = (booking) => {
@@ -126,7 +153,44 @@ const getCancelButtonText = (booking) => {
 };
 
 const cancelBooking = async (bookingId) => {
-  const confirmed = await window.customConfirm("Cancel this booking? Any paid amount will be credited to your wallet.");
+  const booking = allBookings.find(b => String(b.id) === String(bookingId));
+  let message = "Cancel this booking? Any paid amount will be credited to your wallet.";
+  
+  if (booking) {
+    const walletUsed = safeNumber(booking.wallet_used);
+    const gatewayPaid = String(booking.payment_status || "").toUpperCase() === "PAID"
+      ? safeNumber(booking.gateway_paid)
+      : 0;
+    const totalRefund = walletUsed + gatewayPaid;
+    if (totalRefund > 0) {
+      const checkInDate = new Date(booking.check_in_date);
+      const checkInTimeStr = booking.check_in_time || "12:00:00";
+      const parts = checkInTimeStr.split(":");
+      const hours = parseInt(parts[0], 10) || 0;
+      const minutes = parseInt(parts[1], 10) || 0;
+      const seconds = parseInt(parts[2], 10) || 0;
+
+      const checkInDateTime = new Date(
+        checkInDate.getFullYear(),
+        checkInDate.getMonth(),
+        checkInDate.getDate(),
+        hours,
+        minutes,
+        seconds
+      );
+
+      const now = new Date();
+      const msDiff = checkInDateTime.getTime() - now.getTime();
+      const hoursDiff = msDiff / (1000 * 60 * 60);
+
+      if (hoursDiff <= 24) {
+        const penaltyRefund = Math.round(totalRefund * 0.5);
+        message = `Cancel this booking? As it is within 24 hours of check-in, only a 50% refund (${money(penaltyRefund)}) will be credited to your wallet according to our policy.`;
+      }
+    }
+  }
+
+  const confirmed = await window.customConfirm(message);
   if (!confirmed) {
     return;
   }
@@ -216,6 +280,7 @@ const submitReview = async (event) => {
 };
 
 const renderBookings = (bookings) => {
+  allBookings = bookings;
   bookingsList.innerHTML = "";
 
   if (!Array.isArray(bookings) || bookings.length === 0) {

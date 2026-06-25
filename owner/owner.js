@@ -3366,7 +3366,10 @@ const openManualBookModal = (roomId, roomName) => {
     return `${year}-${month}-${day}`;
   };
 
-  manualBookCheckIn.value = formatDate(today);
+  const todayStr = formatDate(today);
+  manualBookCheckIn.min = todayStr;
+  manualBookCheckOut.min = todayStr;
+  manualBookCheckIn.value = todayStr;
   manualBookCheckOut.value = formatDate(tomorrow);
   manualBookModal.classList.remove("hidden");
 };
@@ -3376,6 +3379,13 @@ const closeManualBookModal = () => {
 };
 
 btnCancelManualBook.addEventListener("click", closeManualBookModal);
+
+manualBookCheckIn.addEventListener("change", () => {
+  manualBookCheckOut.min = manualBookCheckIn.value;
+  if (manualBookCheckOut.value && manualBookCheckOut.value < manualBookCheckIn.value) {
+    manualBookCheckOut.value = manualBookCheckIn.value;
+  }
+});
 
 manualBookModal.addEventListener("click", (e) => {
   if (e.target === manualBookModal) {
