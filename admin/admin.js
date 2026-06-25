@@ -2166,104 +2166,238 @@ function renderPendingCheckIns(checkIns) {
   applicationsContainer.innerHTML = "";
 
   if(checkIns.length === 0){
-
     applicationsContainer.innerHTML = `
-
-      <h2>
-        No Pending Check-Ins
-      </h2>
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No Pending Check-Ins.</p>
+      </div>
     `;
-
     return;
   }
 
+  // Calculate statistics
+  const totalCheckIns = checkIns.length;
+  const ownerConfirmed = checkIns.filter(c => c.status === 'OWNER_CONFIRMED').length;
+  const pendingConfirmation = checkIns.filter(c => c.status !== 'OWNER_CONFIRMED').length;
+  const totalCommission = checkIns.reduce((sum, c) => sum + (parseFloat(c.commission_amount) || 0), 0);
+
+  const statsHTML = `
+    <div class="earnings-stats-grid four-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <polyline points="17 11 19 13 23 9"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Check-Ins</span>
+          <span class="stat-value">${totalCheckIns}</span>
+          <span class="stat-subtext">Pending processing</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Owner Confirmed</span>
+          <span class="stat-value paid-val">${ownerConfirmed}</span>
+          <span class="stat-subtext">Ready for admin action</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Awaiting Owner</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${pendingConfirmation}</span>
+          <span class="stat-subtext">Pending owner confirmation</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper" style="background: hsla(270, 60%, 50%, 0.12); color: hsl(270, 60%, 50%);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Commission</span>
+          <span class="stat-value" style="color: hsl(270, 60%, 50%);">${formatMoney(totalCommission)}</span>
+          <span class="stat-subtext">Revenue from check-ins</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Pending Check-Ins</h3>
+        <span class="badge-count">${totalCheckIns} check-ins</span>
+      </div>
+    </div>
+  `;
+
+  let tableRows = "";
+  let mobileCards = "";
+
   checkIns.forEach(checkIn => {
+    const isConfirmed = checkIn.status === 'OWNER_CONFIRMED';
+    const statusPillClass = isConfirmed ? 'paid' : 'pending';
+    const statusLabel = isConfirmed ? 'CONFIRMED' : 'AWAITING OWNER';
 
-    const statusClass = checkIn.status.toLowerCase();
+    const actionBtns = isConfirmed
+      ? `<button class="approveBtn" style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);" onclick="recordCheckInAdmin(${checkIn.id})">Record & Commission</button>`
+      : `<span style="font-size: 12px; color: var(--dark-muted); font-style: italic;">Awaiting owner</span>`;
 
-    applicationsContainer.innerHTML += `
-
-      <div class="card">
-
-        <h3>${checkIn.property_name}</h3>
-
-        <p>
-          <strong>Booking Code:</strong>
-          ${checkIn.booking_code}
-        </p>
-
-        <p>
-          <strong>Guest:</strong>
-          ${checkIn.guest_name}
-        </p>
-
-        <p>
-          <strong>Guest Email:</strong>
-          ${checkIn.user_email}
-        </p>
-
-        <p>
-          <strong>Owner:</strong>
-          ${checkIn.owner_name}
-        </p>
-
-        <p>
-          <strong>Check-In Date:</strong>
-          ${checkIn.check_in_date}
-        </p>
-
-        <p>
-          <strong>Customer Total:</strong>
-          ${formatMoney(checkIn.booking_amount)}
-        </p>
-
-        <p>
-          <strong>Owner Base Amount:</strong>
-          ${formatMoney(checkIn.booking_base_amount)}
-        </p>
-
-        <p>
-          <strong>Commission:</strong>
-          <span class="commission-value">
-            ${formatMoney(checkIn.commission_amount)}
-          </span>
-        </p>
-
-        <span class="status ${statusClass}">
-          ${checkIn.status}
-        </span>
-
-        ${
-          checkIn.status === 'OWNER_CONFIRMED'
-          ?
-          `
-          <div class="actions">
-            <button
-              class="approveBtn"
-              onclick="recordCheckInAdmin(${checkIn.id})"
-            >
-              Record Check-In & Add Commission
-            </button>
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(checkIn.property_name)}</span>
+            <span class="property-subtitle-owner">Code: ${escapeHTML(checkIn.booking_code)}</span>
           </div>
-          `
-          :
-          `
-          <p class="info-text">
-            Awaiting owner confirmation
-          </p>
-          `
-        }
-
-        ${checkIn.special_requests ? `
-          <div class="booking-guest special-requests" style="margin-top: 12px; border-top: 1px dashed #ddd; padding-top: 10px; font-size: 13px; text-align: left;">
-            <strong>Special Requests & Additional Guests:</strong>
-            <span style="white-space: pre-line; display: block; margin-top: 4px; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 700; color: var(--dark);">${escapeHTML(checkIn.guest_name)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(checkIn.user_email)}</span>
           </div>
-        ` : ""}
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 700; color: var(--dark);">${escapeHTML(checkIn.owner_name)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${formatDate(checkIn.check_in_date)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 700; color: var(--dark);">${formatMoney(checkIn.booking_amount)}</span>
+            <span style="font-size: 12px; color: hsl(270, 60%, 50%); font-weight: 600;">Comm: ${formatMoney(checkIn.commission_amount)}</span>
+          </div>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusPillClass}">${statusLabel}</span>
+        </td>
+        <td class="text-center">
+          ${actionBtns}
+        </td>
+      </tr>
+    `;
 
+    mobileCards += `
+      <div class="mobile-commission-card ${statusPillClass}">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(checkIn.property_name)}</h4>
+            <span class="owner-lbl">Code: ${escapeHTML(checkIn.booking_code)}</span>
+          </div>
+          <span class="status-pill-badge ${statusPillClass}">${statusLabel}</span>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Guest</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(checkIn.guest_name)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Guest Email</span>
+            <span class="val">${escapeHTML(checkIn.user_email)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Owner</span>
+            <span class="val">${escapeHTML(checkIn.owner_name)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Check-In Date</span>
+            <span class="val">${formatDate(checkIn.check_in_date)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Customer Total</span>
+            <span class="val" style="font-weight: 700;">${formatMoney(checkIn.booking_amount)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Base Amount</span>
+            <span class="val">${formatMoney(checkIn.booking_base_amount)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Commission</span>
+            <span class="val" style="font-weight: 700; color: hsl(270, 60%, 50%);">${formatMoney(checkIn.commission_amount)}</span>
+          </div>
+          ${checkIn.special_requests ? `
+          <div class="detail-row" style="flex-direction: column; align-items: flex-start; gap: 4px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; margin-top: 4px;">
+            <span class="lbl">Special Requests</span>
+            <span class="val" style="white-space: pre-line; line-height: 1.5;">${escapeHTML(checkIn.special_requests)}</span>
+          </div>
+          ` : ""}
+        </div>
+
+        ${isConfirmed ? `
+        <div class="mobile-card-actions" style="gap: 8px; display: flex;">
+          <button
+            class="approveBtn"
+            style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="recordCheckInAdmin(${checkIn.id})"
+          >
+            Record Check-In & Add Commission
+          </button>
+        </div>
+        ` : `
+        <div class="mobile-card-actions" style="gap: 8px; display: flex; justify-content: center;">
+          <span style="font-size: 12px; color: var(--dark-muted); font-style: italic; padding: 8px;">Awaiting owner confirmation</span>
+        </div>
+        `}
       </div>
     `;
   });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property / Code</th>
+            <th>Guest Info</th>
+            <th>Owner / Date</th>
+            <th>Amount / Commission</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  applicationsContainer.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 }
 
 async function recordCheckInAdmin(checkinId){
@@ -3461,7 +3595,15 @@ const loadWithdrawals = async () => {
 
 const renderWithdrawals = (requests) => {
   if (requests.length === 0) {
-    adminWithdrawalsList.innerHTML = '<h2>No Withdrawal Requests Found</h2>';
+    adminWithdrawalsList.innerHTML = `
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No Withdrawal Requests Found.</p>
+      </div>
+    `;
     return;
   }
 
@@ -3473,67 +3615,255 @@ const renderWithdrawals = (requests) => {
     return new Date(b.created_at) - new Date(a.created_at);
   });
 
-  adminWithdrawalsList.innerHTML = requests.map((req) => {
+  // Calculate statistics
+  const totalRequests = requests.length;
+  const pendingCount = requests.filter(r => r.withdrawal_status === 'PENDING').length;
+  const approvedCount = requests.filter(r => r.withdrawal_status === 'APPROVED').length;
+  const paidCount = requests.filter(r => r.withdrawal_status === 'PAID').length;
+  const rejectedCount = requests.filter(r => r.withdrawal_status === 'REJECTED').length;
+  const totalPendingAmount = requests.filter(r => r.withdrawal_status === 'PENDING').reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+  const totalPaidAmount = requests.filter(r => r.withdrawal_status === 'PAID').reduce((s, r) => s + (parseFloat(r.amount) || 0), 0);
+
+  const statsHTML = `
+    <div class="earnings-stats-grid four-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pending Requests</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${pendingCount}</span>
+          <span class="stat-subtext">${formatMoney(totalPendingAmount)} total</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper" style="background: hsla(200, 80%, 50%, 0.12); color: hsl(200, 80%, 45%);">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Approved</span>
+          <span class="stat-value" style="color: hsl(200, 80%, 45%);">${approvedCount}</span>
+          <span class="stat-subtext">Ready for payment</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Paid</span>
+          <span class="stat-value paid-val">${paidCount}</span>
+          <span class="stat-subtext">${formatMoney(totalPaidAmount)} disbursed</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Requests</span>
+          <span class="stat-value">${totalRequests}</span>
+          <span class="stat-subtext">${rejectedCount} rejected</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Withdrawal Requests</h3>
+        <span class="badge-count">${totalRequests} requests</span>
+      </div>
+    </div>
+  `;
+
+  let tableRows = "";
+  let mobileCards = "";
+
+  requests.forEach((req) => {
     let statusClass = "pending";
     if (req.withdrawal_status === "APPROVED") statusClass = "approved";
     if (req.withdrawal_status === "REJECTED") statusClass = "rejected";
     if (req.withdrawal_status === "PAID") statusClass = "paid";
 
-    let detailsHtml = "";
-    if (req.upi_id) {
-      detailsHtml = `<p><strong>UPI ID:</strong> ${escapeHTML(req.upi_id)}</p>`;
-    } else {
-      detailsHtml = `
-        <p><strong>Bank Name:</strong> ${escapeHTML(req.bank_name || "N/A")}</p>
-        <p><strong>Account Number:</strong> ${escapeHTML(req.account_number || "N/A")}</p>
-        <p><strong>IFSC Code:</strong> ${escapeHTML(req.ifsc_code || "N/A")}</p>
-      `;
-    }
+    const paymentMethod = req.upi_id
+      ? `UPI: ${escapeHTML(req.upi_id)}`
+      : `${escapeHTML(req.bank_name || "N/A")} • ${escapeHTML(req.account_number || "N/A")}`;
 
-    const notesHtml = req.admin_notes 
-      ? `<div class="withdrawal-notes-box"><strong>Admin Notes:</strong> ${escapeHTML(req.admin_notes)}</div>` 
-      : "";
+    const paymentMethodFull = req.upi_id
+      ? `<span style="font-weight: 600;">UPI:</span> ${escapeHTML(req.upi_id)}`
+      : `<span style="font-weight: 600;">Bank:</span> ${escapeHTML(req.bank_name || "N/A")}<br><span style="font-weight: 600;">A/C:</span> ${escapeHTML(req.account_number || "N/A")}<br><span style="font-weight: 600;">IFSC:</span> ${escapeHTML(req.ifsc_code || "N/A")}`;
 
-    let actionsHtml = "";
+    // Actions for table
+    let tableActionBtns = "";
     if (req.withdrawal_status === "PENDING") {
-      actionsHtml = `
-        <div class="card-actions">
-          <button class="btn approve-btn" onclick="approveWithdrawal(${req.id})">Approve Request</button>
-          <button class="btn reject-btn" onclick="rejectWithdrawal(${req.id})">Reject Request</button>
+      tableActionBtns = `
+        <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+          <button class="approveBtn" style="padding: 7px 12px; font-size: 11px; margin-top: 0; border-radius: var(--radius-sm);" onclick="approveWithdrawal(${req.id})">Approve</button>
+          <button class="rejectBtn" style="padding: 7px 12px; font-size: 11px; margin-top: 0; border-radius: var(--radius-sm);" onclick="rejectWithdrawal(${req.id})">Reject</button>
         </div>
       `;
     } else if (req.withdrawal_status === "APPROVED") {
-      actionsHtml = `
-        <div class="card-actions">
-          <button class="btn pay-btn" onclick="markWithdrawalPaid(${req.id})">Mark as Paid</button>
-          <button class="btn reject-btn" onclick="rejectWithdrawal(${req.id})">Reject Request</button>
+      tableActionBtns = `
+        <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+          <button class="approveBtn" style="padding: 7px 12px; font-size: 11px; margin-top: 0; border-radius: var(--radius-sm); background: linear-gradient(135deg, hsl(160,70%,40%), hsl(160,70%,30%));" onclick="markWithdrawalPaid(${req.id})">Mark Paid</button>
+          <button class="rejectBtn" style="padding: 7px 12px; font-size: 11px; margin-top: 0; border-radius: var(--radius-sm);" onclick="rejectWithdrawal(${req.id})">Reject</button>
+        </div>
+      `;
+    } else {
+      tableActionBtns = `<span style="font-size: 12px; color: var(--dark-muted); font-style: italic;">—</span>`;
+    }
+
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(req.owner_name || 'N/A')}</span>
+            <span class="property-subtitle-owner">ID: ${req.owner_id}</span>
+          </div>
+        </td>
+        <td>
+          <span style="font-weight: 800; color: var(--dark); font-size: 15px;">${formatMoney(req.amount)}</span>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; font-size: 12px; line-height: 1.5;">
+            <span style="font-weight: 600; color: var(--dark);">${escapeHTML(req.account_holder_name)}</span>
+            <span style="color: var(--dark-muted);">${paymentMethod}</span>
+          </div>
+        </td>
+        <td>
+          <span style="font-size: 12px; color: var(--dark-muted);">${formatDate(req.created_at)}</span>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
+        </td>
+        <td class="text-center">
+          ${tableActionBtns}
+        </td>
+      </tr>
+    `;
+
+    // Mobile card actions
+    let mobileActionBtns = "";
+    if (req.withdrawal_status === "PENDING") {
+      mobileActionBtns = `
+        <div class="mobile-card-actions" style="gap: 8px; display: flex;">
+          <button class="approveBtn" style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);" onclick="approveWithdrawal(${req.id})">Approve</button>
+          <button class="rejectBtn" style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);" onclick="rejectWithdrawal(${req.id})">Reject</button>
+        </div>
+      `;
+    } else if (req.withdrawal_status === "APPROVED") {
+      mobileActionBtns = `
+        <div class="mobile-card-actions" style="gap: 8px; display: flex;">
+          <button class="approveBtn" style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm); background: linear-gradient(135deg, hsl(160,70%,40%), hsl(160,70%,30%));" onclick="markWithdrawalPaid(${req.id})">Mark as Paid</button>
+          <button class="rejectBtn" style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);" onclick="rejectWithdrawal(${req.id})">Reject</button>
         </div>
       `;
     }
 
-    return `
-      <div class="card withdrawal-card-admin">
-        <div class="card-header-row">
+    const notesHtml = req.admin_notes
+      ? `<div class="detail-row" style="flex-direction: column; align-items: flex-start; gap: 4px; border-top: 1px dashed rgba(255,255,255,0.1); padding-top: 8px; margin-top: 4px;">
+            <span class="lbl">Admin Notes</span>
+            <span class="val" style="white-space: pre-line; line-height: 1.5;">${escapeHTML(req.admin_notes)}</span>
+          </div>`
+      : "";
+
+    mobileCards += `
+      <div class="mobile-commission-card ${statusClass}">
+        <div class="mobile-card-header">
           <div>
-            <h3>Owner: ${escapeHTML(req.owner_name || 'N/A')} (ID: ${req.owner_id})</h3>
-            <span class="status-pill ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(req.owner_name || 'N/A')}</h4>
+            <span class="owner-lbl">Owner ID: ${req.owner_id}</span>
           </div>
-          <div class="amount-badge">
-            ${formatMoney(req.amount)}
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+            <span style="font-weight: 800; font-size: 16px; color: var(--dark);">${formatMoney(req.amount)}</span>
+            <span class="status-pill-badge ${statusClass}">${escapeHTML(req.withdrawal_status)}</span>
           </div>
         </div>
 
-        <div class="card-details">
-          <p><strong>Account Holder:</strong> ${escapeHTML(req.account_holder_name)}</p>
-          ${detailsHtml}
-          <p class="request-date"><strong>Requested At:</strong> ${formatDate(req.created_at)}</p>
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Account Holder</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(req.account_holder_name)}</span>
+          </div>
+          ${req.upi_id ? `
+          <div class="detail-row">
+            <span class="lbl">UPI ID</span>
+            <span class="val">${escapeHTML(req.upi_id)}</span>
+          </div>
+          ` : `
+          <div class="detail-row">
+            <span class="lbl">Bank Name</span>
+            <span class="val">${escapeHTML(req.bank_name || "N/A")}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Account Number</span>
+            <span class="val">${escapeHTML(req.account_number || "N/A")}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">IFSC Code</span>
+            <span class="val">${escapeHTML(req.ifsc_code || "N/A")}</span>
+          </div>
+          `}
+          <div class="detail-row">
+            <span class="lbl">Requested At</span>
+            <span class="val">${formatDate(req.created_at)}</span>
+          </div>
           ${notesHtml}
         </div>
 
-        ${actionsHtml}
+        ${mobileActionBtns}
       </div>
     `;
-  }).join("");
+  });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Owner</th>
+            <th>Amount</th>
+            <th>Payment Details</th>
+            <th>Requested</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  adminWithdrawalsList.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 };
 
 const approveWithdrawal = async (id) => {
