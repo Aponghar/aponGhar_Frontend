@@ -2163,6 +2163,7 @@ async function loadPendingCheckIns(){
 }
 
 function renderPendingCheckIns(checkIns) {
+  applicationsContainer.style.display = "block";
   applicationsContainer.innerHTML = "";
 
   if(checkIns.length === 0){
@@ -3594,6 +3595,7 @@ const loadWithdrawals = async () => {
 };
 
 const renderWithdrawals = (requests) => {
+  adminWithdrawalsList.style.display = "block";
   if (requests.length === 0) {
     adminWithdrawalsList.innerHTML = `
       <div class="no-records-view">
