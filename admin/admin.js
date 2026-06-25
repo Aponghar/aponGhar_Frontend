@@ -488,112 +488,225 @@ async function loadApplications(){
 }
 
 function renderApplications(applications) {
+  applicationsContainer.style.display = "block";
   applicationsContainer.innerHTML = "";
 
   if(applications.length === 0){
-
     applicationsContainer.innerHTML = `
-
-      <h2>
-        No Applications Found
-      </h2>
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No Applications Found.</p>
+      </div>
     `;
-
     return;
   }
 
+  // Calculate statistics
+  const totalApps = applications.length;
+  const pendingApps = applications.filter(app => (app.status || 'PENDING') === 'PENDING').length;
+  const approvedApps = applications.filter(app => app.status === 'APPROVED').length;
+
+  const statsHTML = `
+    <div class="earnings-stats-grid three-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Applications</span>
+          <span class="stat-value">${totalApps}</span>
+          <span class="stat-subtext">Received submissions</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Pending Verification</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${pendingApps}</span>
+          <span class="stat-subtext">Awaiting admin review</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Processed Applications</span>
+          <span class="stat-value paid-val">${approvedApps}</span>
+          <span class="stat-subtext">Approved registrations</span>
+        </div>
+      </div>
+    </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Pending Partner Submissions</h3>
+        <span class="badge-count">${applications.length} applications</span>
+      </div>
+    </div>
+  `;
+
+  let tableRows = "";
+  let mobileCards = "";
+
   applications.forEach(app => {
+    const statusClass = (app.status || 'PENDING').toLowerCase();
 
-    applicationsContainer.innerHTML += `
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(app.property_name)}</span>
+            <span class="property-subtitle-owner">${escapeHTML(app.property_type)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 700; color: var(--dark);">${escapeHTML(app.owner_name)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(app.contact_number)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 600; color: var(--dark);">${escapeHTML(app.location)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(app.area || 'N/A')}</span>
+          </div>
+        </td>
+        <td>
+          <div style="max-width: 250px; font-size: 13px; color: var(--dark-muted); white-space: normal; word-break: break-word;">
+            ${escapeHTML(app.description || 'No description provided.')}
+          </div>
+        </td>
+        <td>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(app.status || 'PENDING')}</span>
+        </td>
+        <td class="text-center">
+          ${(app.status || 'PENDING') === 'PENDING' ? `
+            <div style="display: flex; gap: 8px; justify-content: center;">
+              <button
+                class="approveBtn"
+                style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+                onclick="approveApplication(${app.id})"
+              >
+                Approve
+              </button>
+              <button
+                class="rejectBtn"
+                style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+                onclick="rejectApplication(${app.id})"
+              >
+                Reject
+              </button>
+            </div>
+          ` : `
+            <span style="font-size: 13px; color: var(--dark-muted); font-weight: 600;">No Action Required</span>
+          `}
+        </td>
+      </tr>
+    `;
 
-      <div class="card">
+    mobileCards += `
+      <div class="mobile-commission-card ${statusClass}">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(app.property_name)}</h4>
+            <span class="owner-lbl">${escapeHTML(app.property_type)}</span>
+          </div>
+          <span class="status-pill-badge ${statusClass}">${escapeHTML(app.status || 'PENDING')}</span>
+        </div>
 
-        <h3>
-          ${app.property_name}
-        </h3>
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Owner</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(app.owner_name)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Contact</span>
+            <span class="val">${escapeHTML(app.contact_number)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Location</span>
+            <span class="val">${escapeHTML(app.location)} (${escapeHTML(app.area || 'N/A')})</span>
+          </div>
+          <div class="detail-row" style="flex-direction: column; gap: 4px; align-items: flex-start;">
+            <span class="lbl">Description</span>
+            <span class="val" style="white-space: normal; text-align: left;">${escapeHTML(app.description || 'No description.')}</span>
+          </div>
+        </div>
 
-        <p>
-          <strong>Owner:</strong>
-          ${app.owner_name}
-        </p>
-
-        <p>
-          <strong>Type:</strong>
-          ${app.property_type}
-        </p>
-
-        <p>
-          <strong>Location:</strong>
-          ${app.location}
-        </p>
-
-        <p>
-          <strong>Area:</strong>
-          ${app.area}
-        </p>
-
-        <p>
-          <strong>Contact:</strong>
-          ${app.contact_number}
-        </p>
-
-        <p>
-          <strong>Description:</strong>
-          ${app.description}
-        </p>
-
-        <span class="status
-          ${(
-            app.status
-            ||
-            "PENDING"
-          ).toLowerCase()}">
-
-          ${
-            app.status
-            ||
-            "PENDING"
-          }
-
-        </span>
-
-        ${
-          (
-            app.status
-            ||
-            "PENDING"
-          ) === "PENDING"
-
-          ?
-
-          `
-          <div class="actions">
-
+        ${(app.status || 'PENDING') === 'PENDING' ? `
+          <div class="mobile-card-actions" style="gap: 8px; display: flex;">
             <button
               class="approveBtn"
+              style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
               onclick="approveApplication(${app.id})"
             >
               Approve
             </button>
-
             <button
               class="rejectBtn"
+              style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
               onclick="rejectApplication(${app.id})"
             >
               Reject
             </button>
-
           </div>
-          `
-
-          :
-
-          ""
-        }
-
+        ` : ''}
       </div>
     `;
   });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property Details</th>
+            <th>Owner Info</th>
+            <th>Location</th>
+            <th>Description</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  applicationsContainer.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 }
 
 
@@ -1134,72 +1247,204 @@ async function loadPendingProperties(){
 }
 
 function renderPendingProperties(properties) {
+  applicationsContainer.style.display = "block";
   applicationsContainer.innerHTML = "";
 
   if(properties.length === 0){
-
-    applicationsContainer.innerHTML =
-
-    `
-    <h2>
-      No Pending Properties
-    </h2>
+    applicationsContainer.innerHTML = `
+      <div class="no-records-view">
+        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="8" y1="12" x2="16" y2="12"></line>
+        </svg>
+        <p>No Pending Properties.</p>
+      </div>
     `;
-
     return;
   }
 
-  properties.forEach(property => {
+  // Calculate statistics
+  const totalPending = properties.length;
 
-    applicationsContainer.innerHTML += `
-
-    <div class="card">
-
-      <h3>
-        ${property.property_name}
-      </h3>
-
-      <p>
-        <strong>Owner:</strong>
-        ${property.owner_name}
-      </p>
-
-      <p>
-        <strong>Email:</strong>
-        ${property.email}
-      </p>
-
-      <p>
-        <strong>City:</strong>
-        ${property.city}
-      </p>
-
-      <p>
-        <strong>State:</strong>
-        ${property.state}
-      </p>
-
-      <div class="actions">
-
-        <button
-          class="approveBtn"
-          onclick="approveProperty(${property.id})"
-        >
-          Approve
-        </button>
-
-        <button
-          class="rejectBtn"
-          onclick="rejectProperty(${property.id})"
-        >
-          Reject
-        </button>
-
+  const statsHTML = `
+    <div class="earnings-stats-grid three-cols">
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper total">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Total Pending Properties</span>
+          <span class="stat-value">${totalPending}</span>
+          <span class="stat-subtext">Awaiting admin review</span>
+        </div>
       </div>
 
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper pending">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Awaiting Verification</span>
+          <span class="stat-value" style="color: hsl(38, 92%, 40%);">${totalPending}</span>
+          <span class="stat-subtext">Requires property checks</span>
+        </div>
+      </div>
+
+      <div class="earnings-stat-card">
+        <div class="stat-icon-wrapper paid">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-label">Fast Track Ready</span>
+          <span class="stat-value paid-val">Yes</span>
+          <span class="stat-subtext">Instant approval active</span>
+        </div>
+      </div>
     </div>
+  `;
+
+  // Details Header
+  const detailsHeaderHTML = `
+    <div class="earnings-details-header">
+      <div class="header-info">
+        <h3>Pending Properties</h3>
+        <span class="badge-count">${properties.length} properties</span>
+      </div>
+    </div>
+  `;
+
+  let tableRows = "";
+  let mobileCards = "";
+
+  properties.forEach(property => {
+    tableRows += `
+      <tr>
+        <td>
+          <div class="table-property-cell">
+            <span class="property-title-name">${escapeHTML(property.property_name)}</span>
+            <span class="property-subtitle-owner">Registered: ${formatDate(property.created_at)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-weight: 700; color: var(--dark);">${escapeHTML(property.owner_name)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(property.email)}</span>
+          </div>
+        </td>
+        <td>
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <span style="font-weight: 600; color: var(--dark);">${escapeHTML(property.city)}</span>
+            <span style="font-size: 12px; color: var(--dark-muted);">${escapeHTML(property.state)}</span>
+          </div>
+        </td>
+        <td>
+          <span class="status-pill-badge pending">PENDING</span>
+        </td>
+        <td class="text-center">
+          <div style="display: flex; gap: 8px; justify-content: center;">
+            <button
+              class="approveBtn"
+              style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+              onclick="approveProperty(${property.id})"
+            >
+              Approve
+            </button>
+            <button
+              class="rejectBtn"
+              style="padding: 8px 14px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+              onclick="rejectProperty(${property.id})"
+            >
+              Reject
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+
+    mobileCards += `
+      <div class="mobile-commission-card pending">
+        <div class="mobile-card-header">
+          <div>
+            <h4 style="font-size: 15px; font-weight: 800; color: var(--dark);">${escapeHTML(property.property_name)}</h4>
+            <span class="owner-lbl">Registered: ${formatDate(property.created_at)}</span>
+          </div>
+          <span class="status-pill-badge pending">PENDING</span>
+        </div>
+
+        <div class="mobile-card-body">
+          <div class="detail-row">
+            <span class="lbl">Owner</span>
+            <span class="val" style="font-weight: 700;">${escapeHTML(property.owner_name)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Email</span>
+            <span class="val">${escapeHTML(property.email)}</span>
+          </div>
+          <div class="detail-row">
+            <span class="lbl">Location</span>
+            <span class="val">${escapeHTML(property.city)}, ${escapeHTML(property.state)}</span>
+          </div>
+        </div>
+
+        <div class="mobile-card-actions" style="gap: 8px; display: flex;">
+          <button
+            class="approveBtn"
+            style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="approveProperty(${property.id})"
+          >
+            Approve
+          </button>
+          <button
+            class="rejectBtn"
+            style="flex: 1; padding: 10px; font-size: 12px; margin-top: 0; border-radius: var(--radius-sm);"
+            onclick="rejectProperty(${property.id})"
+          >
+            Reject
+          </button>
+        </div>
+      </div>
     `;
   });
+
+  const detailsHTML = `
+    <div class="desktop-table-view-wrapper">
+      <table class="premium-earnings-table">
+        <thead>
+          <tr>
+            <th>Property Details</th>
+            <th>Owner Info</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${tableRows}
+        </tbody>
+      </table>
+    </div>
+    <div class="mobile-cards-view-wrapper">
+      ${mobileCards}
+    </div>
+  `;
+
+  applicationsContainer.innerHTML = `
+    <div class="earnings-section-wrapper">
+      ${statsHTML}
+      ${detailsHeaderHTML}
+      ${detailsHTML}
+    </div>
+  `;
 }
 
 async function approveProperty(
