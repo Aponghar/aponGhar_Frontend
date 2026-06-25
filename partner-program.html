@@ -5,37 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Partner Program - AponGhar</title>
   <script src="./config.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
-
     :root {
-      --primary: hsl(41, 52%, 52%);
-      --primary-hover: hsl(41, 55%, 45%);
-      --primary-light: hsla(41, 52%, 52%, 0.08);
-      --dark: hsl(220, 16%, 14%);
-      --dark-muted: hsl(220, 9%, 40%);
-      --bg-body: hsl(40, 25%, 98%);
-      --bg-card: #ffffff;
-      --border-color: hsl(40, 18%, 91%);
-      --radius-md: 12px;
-      --radius-lg: 24px;
-      --shadow-md: 0 10px 30px rgba(15, 23, 42, 0.05);
-      --shadow-lg: 0 20px 40px rgba(15, 23, 42, 0.08);
+      --gold: #C9A84C;
+      --gold-light: #E8C96A;
+      --gold-dark: #9B7A28;
+      --gold-pale: #FDF6E3;
+      --gold-pale2: #F5EAC8;
+      --silver: #8A9BB0;
+      --silver-light: #C2CED8;
+      --cream: #F8F4EE;
+      --charcoal: #1E2329;
+      --charcoal-soft: #2E3540;
+      --text-primary: #1E2329;
+      --text-secondary: #4A5568;
+      --text-muted: #718096;
+      --white: #FFFFFF;
+      --plan-free-accent: #16A34A;
+      --plan-basic-accent: #1D4ED8;
+      --plan-premium-accent: #9B7A28;
+      
+      /* Navigation and footer support variables mapping */
+      --primary: var(--gold-dark);
+      --primary-hover: var(--gold);
+      --primary-light: rgba(201, 168, 76, 0.1);
+      --dark-muted: var(--text-muted);
+      --border-color: var(--gold-pale2);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background: var(--bg-body);
-      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      background: var(--cream);
+      color: var(--text-primary);
       line-height: 1.6;
+      min-height: 100vh;
     }
 
+    /* ── STICKY NAV BAR ── */
     nav {
       background: rgba(255, 255, 255, 0.85);
       backdrop-filter: blur(20px);
@@ -87,204 +96,562 @@
       background: var(--primary-light);
     }
 
-    .container {
-      max-width: 900px;
+    .poster {
+      max-width: 1100px;
       margin: 40px auto 80px;
-      padding: 40px;
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg);
-      box-shadow: var(--shadow-md);
+      background: var(--white);
+      box-shadow: 0 4px 40px rgba(0,0,0,0.12);
+      border-radius: 16px;
+      overflow: hidden;
     }
 
-    .header-section {
+    /* ── HEADER ── */
+    .header {
+      background: var(--charcoal);
+      padding: 48px 56px 44px;
       text-align: center;
-      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
     }
-
-    h1 {
-      font-size: 36px;
-      font-weight: 800;
-      color: var(--dark);
-      margin-bottom: 12px;
-      letter-spacing: -1px;
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.12) 0%, transparent 60%, rgba(201,168,76,0.08) 100%);
+      pointer-events: none;
     }
+    .header-inner { position: relative; z-index: 1; }
 
-    .subtitle {
-      font-size: 18px;
-      color: var(--dark-muted);
-      max-width: 600px;
-      margin: 0 auto;
+    .logo-area {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
     }
-
-    h2 {
-      font-size: 22px;
+    .logo-img {
+      height: 80px;
+      width: auto;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+    }
+    .header-badge {
+      display: inline-block;
+      background: rgba(201,168,76,0.15);
+      border: 1px solid rgba(201,168,76,0.4);
+      color: var(--gold-light);
+      font-size: 11px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 5px 18px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 42px;
       font-weight: 700;
-      color: var(--dark);
-      margin-top: 40px;
-      margin-bottom: 16px;
-      letter-spacing: -0.4px;
+      color: var(--white);
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+    .header h1 span { color: var(--gold); }
+    .header-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.7);
+      max-width: 620px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
     }
 
-    p {
-      margin-bottom: 16px;
-      color: hsl(220, 12%, 24%);
+    /* ── BILLING TOGGLE ── */
+    .billing-toggle-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .toggle-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.55);
+      transition: color 0.25s;
+      letter-spacing: 0.3px;
+    }
+    .toggle-label.active { color: var(--white); }
+
+    .toggle-track {
+      width: 56px;
+      height: 28px;
+      background: rgba(255,255,255,0.12);
+      border: 1.5px solid rgba(201,168,76,0.5);
+      border-radius: 14px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s;
+      flex-shrink: 0;
+    }
+    .toggle-track.annual {
+      background: rgba(201,168,76,0.25);
+      border-color: var(--gold);
+    }
+    .toggle-thumb {
+      width: 20px;
+      height: 20px;
+      background: var(--white);
+      border-radius: 50%;
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      transition: left 0.25s cubic-bezier(.4,0,.2,1), background 0.25s;
+    }
+    .toggle-track.annual .toggle-thumb {
+      left: 30px;
+      background: var(--gold);
     }
 
-    /* Plans Grid */
+    .annual-badge-wrap {
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .annual-badge-wrap.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── GOLD DIVIDER ── */
+    .gold-divider {
+      height: 4px;
+      background: linear-gradient(90deg, transparent, var(--gold-dark), var(--gold), var(--gold-light), var(--gold), var(--gold-dark), transparent);
+    }
+
+    /* ── FOR STRIP ── */
+    .for-strip {
+      background: var(--gold-pale);
+      border-bottom: 1px solid var(--gold-pale2);
+      padding: 16px 56px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .for-label {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold-dark);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .for-items { display: flex; gap: 12px; flex-wrap: wrap; }
+    .for-pill {
+      background: var(--white);
+      border: 1px solid var(--gold-pale2);
+      color: var(--charcoal-soft);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 20px;
+    }
+
+    /* ── PLANS GRID ── */
+    .plans-section { padding: 48px 40px 40px; }
+    .section-header { text-align: center; margin-bottom: 28px; }
+    .section-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--charcoal);
+    }
+
     .plans-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      margin: 40px 0;
+      gap: 20px;
+      margin-bottom: 20px;
     }
-
     .plan-card {
-      background: #fff;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius-md);
-      padding: 32px 24px;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid;
       display: flex;
       flex-direction: column;
-      transition: all 0.3s ease;
       position: relative;
     }
+    .plan-card.free    { border-color: #86EFAC; }
+    .plan-card.basic   { border-color: #93C5FD; }
+    .plan-card.premium { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,0.15); }
 
-    .plan-card:hover {
-      transform: translateY(-8px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--primary);
-    }
-
-    .plan-card.premium-tier {
-      border: 2.5px solid var(--primary);
-      box-shadow: var(--shadow-md);
-    }
-
-    .plan-card.premium-tier::before {
-      content: "RECOMMENDED";
+    .most-popular-badge {
       position: absolute;
-      top: -12px;
+      top: -1px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--primary);
-      color: #fff;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      color: var(--white);
       font-size: 10px;
-      font-weight: 800;
-      padding: 4px 12px;
-      border-radius: 100px;
-      letter-spacing: 1px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 20px;
+      border-radius: 0 0 10px 10px;
+      white-space: nowrap;
     }
 
-    .plan-name {
-      font-size: 20px;
-      font-weight: 800;
+    .plan-header { padding: 28px 24px 20px; text-align: center; }
+    .plan-card.free    .plan-header { background: #F0FDF4; }
+    .plan-card.basic   .plan-header { background: #EFF6FF; }
+    .plan-card.premium .plan-header { background: var(--gold-pale); }
+
+    .plan-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .plan-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
       margin-bottom: 8px;
     }
+    .plan-card.free    .plan-label { color: var(--plan-free-accent); }
+    .plan-card.basic   .plan-label { color: var(--plan-basic-accent); }
+    .plan-card.premium .plan-label { color: var(--gold-dark); }
 
+    .plan-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--charcoal);
+    }
+
+    /* price area */
+    .price-block { margin-bottom: 4px; }
     .plan-price {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--dark);
-      margin-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 2px;
     }
-
-    .plan-price span {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--dark-muted);
+    .price-currency { font-size: 18px; font-weight: 600; color: var(--text-secondary); }
+    .price-amount {
+      font-size: 44px;
+      font-weight: 700;
+      line-height: 1;
+      transition: all 0.3s ease;
     }
+    .plan-card.free    .price-amount { color: var(--plan-free-accent); }
+    .plan-card.basic   .price-amount { color: var(--plan-basic-accent); }
+    .plan-card.premium .price-amount { color: var(--gold-dark); }
+    .price-period { font-size: 13px; color: var(--text-muted); margin-left: 2px; }
 
-    .plan-desc {
-      font-size: 14px;
-      color: var(--dark-muted);
-      margin-bottom: 24px;
-      min-height: 44px;
+    .price-original {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: line-through;
+      text-align: center;
+      min-height: 18px;
+      margin-top: 2px;
+      transition: opacity 0.3s;
     }
+    .price-original.hidden { opacity: 0; }
 
-    .features-list {
-      list-style: none;
-      padding: 0;
-      margin: 0 0 24px 0;
-      flex-grow: 1;
+    .price-saving {
+      font-size: 12px;
+      font-weight: 700;
+      text-align: center;
+      min-height: 18px;
+      margin-top: 1px;
+      transition: opacity 0.3s;
+      color: #16A34A;
     }
+    .price-saving.hidden { opacity: 0; }
 
-    .features-list li {
-      font-size: 14px;
-      color: hsl(220, 12%, 24%);
-      margin-bottom: 12px;
+    .plan-commission {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      margin-top: 8px;
+    }
+    .plan-card.free    .plan-commission { background: #DCFCE7; color: #15803D; }
+    .plan-card.basic   .plan-commission { background: #DBEAFE; color: #1E40AF; }
+    .plan-card.premium .plan-commission { background: linear-gradient(90deg, var(--gold-dark), var(--gold)); color: var(--white); }
+
+    .plan-body { padding: 20px 24px 24px; flex: 1; background: var(--white); }
+    .feature-section { margin-bottom: 16px; }
+    .feature-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid #F0F0F0;
+    }
+    .feature-list { list-style: none; }
+    .feature-item {
       display: flex;
       align-items: flex-start;
       gap: 8px;
+      font-size: 13px;
+      padding: 4px 0;
+      color: var(--text-primary);
+      line-height: 1.4;
+    }
+    .check {
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+      font-size: 9px;
+      color: var(--white);
+    }
+    .plan-card.free    .check.yes { background: var(--plan-free-accent); }
+    .plan-card.basic   .check.yes { background: var(--plan-basic-accent); }
+    .plan-card.premium .check.yes { background: var(--gold); }
+    .check.no { background: #E5E7EB; }
+    .check.no::after  { content: '×'; color: #9CA3AF; font-size: 11px; font-weight: 700; }
+    .check.yes::after { content: '✓'; }
+    .feature-dimmed { color: var(--text-muted) !important; }
+
+    .plan-best-for {
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .plan-card.free    .plan-best-for { background: #F0FDF4; border: 1px solid #BBF7D0; color: #15803D; }
+    .plan-card.basic   .plan-best-for { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF; }
+    .plan-card.premium .plan-best-for { background: var(--gold-pale); border: 1px solid var(--gold-pale2); color: var(--gold-dark); }
+    .best-for-label {
+      font-weight: 700;
+      font-size: 10px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      display: block;
     }
 
-    .features-list li::before {
-      content: "✓";
-      color: var(--primary);
-      font-weight: 800;
+    .website-note {
+      font-size: 11px;
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+    .website-note.included {
+      background: linear-gradient(90deg, rgba(201,168,76,0.1), rgba(201,168,76,0.05));
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold-dark);
+      font-weight: 600;
+    }
+    .website-note.available {
+      background: #F9FAFB;
+      border: 1px dashed #D1D5DB;
+      color: var(--text-muted);
     }
 
-    .plan-commission {
+    /* ── COMPARISON TABLE ── */
+    .comparison-section { padding: 0 40px 48px; }
+    .comp-table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1.5px solid #E5E7EB;
+    }
+    .comp-table th {
+      padding: 16px 20px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .comp-table th:first-child { text-align: left; }
+    .comp-table th.th-free    { background: #F0FDF4; color: var(--plan-free-accent); }
+    .comp-table th.th-basic   { background: #EFF6FF; color: var(--plan-basic-accent); }
+    .comp-table th.th-premium { background: var(--gold-pale); color: var(--gold-dark); }
+    .comp-table th.th-feature { background: var(--charcoal); color: var(--white); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+    .comp-table td {
+      padding: 12px 20px;
+      font-size: 13px;
+      border-top: 1px solid #F0F0F0;
+      text-align: center;
+    }
+    .comp-table td:first-child { text-align: left; font-weight: 500; color: var(--text-secondary); }
+    .comp-table tr:nth-child(even) td { background: #FAFAFA; }
+    .comp-table td.highlight { background: rgba(201,168,76,0.04); }
+    .tick-yes  { color: #16A34A; font-size: 16px; font-weight: 700; }
+    .tick-no   { color: #D1D5DB; font-size: 18px; }
+    .tick-gold { color: var(--gold-dark); font-weight: 700; font-size: 13px; }
+    .tick-blue { color: var(--plan-basic-accent); font-weight: 600; font-size: 13px; }
+    .commission-cell { font-weight: 700; font-size: 13px; }
+    .comm-high { color: #DC2626; }
+    .comm-mid  { color: #D97706; }
+    .comm-zero { color: var(--gold-dark); }
+
+    /* dynamic table price cells */
+    .th-price-basic, .th-price-premium { transition: all 0.3s; }
+
+    /* ── CTA FOOTER ── */
+    .cta-footer {
+      background: var(--charcoal);
+      padding: 52px 56px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(135deg, rgba(201,168,76,0.1) 0%, transparent 50%, rgba(201,168,76,0.06) 100%);
+      pointer-events: none;
+    }
+    .cta-inner { position: relative; z-index: 1; }
+    .cta-footer h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 34px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .cta-footer h2 span { color: var(--gold); }
+    .cta-sub {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      max-width: 520px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .cta-buttons {
+      display: flex;
+      gap: 14px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+    }
+    .btn-primary {
+      display: inline-block;
+      background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+      color: var(--white);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      padding: 14px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .btn-primary:hover {
+      transform: translateY(-1.5px);
+      box-shadow: 0 4px 15px rgba(201, 168, 76, 0.4);
+    }
+    .btn-outline {
+      display: inline-block;
+      background: transparent;
+      color: var(--gold-light);
       font-size: 14px;
       font-weight: 600;
-      padding-top: 16px;
-      border-top: 1px solid var(--border-color);
-      color: var(--dark);
-      margin-top: auto;
+      padding: 13px 32px;
+      border-radius: 8px;
+      text-decoration: none;
+      border: 1.5px solid rgba(201,168,76,0.5);
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .btn-outline:hover {
+      transform: translateY(-1.5px);
+      border-color: var(--gold);
+      background: rgba(201, 168, 76, 0.05);
     }
 
-    /* Benefits and Property Types */
-    .highlight-list {
-      list-style: none;
-      padding: 0;
-      margin: 20px 0;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
+    /* contact row */
+    .cta-contact-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
     }
-
-    .highlight-list li {
-      padding: 16px;
-      background: var(--bg-body);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border-color);
-      font-size: 15px;
-      font-weight: 600;
+    .contact-item {
       display: flex;
       align-items: center;
       gap: 10px;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: rgba(255,255,255,0.04);
+      transition: border-color 0.2s, background 0.2s;
     }
-
-    .highlight-list li::before {
-      content: "✦";
-      color: var(--primary);
-      font-size: 18px;
-    }
-
-    .types-list {
+    .contact-item:hover { border-color: rgba(201,168,76,0.4); background: rgba(201,168,76,0.06); }
+    .contact-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin: 20px 0;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
     }
-
-    .type-pill {
-      background: var(--primary-light);
-      color: var(--primary);
+    .contact-icon.email-icon { background: rgba(59,130,246,0.15); }
+    .contact-icon.wa-icon    { background: rgba(37,211,102,0.15); }
+    .contact-text-group { text-align: left; }
+    .contact-type {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      display: block;
+      line-height: 1.2;
+    }
+    .contact-value {
+      font-size: 13px;
       font-weight: 600;
-      font-size: 14px;
-      padding: 8px 18px;
-      border-radius: 100px;
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: rgba(255,255,255,0.85);
+      display: block;
     }
+    .contact-item.email-item .contact-value { color: #93C5FD; }
+    .contact-item.wa-item    .contact-value { color: #86EFAC; }
 
-    hr {
-      border: 0;
-      height: 1px;
-      background: var(--border-color);
-      margin: 36px 0;
+    /* ornament */
+    .ornament {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin: 0 auto 20px;
+      max-width: 320px;
+      justify-content: center;
     }
+    .ornament-line    { flex: 1; height: 1px; background: rgba(201,168,76,0.3); }
+    .ornament-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
 
+    /* footer */
     footer {
       text-align: center;
       padding: 30px;
@@ -298,22 +665,37 @@
       .plans-grid {
         grid-template-columns: 1fr;
       }
-      .highlight-list {
-        grid-template-columns: 1fr;
-      }
     }
 
     @media (max-width: 768px) {
       nav {
         padding: 14px 24px;
       }
-      .container {
+      .poster {
         margin: 20px;
-        padding: 24px;
-        border-radius: var(--radius-md);
+        border-radius: 12px;
       }
-      h1 {
-        font-size: 28px;
+      .header {
+        padding: 36px 24px;
+      }
+      .header h1 {
+        font-size: 32px;
+      }
+      .plans-section {
+        padding: 32px 20px 20px;
+      }
+      .comparison-section {
+        padding: 0 20px 32px;
+      }
+      .comp-table th, .comp-table td {
+        padding: 10px 8px;
+        font-size: 11px;
+      }
+      .cta-footer {
+        padding: 36px 24px;
+      }
+      .cta-footer h2 {
+        font-size: 26px;
       }
     }
   </style>
@@ -327,98 +709,361 @@
   <a href="./home/home.html" class="back-btn">← Back to Home</a>
 </nav>
 
-<div class="container">
-  <div class="header-section">
-    <h1>AponGhar Partner Program</h1>
-    <p class="subtitle">Grow Your Property Business with AponGhar</p>
+<div class="poster">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo-area">
+        <img class="logo-img" src="./assets/logo-small.png" alt="AponGhar Logo">
+      </div>
+      <div class="header-badge">Official Partner Program</div>
+      <h1>AponGhar <span>Partner Plans</span></h1>
+      <p class="header-sub">Grow Your Property Business with AponGhar. Whether you're a homestay owner, villa operator, resort owner, or hotel manager — we provide the tools and exposure you need.</p>
+
+      <!-- BILLING TOGGLE -->
+      <div class="billing-toggle-wrap">
+        <span class="toggle-label active" id="lbl-monthly">Monthly</span>
+        <div class="toggle-track" id="billingToggle" onclick="toggleBilling()" role="switch" aria-checked="false" tabindex="0">
+          <div class="toggle-thumb"></div>
+        </div>
+        <span class="toggle-label" id="lbl-annual">Annual</span>
+        <span class="annual-badge-wrap" id="saveBadge">Save 15%</span>
+      </div>
+    </div>
   </div>
+  <div class="gold-divider"></div>
 
-  <p style="text-align: center; max-width: 700px; margin: 0 auto 32px; font-size: 16px;">
-    Whether you own a homestay, hotel, villa, apartment, or resort, AponGhar helps you attract guests, manage bookings, and grow your business.
-  </p>
-
-  <hr>
-
-  <h2>Choose the Right Plan for You</h2>
-
-  <div class="plans-grid">
-    <!-- Listing Plan -->
-    <div class="plan-card">
-      <div class="plan-name">Listing Plan</div>
-      <div class="plan-price">₹0 <span>/ Month</span></div>
-      <p class="plan-desc">Perfect for new property owners.</p>
-      <ul class="features-list">
-        <li>Property Listing</li>
-        <li>Booking Leads</li>
-        <li>Traveler Visibility</li>
-        <li>Dedicated Support</li>
-      </ul>
-      <div class="plan-commission">Commission: 20–25%</div>
-    </div>
-
-    <!-- Basic Plan -->
-    <div class="plan-card">
-      <div class="plan-name">Basic Plan</div>
-      <div class="plan-price">₹1499 <span>/ Month</span></div>
-      <p class="plan-desc">Perfect for growing properties.</p>
-      <ul class="features-list">
-        <li>Owner Dashboard</li>
-        <li>Room Management</li>
-        <li>Booking Management</li>
-        <li>Dynamic Pricing</li>
-        <li>Coupon Creation</li>
-        <li>Revenue Reports</li>
-      </ul>
-      <div class="plan-commission">Commission: 7%</div>
-    </div>
-
-    <!-- Premium Plan -->
-    <div class="plan-card premium-tier">
-      <div class="plan-name" style="color: var(--primary);">Premium Plan</div>
-      <div class="plan-price">₹2499 <span>/ Month</span></div>
-      <p class="plan-desc">Perfect for professional operators.</p>
-      <ul class="features-list">
-        <li>Everything in Basic</li>
-        <li>Multiple Property Management</li>
-        <li>Advanced Analytics</li>
-        <li>Featured Listings</li>
-        <li>Priority Support</li>
-        <li>Free Personalized Website</li>
-      </ul>
-      <div class="plan-commission" style="color: var(--primary);">Commission: 0%<br><span style="font-size: 12px; font-weight: normal; color: var(--dark-muted);">Only gateway fees may apply</span></div>
+  <!-- WHO IS IT FOR -->
+  <div class="for-strip">
+    <span class="for-label">Perfect For</span>
+    <div class="for-items">
+      <span class="for-pill">🏡 Homestay Owners</span>
+      <span class="for-pill">🌴 Villa Operators</span>
+      <span class="for-pill">🏨 Resort Owners</span>
+      <span class="for-pill">🏨 Hotel Managers</span>
+      <span class="for-pill">🏕️ Boutique Properties</span>
     </div>
   </div>
 
-  <hr>
+  <!-- ── PLANS ── -->
+  <div class="plans-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Choose Your Plan</div>
+      <div class="section-title">Flexible Options for Every Stage</div>
+    </div>
 
-  <h2>Property Types We Accept</h2>
-  <div class="types-list">
-    <div class="type-pill">Homestays</div>
-    <div class="type-pill">Hotels</div>
-    <div class="type-pill">Resorts</div>
-    <div class="type-pill">Villas</div>
-    <div class="type-pill">Apartments</div>
+    <div class="plans-grid">
+
+      <!-- LISTING PLAN -->
+      <div class="plan-card free">
+        <div class="plan-header">
+          <span class="plan-icon">🟢</span>
+          <div class="plan-label">Listing Plan</div>
+          <div class="plan-name">Listing</div>
+          <div class="price-block">
+            <div class="plan-price">
+              <span class="price-currency">₹</span>
+              <span class="price-amount" id="price-free">0</span>
+              <span class="price-period" id="period-free">/ month</span>
+            </div>
+            <div class="price-original hidden" id="orig-free"></div>
+            <div class="price-saving hidden" id="save-free"></div>
+          </div>
+          <div class="plan-commission">20% – 25% Commission</div>
+        </div>
+        <div class="plan-body">
+          <div class="feature-section">
+            <div class="feature-section-title">Core Listing</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Property Listing on AponGhar</li>
+              <li class="feature-item"><span class="check yes"></span> Visibility to Travelers</li>
+              <li class="feature-item"><span class="check yes"></span> Basic Property Profile</li>
+              <li class="feature-item"><span class="check yes"></span> Booking Leads from AponGhar</li>
+              <li class="feature-item"><span class="check yes"></span> Dedicated Partner Support</li>
+            </ul>
+          </div>
+          <div class="feature-section">
+            <div class="feature-section-title">Management Tools</div>
+            <ul class="feature-list">
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Owner Dashboard</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Room Management</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Booking Management</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Dynamic Pricing</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Revenue Reports</li>
+            </ul>
+          </div>
+          <div class="website-note available">🌐 Personalized Website available separately for ₹9,999</div>
+          <div class="plan-best-for">
+            <span class="best-for-label">Best For</span>
+            New property owners who want to receive bookings without managing software.
+          </div>
+        </div>
+      </div>
+
+      <!-- BASIC PLAN -->
+      <div class="plan-card basic">
+        <div class="plan-header">
+          <span class="plan-icon">🔵</span>
+          <div class="plan-label">Basic Plan</div>
+          <div class="plan-name">Basic</div>
+          <div class="price-block">
+            <div class="plan-price">
+              <span class="price-currency">₹</span>
+              <span class="price-amount" id="price-basic">1,499</span>
+              <span class="price-period" id="period-basic">/ month</span>
+            </div>
+            <div class="price-original hidden" id="orig-basic"></div>
+            <div class="price-saving hidden" id="save-basic"></div>
+          </div>
+          <div class="plan-commission">7% Commission</div>
+        </div>
+        <div class="plan-body">
+          <div class="feature-section">
+            <div class="feature-section-title">Property Management</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Manage 1 Property</li>
+              <li class="feature-item"><span class="check yes"></span> Create & Manage Rooms</li>
+              <li class="feature-item"><span class="check yes"></span> Room Availability Management</li>
+              <li class="feature-item"><span class="check yes"></span> Booking Management Dashboard</li>
+              <li class="feature-item"><span class="check yes"></span> Check-in & Check-out Tracking</li>
+              <li class="feature-item"><span class="check yes"></span> Guest Information Management</li>
+            </ul>
+          </div>
+          <div class="feature-section">
+            <div class="feature-section-title">Pricing & Marketing</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Dynamic / Weekend / Seasonal Pricing</li>
+              <li class="feature-item"><span class="check yes"></span> Festival Pricing</li>
+              <li class="feature-item"><span class="check yes"></span> Coupons & Discount Codes</li>
+              <li class="feature-item"><span class="check yes"></span> Promotional Campaigns</li>
+            </ul>
+          </div>
+          <div class="feature-section">
+            <div class="feature-section-title">Automation & Analytics</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Automated Booking Confirmation Emails</li>
+              <li class="feature-item"><span class="check yes"></span> Guest Notification Emails</li>
+              <li class="feature-item"><span class="check yes"></span> Basic Revenue Reports</li>
+            </ul>
+          </div>
+          <div class="website-note available">🌐 Personalized Website available separately for ₹9,999</div>
+          <div class="plan-best-for">
+            <span class="best-for-label">Best For</span>
+            Homestays, villas, and resorts looking for complete control over bookings and pricing.
+          </div>
+        </div>
+      </div>
+
+      <!-- PREMIUM PLAN -->
+      <div class="plan-card premium" id="plan-premium">
+        <div class="most-popular-badge">🏆 Most Popular</div>
+        <div class="plan-header">
+          <span class="plan-icon">🟣</span>
+          <div class="plan-label">Premium Plan</div>
+          <div class="plan-name">Premium</div>
+          <div class="price-block">
+            <div class="plan-price">
+              <span class="price-currency">₹</span>
+              <span class="price-amount" id="price-premium">2,499</span>
+              <span class="price-period" id="period-premium">/ month</span>
+            </div>
+            <div class="price-original hidden" id="orig-premium"></div>
+            <div class="price-saving hidden" id="save-premium"></div>
+          </div>
+          <div class="plan-commission">0% Commission — Keep 100%</div>
+        </div>
+        <div class="plan-body">
+          <div class="feature-section">
+            <div class="feature-section-title">Everything in Basic +</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Multiple Property Management</li>
+              <li class="feature-item"><span class="check yes"></span> Unlimited Room Management</li>
+              <li class="feature-item"><span class="check yes"></span> Advanced Revenue Dashboard</li>
+              <li class="feature-item"><span class="check yes"></span> Occupancy Reports</li>
+              <li class="feature-item"><span class="check yes"></span> Featured Listing on AponGhar</li>
+              <li class="feature-item"><span class="check yes"></span> Higher Property Visibility</li>
+            </ul>
+          </div>
+          <div class="feature-section">
+            <div class="feature-section-title">Personalized Website (Included FREE)</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Your Own Branded Website</li>
+              <li class="feature-item"><span class="check yes"></span> Mobile-Friendly Design</li>
+              <li class="feature-item"><span class="check yes"></span> Direct Booking Page</li>
+              <li class="feature-item"><span class="check yes"></span> WhatsApp / Facebook / Instagram Sharing</li>
+            </ul>
+          </div>
+          <div class="feature-section">
+            <div class="feature-section-title">Premium Support</div>
+            <ul class="feature-list">
+              <li class="feature-item"><span class="check yes"></span> Priority Customer Support</li>
+              <li class="feature-item"><span class="check yes"></span> Dedicated Partner Assistance</li>
+              <li class="feature-item"><span class="check yes"></span> Early Access to New Features</li>
+            </ul>
+          </div>
+          <div class="website-note included">🎁 Personalized Website Worth ₹9,999 — Included FREE!</div>
+          <div class="plan-best-for">
+            <span class="best-for-label">Best For</span>
+            Professional homestays, resorts, hotels, villas & owners managing multiple properties.
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 
-  <hr>
-
-  <h2>Why Partner With AponGhar?</h2>
-  <ul class="highlight-list">
-    <li>More visibility</li>
-    <li>Secure payments</li>
-    <li>Professional management tools</li>
-    <li>Analytics and reporting</li>
-    <li>Direct access to travelers</li>
-  </ul>
-
-  <div style="text-align: center; margin-top: 40px;">
-    <p style="font-weight: 700; font-size: 18px; color: var(--primary);">Start growing with AponGhar today.</p>
+  <!-- ── COMPARISON TABLE ── -->
+  <div class="comparison-section">
+    <div class="section-header">
+      <div class="section-eyebrow">Side-by-Side Comparison</div>
+      <div class="section-title">Plan Comparison at a Glance</div>
+    </div>
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th class="th-feature">Feature</th>
+          <th class="th-free">🟢 Listing<br><span style="font-size:11px;font-weight:400;">₹0 / mo</span></th>
+          <th class="th-basic">🔵 Basic<br><span id="th-basic-price" style="font-size:11px;font-weight:400;">₹1,499 / mo</span></th>
+          <th class="th-premium">🟣 Premium<br><span id="th-premium-price" style="font-size:11px;font-weight:400;">₹2,499 / mo</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Property Listing on AponGhar</td><td><span class="tick-yes">✓</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Owner Dashboard</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Property Management</td><td><span class="tick-no">—</span></td><td><span class="tick-blue">1 Property</span></td><td class="highlight"><span class="tick-gold">Multiple</span></td></tr>
+        <tr><td>Room Management</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Booking Management</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Check-in & Check-out Tracking</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Dynamic Pricing</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Coupon Creation</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Email Automation</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Revenue Reports</td><td><span class="tick-no">—</span></td><td><span class="tick-blue">Basic</span></td><td class="highlight"><span class="tick-gold">Advanced</span></td></tr>
+        <tr><td>Featured Listing</td><td><span class="tick-no">—</span></td><td><span class="tick-no">—</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Priority Support</td><td><span class="tick-no">—</span></td><td><span class="tick-no">—</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Personalized Website</td><td style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td class="highlight"><span class="tick-gold">✓ FREE</span></td></tr>
+        <tr><td>AponGhar Commission</td><td><span class="commission-cell comm-high">20–25%</span></td><td><span class="commission-cell comm-mid">7%</span></td><td class="highlight"><span class="commission-cell comm-zero">0% ✦</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11px;color:#9CA3AF;margin-top:10px;text-align:center;">✦ Only standard online payment gateway charges (typically 1–2%) may apply when guests pay online.</p>
   </div>
+
+  <!-- ── CTA FOOTER ── -->
+  <div class="gold-divider"></div>
+  <div class="cta-footer">
+    <div class="cta-inner">
+      <div class="ornament">
+        <div class="ornament-line"></div>
+        <div class="ornament-diamond"></div>
+        <div class="ornament-line"></div>
+      </div>
+      <h2>Start Growing with <span>AponGhar</span> Today</h2>
+      <p class="cta-sub">Get more bookings, manage your property professionally, and build your brand with Assam's growing hospitality platform.</p>
+      <div class="cta-buttons">
+        <a href="./list-your-property.html" class="btn-primary">List Your Property — It's Free</a>
+        <a href="#plan-premium" class="btn-outline">View Premium Plan</a>
+      </div>
+
+      <!-- CONTACT ROW -->
+      <div class="cta-contact-row">
+        <a href="mailto:support.aponghar@gmail.com" class="contact-item email-item">
+          <div class="contact-icon email-icon">📧</div>
+          <div class="contact-text-group">
+            <span class="contact-type">Email Us</span>
+            <span class="contact-value">support.aponghar@gmail.com</span>
+          </div>
+        </a>
+        <a href="https://wa.me/919957499346" target="_blank" class="contact-item wa-item">
+          <div class="contact-icon wa-icon">💬</div>
+          <div class="contact-text-group">
+            <span class="contact-type">WhatsApp</span>
+            <span class="contact-value">+91 99574 99346</span>
+          </div>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
 
 <footer>
   <p>&copy; 2026 AponGhar. All rights reserved.</p>
 </footer>
 
+<script>
+  var isAnnual = false;
+
+  var prices = {
+    basic:   1499,
+    premium: 2499
+  };
+
+  function fmt(n) {
+    return n.toLocaleString('en-IN');
+  }
+
+  function toggleBilling() {
+    isAnnual = !isAnnual;
+    var track  = document.getElementById('billingToggle');
+    var lblM   = document.getElementById('lbl-monthly');
+    var lblA   = document.getElementById('lbl-annual');
+    var badge  = document.getElementById('saveBadge');
+
+    track.classList.toggle('annual', isAnnual);
+    track.setAttribute('aria-checked', isAnnual ? 'true' : 'false');
+    lblM.classList.toggle('active', !isAnnual);
+    lblA.classList.toggle('active', isAnnual);
+    badge.classList.toggle('visible', isAnnual);
+
+    updatePrices();
+  }
+
+  function updatePrices() {
+    ['basic', 'premium'].forEach(function(plan) {
+      var monthly   = prices[plan];
+      var annualMo  = Math.round(monthly * 0.85);
+      var annualTotal = annualMo * 12;
+      var origTotal   = monthly * 12;
+      var saved       = origTotal - annualTotal;
+
+      var priceEl  = document.getElementById('price-' + plan);
+      var periodEl = document.getElementById('period-' + plan);
+      var origEl   = document.getElementById('orig-' + plan);
+      var saveEl   = document.getElementById('save-' + plan);
+
+      if (isAnnual) {
+        priceEl.textContent  = fmt(annualMo);
+        periodEl.textContent = '/ month (billed annually)';
+        origEl.textContent   = '₹' + fmt(monthly) + ' / mo originally';
+        saveEl.textContent   = '✦ Save ₹' + fmt(saved) + ' per year';
+        origEl.classList.remove('hidden');
+        saveEl.classList.remove('hidden');
+      } else {
+        priceEl.textContent  = fmt(monthly);
+        periodEl.textContent = '/ month';
+        origEl.textContent   = '';
+        saveEl.textContent   = '';
+        origEl.classList.add('hidden');
+        saveEl.classList.add('hidden');
+      }
+
+      // update comparison table headers
+      if (plan === 'basic') {
+        document.getElementById('th-basic-price').textContent =
+          isAnnual ? '₹' + fmt(annualMo) + ' / mo' : '₹1,499 / mo';
+      }
+      if (plan === 'premium') {
+        document.getElementById('th-premium-price').textContent =
+          isAnnual ? '₹' + fmt(Math.round(2499 * 0.85)) + ' / mo' : '₹2,499 / mo';
+      }
+    });
+  }
+
+  // keyboard support
+  document.getElementById('billingToggle').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleBilling(); }
+  });
+</script>
 </body>
 </html>
