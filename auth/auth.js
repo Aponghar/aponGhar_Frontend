@@ -176,17 +176,8 @@ document.getElementById("loginForm")
 
       // VERIFIED USER
       if(user.is_verified){
-
         setTimeout(() => {
-
-          const redirectUrl = sessionStorage.getItem("redirectUrl");
-          if (redirectUrl) {
-            sessionStorage.removeItem("redirectUrl");
-            window.location.href = redirectUrl;
-          } else {
-            window.location.href = "../home/home.html";
-          }
-
+          handleRedirect(user);
         }, 1000);
       }
 
@@ -285,15 +276,8 @@ document.getElementById("otpForm")
       );
 
       setTimeout(() => {
-
-        const redirectUrl = sessionStorage.getItem("redirectUrl");
-        if (redirectUrl) {
-          sessionStorage.removeItem("redirectUrl");
-          window.location.href = redirectUrl;
-        } else {
-          window.location.href = "../home/home.html";
-        }
-
+        const storedUser = JSON.parse(localStorage.getItem("user")) || {};
+        handleRedirect(storedUser);
       }, 1500);
 
     } else {
@@ -681,13 +665,7 @@ async function proceedGoogleLogin(name, email) {
       showMessage("Signed in with Google successfully!");
       
       setTimeout(() => {
-        const redirectUrl = sessionStorage.getItem("redirectUrl");
-        if (redirectUrl) {
-          sessionStorage.removeItem("redirectUrl");
-          window.location.href = redirectUrl;
-        } else {
-          window.location.href = "../home/home.html";
-        }
+        handleRedirect(data.data.user);
       }, 1000);
       
     } else {
@@ -709,5 +687,22 @@ function togglePasswordVisibility(inputId, toggleEl) {
   } else {
     input.type = "password";
     toggleEl.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>`;
+  }
+}
+
+function handleRedirect(user) {
+  const redirectUrl = sessionStorage.getItem("redirectUrl");
+  if (redirectUrl) {
+    sessionStorage.removeItem("redirectUrl");
+    window.location.href = redirectUrl;
+    return;
+  }
+
+  if (user.role === "ADMIN") {
+    window.location.href = "../admin/admin.html";
+  } else if (user.role === "OWNER") {
+    window.location.href = "../owner/owner.html";
+  } else {
+    window.location.href = "../home/home.html";
   }
 }
