@@ -475,6 +475,111 @@
       color: var(--text-muted);
     }
 
+    /* ── SPECIAL PROMO BANNER ── */
+    .promo-banner {
+      background: linear-gradient(135deg, rgba(201, 168, 76, 0.15) 0%, rgba(201, 168, 76, 0.05) 100%);
+      border: 1.5px solid var(--gold);
+      border-radius: 12px;
+      padding: 16px 24px;
+      margin: 0 40px 32px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 15px rgba(201, 168, 76, 0.08);
+      animation: pulse-border 3s infinite alternate;
+    }
+    @keyframes pulse-border {
+      0% { border-color: rgba(201, 168, 76, 0.4); box-shadow: 0 4px 15px rgba(201, 168, 76, 0.08); }
+      100% { border-color: var(--gold); box-shadow: 0 4px 25px rgba(201, 168, 76, 0.2); }
+    }
+    .promo-icon {
+      font-size: 28px;
+      animation: wiggle 2s infinite ease-in-out;
+    }
+    @keyframes wiggle {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+    }
+    .promo-text {
+      font-size: 14px;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+    .promo-text strong {
+      color: var(--gold-dark);
+    }
+    .promo-val {
+      color: #16A34A;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* ── PROPERTY SELECTOR FOR CUSTOM PLAN ── */
+    .property-selector {
+      background: rgba(201, 168, 76, 0.04);
+      border: 1px solid var(--gold-pale2);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      text-align: center;
+    }
+    .property-selector-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--gold-dark);
+    }
+    .property-counter {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .counter-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--gold);
+      background: var(--white);
+      color: var(--gold-dark);
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      user-select: none;
+      outline: none;
+    }
+    .counter-btn:hover:not(:disabled) {
+      background: var(--gold-dark);
+      color: var(--white);
+      transform: scale(1.1);
+    }
+    .counter-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--silver-light);
+      color: var(--silver);
+    }
+    .property-count-display {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--charcoal);
+      min-width: 28px;
+      text-align: center;
+    }
+    .property-extra-note {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
     /* ── COMPARISON TABLE ── */
     .comparison-section { padding: 0 40px 48px; }
     .comp-table {
@@ -728,7 +833,7 @@
           <div class="toggle-thumb"></div>
         </div>
         <span class="toggle-label" id="lbl-annual">Annual</span>
-        <span class="annual-badge-wrap" id="saveBadge">Save 15%</span>
+        <span class="annual-badge-wrap" id="saveBadge">Free Website!</span>
       </div>
     </div>
   </div>
@@ -753,14 +858,22 @@
       <div class="section-title">Flexible Options for Every Stage</div>
     </div>
 
+    <!-- SPECIAL ANNUAL PROMO BANNER -->
+    <div class="promo-banner">
+      <span class="promo-icon">🎁</span>
+      <div class="promo-text">
+        <strong>Special Offer:</strong> Purchase any plan for <strong>1 Year (Annual Billing)</strong> and receive a customized, branded property website <strong>FREE for Lifetime!</strong> <span class="promo-val">(Worth ₹5,000 – ₹10,000)</span>
+      </div>
+    </div>
+
     <div class="plans-grid">
 
-      <!-- LISTING PLAN -->
+      <!-- FREE PLAN -->
       <div class="plan-card free">
         <div class="plan-header">
           <span class="plan-icon">🟢</span>
-          <div class="plan-label">Listing Plan</div>
-          <div class="plan-name">Listing</div>
+          <div class="plan-label">Free Plan</div>
+          <div class="plan-name">Free</div>
           <div class="price-block">
             <div class="plan-price">
               <span class="price-currency">₹</span>
@@ -770,33 +883,32 @@
             <div class="price-original hidden" id="orig-free"></div>
             <div class="price-saving hidden" id="save-free"></div>
           </div>
-          <div class="plan-commission">20% – 25% Commission</div>
+          <div class="plan-commission">20% – 30% Admin Commission</div>
         </div>
         <div class="plan-body">
           <div class="feature-section">
-            <div class="feature-section-title">Core Listing</div>
+            <div class="feature-section-title">Managed Listing</div>
             <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Property Listing on AponGhar</li>
+              <li class="feature-item"><span class="check yes"></span> We add property from our side</li>
+              <li class="feature-item"><span class="check yes"></span> Booking details sent via WhatsApp</li>
+              <li class="feature-item"><span class="check yes"></span> Property listed on AponGhar</li>
               <li class="feature-item"><span class="check yes"></span> Visibility to Travelers</li>
-              <li class="feature-item"><span class="check yes"></span> Basic Property Profile</li>
-              <li class="feature-item"><span class="check yes"></span> Booking Leads from AponGhar</li>
-              <li class="feature-item"><span class="check yes"></span> Dedicated Partner Support</li>
+              <li class="feature-item"><span class="check yes"></span> Basic Property Page</li>
             </ul>
           </div>
           <div class="feature-section">
-            <div class="feature-section-title">Management Tools</div>
+            <div class="feature-section-title">Management & Tools</div>
             <ul class="feature-list">
-              <li class="feature-item feature-dimmed"><span class="check no"></span> Owner Dashboard</li>
-              <li class="feature-item feature-dimmed"><span class="check no"></span> Room Management</li>
-              <li class="feature-item feature-dimmed"><span class="check no"></span> Booking Management</li>
-              <li class="feature-item feature-dimmed"><span class="check no"></span> Dynamic Pricing</li>
-              <li class="feature-item feature-dimmed"><span class="check no"></span> Revenue Reports</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Owner Dashboard Access</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Manual Room & Price Control</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Coupon Creation</li>
+              <li class="feature-item feature-dimmed"><span class="check no"></span> Custom Pricing Control</li>
             </ul>
           </div>
-          <div class="website-note available">🌐 Personalized Website available separately for ₹9,999</div>
+          <div class="website-note available" id="webnote-free">🌐 Website available with Basic/Custom Annual Plans</div>
           <div class="plan-best-for">
             <span class="best-for-label">Best For</span>
-            New property owners who want to receive bookings without managing software.
+            Owners who want us to list their properties and send booking details straight to WhatsApp.
           </div>
         </div>
       </div>
@@ -810,102 +922,100 @@
           <div class="price-block">
             <div class="plan-price">
               <span class="price-currency">₹</span>
-              <span class="price-amount" id="price-basic">1,499</span>
+              <span class="price-amount" id="price-basic">1,500</span>
               <span class="price-period" id="period-basic">/ month</span>
             </div>
             <div class="price-original hidden" id="orig-basic"></div>
             <div class="price-saving hidden" id="save-basic"></div>
           </div>
-          <div class="plan-commission">7% Commission</div>
+          <div class="plan-commission">0% Admin Commission</div>
         </div>
         <div class="plan-body">
           <div class="feature-section">
             <div class="feature-section-title">Property Management</div>
             <ul class="feature-list">
               <li class="feature-item"><span class="check yes"></span> Manage 1 Property</li>
-              <li class="feature-item"><span class="check yes"></span> Create & Manage Rooms</li>
-              <li class="feature-item"><span class="check yes"></span> Room Availability Management</li>
-              <li class="feature-item"><span class="check yes"></span> Booking Management Dashboard</li>
-              <li class="feature-item"><span class="check yes"></span> Check-in & Check-out Tracking</li>
-              <li class="feature-item"><span class="check yes"></span> Guest Information Management</li>
+              <li class="feature-item"><span class="check yes"></span> Manually Add & Manage Rooms</li>
+              <li class="feature-item"><span class="check yes"></span> Booking Emails & Unique Booking IDs</li>
+              <li class="feature-item"><span class="check yes"></span> Guest Check-in & Check-out System</li>
+              <li class="feature-item"><span class="check yes"></span> Hourly Access Control</li>
             </ul>
           </div>
           <div class="feature-section">
             <div class="feature-section-title">Pricing & Marketing</div>
             <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Dynamic / Weekend / Seasonal Pricing</li>
-              <li class="feature-item"><span class="check yes"></span> Festival Pricing</li>
-              <li class="feature-item"><span class="check yes"></span> Coupons & Discount Codes</li>
-              <li class="feature-item"><span class="check yes"></span> Promotional Campaigns</li>
+              <li class="feature-item"><span class="check yes"></span> Complete Price Control in Your Hands</li>
+              <li class="feature-item"><span class="check yes"></span> Coupons & Discount Code Creation</li>
+              <li class="feature-item"><span class="check yes"></span> Dynamic & Weekend Pricing</li>
             </ul>
           </div>
           <div class="feature-section">
-            <div class="feature-section-title">Automation & Analytics</div>
+            <div class="feature-section-title">Admin Fees & gateway</div>
             <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Automated Booking Confirmation Emails</li>
-              <li class="feature-item"><span class="check yes"></span> Guest Notification Emails</li>
-              <li class="feature-item"><span class="check yes"></span> Basic Revenue Reports</li>
+              <li class="feature-item"><span class="check yes"></span> 0% Admin Commission</li>
+              <li class="feature-item"><span class="check yes"></span> Only 1% to 2% payment receive charge</li>
             </ul>
           </div>
-          <div class="website-note available">🌐 Personalized Website available separately for ₹9,999</div>
+          <div class="website-note available" id="webnote-basic">🌐 Customized Website: FREE with Annual plans!</div>
           <div class="plan-best-for">
             <span class="best-for-label">Best For</span>
-            Homestays, villas, and resorts looking for complete control over bookings and pricing.
+            Owners with 1 property looking for complete, manual control over prices, rooms, coupons, and check-in system.
           </div>
         </div>
       </div>
 
-      <!-- PREMIUM PLAN -->
+      <!-- CUSTOM PLAN -->
       <div class="plan-card premium" id="plan-premium">
-        <div class="most-popular-badge">🏆 Most Popular</div>
+        <div class="most-popular-badge">⭐ Recommended</div>
         <div class="plan-header">
           <span class="plan-icon">🟣</span>
-          <div class="plan-label">Premium Plan</div>
-          <div class="plan-name">Premium</div>
+          <div class="plan-label">Custom Plan</div>
+          <div class="plan-name">Custom</div>
           <div class="price-block">
             <div class="plan-price">
               <span class="price-currency">₹</span>
-              <span class="price-amount" id="price-premium">2,499</span>
-              <span class="price-period" id="period-premium">/ month</span>
+              <span class="price-amount" id="price-custom">2,000</span>
+              <span class="price-period" id="period-custom">/ month</span>
             </div>
-            <div class="price-original hidden" id="orig-premium"></div>
-            <div class="price-saving hidden" id="save-premium"></div>
+            <div class="price-original hidden" id="orig-custom"></div>
+            <div class="price-saving hidden" id="save-custom"></div>
           </div>
-          <div class="plan-commission">0% Commission — Keep 100%</div>
+          <div class="plan-commission">0% Admin Commission</div>
         </div>
         <div class="plan-body">
+          <!-- Property count selector -->
+          <div class="property-selector">
+            <span class="property-selector-label">Number of Properties</span>
+            <div class="property-counter">
+              <button type="button" class="counter-btn" onclick="adjustProperties(-1)" id="btn-prop-dec">−</button>
+              <span class="property-count-display" id="custom-prop-count">2</span>
+              <button type="button" class="counter-btn" onclick="adjustProperties(1)" id="btn-prop-inc">+</button>
+            </div>
+            <span class="property-extra-note" id="prop-extra-note">₹1,500 base + ₹500/mo per extra property</span>
+          </div>
+
           <div class="feature-section">
-            <div class="feature-section-title">Everything in Basic +</div>
+            <div class="feature-section-title">Multi-Property Control</div>
             <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Multiple Property Management</li>
-              <li class="feature-item"><span class="check yes"></span> Unlimited Room Management</li>
-              <li class="feature-item"><span class="check yes"></span> Advanced Revenue Dashboard</li>
-              <li class="feature-item"><span class="check yes"></span> Occupancy Reports</li>
-              <li class="feature-item"><span class="check yes"></span> Featured Listing on AponGhar</li>
-              <li class="feature-item"><span class="check yes"></span> Higher Property Visibility</li>
+              <li class="feature-item"><span class="check yes"></span> Manage Multiple Properties in One Account</li>
+              <li class="feature-item"><span class="check yes"></span> Add more properties for just ₹500/mo each</li>
+              <li class="feature-item"><span class="check yes"></span> All functions from the Basic Plan included</li>
+              <li class="feature-item"><span class="check yes"></span> Manual Room, Price & Coupon Control</li>
+              <li class="feature-item"><span class="check yes"></span> Booking Emails, Booking IDs & Check-in System</li>
+              <li class="feature-item"><span class="check yes"></span> Hourly Access support</li>
             </ul>
           </div>
           <div class="feature-section">
-            <div class="feature-section-title">Personalized Website (Included FREE)</div>
+            <div class="feature-section-title">Admin Fees & gateway</div>
             <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Your Own Branded Website</li>
-              <li class="feature-item"><span class="check yes"></span> Mobile-Friendly Design</li>
-              <li class="feature-item"><span class="check yes"></span> Direct Booking Page</li>
-              <li class="feature-item"><span class="check yes"></span> WhatsApp / Facebook / Instagram Sharing</li>
+              <li class="feature-item"><span class="check yes"></span> 0% Admin Commission</li>
+              <li class="feature-item"><span class="check yes"></span> Only 1% to 2% payment receive charge</li>
             </ul>
           </div>
-          <div class="feature-section">
-            <div class="feature-section-title">Premium Support</div>
-            <ul class="feature-list">
-              <li class="feature-item"><span class="check yes"></span> Priority Customer Support</li>
-              <li class="feature-item"><span class="check yes"></span> Dedicated Partner Assistance</li>
-              <li class="feature-item"><span class="check yes"></span> Early Access to New Features</li>
-            </ul>
-          </div>
-          <div class="website-note included">🎁 Personalized Website Worth ₹9,999 — Included FREE!</div>
+          <div class="website-note available" id="webnote-custom">🌐 Customized Website: FREE with Annual plans!</div>
           <div class="plan-best-for">
             <span class="best-for-label">Best For</span>
-            Professional homestays, resorts, hotels, villas & owners managing multiple properties.
+            Owners managing more than 1 property who want a centralized dashboard with custom scale.
           </div>
         </div>
       </div>
@@ -923,29 +1033,29 @@
       <thead>
         <tr>
           <th class="th-feature">Feature</th>
-          <th class="th-free">🟢 Listing<br><span style="font-size:11px;font-weight:400;">₹0 / mo</span></th>
-          <th class="th-basic">🔵 Basic<br><span id="th-basic-price" style="font-size:11px;font-weight:400;">₹1,499 / mo</span></th>
-          <th class="th-premium">🟣 Premium<br><span id="th-premium-price" style="font-size:11px;font-weight:400;">₹2,499 / mo</span></th>
+          <th class="th-free">🟢 Free Plan<br><span style="font-size:11px;font-weight:400;">₹0 / mo</span></th>
+          <th class="th-basic">🔵 Basic Plan<br><span id="th-basic-price" style="font-size:11px;font-weight:400;">₹1,500 / mo</span></th>
+          <th class="th-premium">🟣 Custom Plan<br><span id="th-custom-price" style="font-size:11px;font-weight:400;">₹2,000 / mo</span><br><span id="th-custom-props-label" style="font-size:10px;font-weight:400;opacity:0.8;">(for 2 properties)</span></th>
         </tr>
       </thead>
       <tbody>
         <tr><td>Property Listing on AponGhar</td><td><span class="tick-yes">✓</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Added by AponGhar Team</td><td><span class="tick-yes">✓</span></td><td><span class="tick-no">— (Manual)</span></td><td class="highlight"><span class="tick-no">— (Manual)</span></td></tr>
         <tr><td>Owner Dashboard</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Property Management</td><td><span class="tick-no">—</span></td><td><span class="tick-blue">1 Property</span></td><td class="highlight"><span class="tick-gold">Multiple</span></td></tr>
-        <tr><td>Room Management</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Booking Management</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Check-in & Check-out Tracking</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Dynamic Pricing</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Property Management</td><td><span style="font-size:12px;color:#9CA3AF;">Managed by us</span></td><td><span class="tick-blue">1 Property</span></td><td class="highlight"><span class="tick-gold" id="comp-prop-limit">2 Properties</span></td></tr>
+        <tr><td>Manual Room Control</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Booking Management</td><td><span style="font-size:12px;color:#16A34A;">WhatsApp delivery</span></td><td><span class="tick-yes">✓ (Dashboard)</span></td><td class="highlight"><span class="tick-yes">✓ (Dashboard)</span></td></tr>
+        <tr><td>Booking Emails & IDs</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Check-in System</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Hourly Access Support</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
         <tr><td>Coupon Creation</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Email Automation</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Revenue Reports</td><td><span class="tick-no">—</span></td><td><span class="tick-blue">Basic</span></td><td class="highlight"><span class="tick-gold">Advanced</span></td></tr>
-        <tr><td>Featured Listing</td><td><span class="tick-no">—</span></td><td><span class="tick-no">—</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Priority Support</td><td><span class="tick-no">—</span></td><td><span class="tick-no">—</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
-        <tr><td>Personalized Website</td><td style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td class="highlight"><span class="tick-gold">✓ FREE</span></td></tr>
-        <tr><td>AponGhar Commission</td><td><span class="commission-cell comm-high">20–25%</span></td><td><span class="commission-cell comm-mid">7%</span></td><td class="highlight"><span class="commission-cell comm-zero">0% ✦</span></td></tr>
+        <tr><td>Price Changing & Control</td><td><span class="tick-no">—</span></td><td><span class="tick-yes">✓</span></td><td class="highlight"><span class="tick-yes">✓</span></td></tr>
+        <tr><td>Personalized Website</td><td id="comp-web-free" style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td id="comp-web-basic" style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</td><td class="highlight" id="comp-web-custom"><span class="tick-gold">₹9,999 add-on</span></td></tr>
+        <tr><td>AponGhar Commission</td><td><span class="commission-cell comm-high">20% – 30%</span></td><td><span class="commission-cell comm-zero">0%</span></td><td class="highlight"><span class="commission-cell comm-zero">0%</span></td></tr>
+        <tr><td>Payment Gateway Fee</td><td><span style="font-size:12px;color:var(--text-secondary);">1% – 2%</span></td><td><span style="font-size:12px;color:var(--text-secondary);">1% – 2%</span></td><td class="highlight" style="font-size:12px;color:var(--text-secondary);">1% – 2%</td></tr>
       </tbody>
     </table>
-    <p style="font-size:11px;color:#9CA3AF;margin-top:10px;text-align:center;">✦ Only standard online payment gateway charges (typically 1–2%) may apply when guests pay online.</p>
+    <p style="font-size:11px;color:#9CA3AF;margin-top:10px;text-align:center;">Note: AponGhar charges 0% admin commission on Basic and Custom plans. Standard payment gateway processing charges (1% to 2%) apply when receiving digital payments online. Free plan features 20% to 30% admin commission on successful bookings.</p>
   </div>
 
   <!-- ── CTA FOOTER ── -->
@@ -961,7 +1071,7 @@
       <p class="cta-sub">Get more bookings, manage your property professionally, and build your brand with Assam's growing hospitality platform.</p>
       <div class="cta-buttons">
         <a href="./list-your-property.html" class="btn-primary">List Your Property — It's Free</a>
-        <a href="#plan-premium" class="btn-outline">View Premium Plan</a>
+        <a href="#plan-premium" class="btn-outline">View Custom Plan</a>
       </div>
 
       <!-- CONTACT ROW -->
@@ -993,10 +1103,11 @@
 
 <script>
   var isAnnual = false;
+  var propertiesCount = 2; // Default properties for Custom Plan
 
   var prices = {
-    basic:   1499,
-    premium: 2499
+    free: 0,
+    basic: 1500
   };
 
   function fmt(n) {
@@ -1019,51 +1130,119 @@
     updatePrices();
   }
 
-  function updatePrices() {
-    ['basic', 'premium'].forEach(function(plan) {
-      var monthly   = prices[plan];
-      var annualMo  = Math.round(monthly * 0.85);
-      var annualTotal = annualMo * 12;
-      var origTotal   = monthly * 12;
-      var saved       = origTotal - annualTotal;
-
-      var priceEl  = document.getElementById('price-' + plan);
-      var periodEl = document.getElementById('period-' + plan);
-      var origEl   = document.getElementById('orig-' + plan);
-      var saveEl   = document.getElementById('save-' + plan);
-
-      if (isAnnual) {
-        priceEl.textContent  = fmt(annualMo);
-        periodEl.textContent = '/ month (billed annually)';
-        origEl.textContent   = '₹' + fmt(monthly) + ' / mo originally';
-        saveEl.textContent   = '✦ Save ₹' + fmt(saved) + ' per year';
-        origEl.classList.remove('hidden');
-        saveEl.classList.remove('hidden');
-      } else {
-        priceEl.textContent  = fmt(monthly);
-        periodEl.textContent = '/ month';
-        origEl.textContent   = '';
-        saveEl.textContent   = '';
-        origEl.classList.add('hidden');
-        saveEl.classList.add('hidden');
-      }
-
-      // update comparison table headers
-      if (plan === 'basic') {
-        document.getElementById('th-basic-price').textContent =
-          isAnnual ? '₹' + fmt(annualMo) + ' / mo' : '₹1,499 / mo';
-      }
-      if (plan === 'premium') {
-        document.getElementById('th-premium-price').textContent =
-          isAnnual ? '₹' + fmt(Math.round(2499 * 0.85)) + ' / mo' : '₹2,499 / mo';
-      }
-    });
+  function adjustProperties(change) {
+    var newCount = propertiesCount + change;
+    if (newCount < 2) return;
+    propertiesCount = newCount;
+    document.getElementById('custom-prop-count').textContent = propertiesCount;
+    document.getElementById('btn-prop-dec').disabled = (propertiesCount <= 2);
+    
+    var compPropLimit = document.getElementById('comp-prop-limit');
+    if (compPropLimit) {
+      compPropLimit.textContent = propertiesCount + ' Properties';
+    }
+    
+    updatePrices();
   }
 
-  // keyboard support
+  function updatePrices() {
+    // 1. Basic Plan
+    var basicMonthly = prices.basic;
+    var basicAnnualTotal = basicMonthly * 12;
+
+    var basicPriceEl = document.getElementById('price-basic');
+    var basicPeriodEl = document.getElementById('period-basic');
+    var basicOrigEl = document.getElementById('orig-basic');
+    var basicSaveEl = document.getElementById('save-basic');
+    var basicWebNoteEl = document.getElementById('webnote-basic');
+
+    if (isAnnual) {
+      basicPriceEl.textContent = fmt(basicAnnualTotal);
+      basicPeriodEl.textContent = '/ year';
+      basicOrigEl.classList.add('hidden');
+      basicSaveEl.textContent = '🎉 Congratulations! You are eligible for a FREE personalized & customized website for lifetime!';
+      basicSaveEl.classList.remove('hidden');
+      if (basicWebNoteEl) {
+        basicWebNoteEl.className = 'website-note included';
+        basicWebNoteEl.innerHTML = '🎁 Lifetime Customized Website included FREE!';
+      }
+    } else {
+      basicPriceEl.textContent = fmt(basicMonthly);
+      basicPeriodEl.textContent = '/ month';
+      basicOrigEl.textContent = '';
+      basicSaveEl.textContent = '';
+      basicOrigEl.classList.add('hidden');
+      basicSaveEl.classList.add('hidden');
+      if (basicWebNoteEl) {
+        basicWebNoteEl.className = 'website-note available';
+        basicWebNoteEl.innerHTML = '🌐 Customized Website: FREE with Annual plans!';
+      }
+    }
+
+    // 2. Custom Plan
+    var customMonthly = 1500 + (propertiesCount - 1) * 500;
+    var customAnnualTotal = customMonthly * 12;
+
+    var customPriceEl = document.getElementById('price-custom');
+    var customPeriodEl = document.getElementById('period-custom');
+    var customOrigEl = document.getElementById('orig-custom');
+    var customSaveEl = document.getElementById('save-custom');
+    var customWebNoteEl = document.getElementById('webnote-custom');
+
+    if (isAnnual) {
+      customPriceEl.textContent = fmt(customAnnualTotal);
+      customPeriodEl.textContent = '/ year';
+      customOrigEl.classList.add('hidden');
+      customSaveEl.textContent = '🎉 Congratulations! You are eligible for a FREE personalized & customized website for lifetime!';
+      customSaveEl.classList.remove('hidden');
+      if (customWebNoteEl) {
+        customWebNoteEl.className = 'website-note included';
+        customWebNoteEl.innerHTML = '🎁 Lifetime Customized Website included FREE!';
+      }
+    } else {
+      customPriceEl.textContent = fmt(customMonthly);
+      customPeriodEl.textContent = '/ month';
+      customOrigEl.textContent = '';
+      customSaveEl.textContent = '';
+      customOrigEl.classList.add('hidden');
+      customSaveEl.classList.add('hidden');
+      if (customWebNoteEl) {
+        customWebNoteEl.className = 'website-note available';
+        customWebNoteEl.innerHTML = '🌐 Customized Website: FREE with Annual plans!';
+      }
+    }
+
+    // 3. Comparison Table Headers & Cells
+    document.getElementById('th-basic-price').textContent =
+      isAnnual ? '₹' + fmt(basicAnnualTotal) + ' / yr' : '₹1,500 / mo';
+      
+    document.getElementById('th-custom-price').textContent =
+      isAnnual ? '₹' + fmt(customAnnualTotal) + ' / yr' : '₹' + fmt(customMonthly) + ' / mo';
+      
+    var tableCustomPropLabel = document.getElementById('th-custom-props-label');
+    if (tableCustomPropLabel) {
+      tableCustomPropLabel.textContent = '(for ' + propertiesCount + ' properties)';
+    }
+
+    // Table dynamic website offer cell
+    var compWebBasic = document.getElementById('comp-web-basic');
+    var compWebCustom = document.getElementById('comp-web-custom');
+    if (isAnnual) {
+      if (compWebBasic) compWebBasic.innerHTML = '<span class="tick-gold">✓ FREE Lifetime</span>';
+      if (compWebCustom) compWebCustom.innerHTML = '<span class="tick-gold">✓ FREE Lifetime</span>';
+    } else {
+      if (compWebBasic) compWebBasic.innerHTML = '<span style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</span>';
+      if (compWebCustom) compWebCustom.innerHTML = '<span style="font-size:12px;color:#9CA3AF;">₹9,999 add-on</span>';
+    }
+  }
+
+  // Keyboard support for billing toggle
   document.getElementById('billingToggle').addEventListener('keydown', function(e) {
     if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleBilling(); }
   });
+
+  // Run property limit initial calculation
+  adjustProperties(0);
 </script>
 </body>
 </html>
