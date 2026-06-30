@@ -48,6 +48,19 @@ const formatDate = (value) => {
   });
 };
 
+const formatTime12h = (timeStr) => {
+  if (!timeStr) return "Not set";
+  const parts = timeStr.split(":");
+  if (parts.length < 2) return timeStr;
+  let hours = parseInt(parts[0], 10);
+  const minutes = parts[1];
+  if (isNaN(hours)) return timeStr;
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours}:${minutes} ${ampm}`;
+};
+
 const authHeaders = () => ({
   "Content-Type": "application/json",
   Authorization: `Bearer ${token}`
@@ -313,15 +326,40 @@ const renderBookings = (bookings) => {
       </div>
 
       <div class="booking-meta">
-        <span>Check-in<strong>${formatDate(booking.check_in_date)}</strong></span>
-        <span>Check-out<strong>${formatDate(booking.check_out_date)}</strong></span>
+        <span>Check-in<strong>${formatDate(booking.check_in_date)} at ${formatTime12h(booking.check_in_time)}</strong></span>
+        <span>Check-out<strong>${formatDate(booking.check_out_date)} at ${formatTime12h(booking.check_out_time)}</strong></span>
         <span>Guests<strong>${booking.guests || 0}</strong></span>
         <span>Rooms<strong>${booking.booked_rooms || 1}</strong></span>
         <span>Type<strong>${bookingType.replace("_", " ")}</strong></span>
           <span>Payment<strong>${escapeHTML(paymentMethod)}</strong></span>
       </div>
 
-      <div class="booking-payment-details">
+      <!-- Property & Location Details -->
+      <div class="booking-property-details" style="margin-top: 14px; padding: 14px; background: hsl(220, 20%, 98%); border: 1px solid var(--border-color); border-radius: var(--radius-md); display: grid; gap: 8px; font-size: 13.5px; text-transform: none;">
+        <div style="display: flex; align-items: flex-start; gap: 8px; text-transform: none; text-align: left;">
+          <span style="font-size: 16px; flex-shrink: 0;">📍</span>
+          <div style="text-transform: none;">
+            <strong style="color: var(--dark); display: block; margin-bottom: 2px; text-transform: none;">Property Location</strong>
+            <span style="color: var(--dark-muted); line-height: 1.4; text-transform: none;">${escapeHTML(booking.property_address || booking.property_location || "Location not specified")}, ${escapeHTML(booking.property_city || "")}, ${escapeHTML(booking.property_state || "")} (${escapeHTML(booking.property_type || "Stay")})</span>
+            ${booking.property_google_maps_link ? `
+              <a href="${escapeHTML(booking.property_google_maps_link)}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: none; display: block; margin-top: 4px; font-size: 12.5px; text-transform: none;">
+                View on Google Maps &rarr;
+              </a>
+            ` : ""}
+          </div>
+        </div>
+        ${booking.owner_name ? `
+        <div style="display: flex; align-items: flex-start; gap: 8px; border-top: 1px solid var(--border-color); padding-top: 8px; margin-top: 4px; text-transform: none; text-align: left;">
+          <span style="font-size: 16px; flex-shrink: 0;">👤</span>
+          <div style="text-transform: none;">
+            <strong style="color: var(--dark); display: block; margin-bottom: 2px; text-transform: none;">Host</strong>
+            <span style="color: var(--dark-muted); text-transform: none;">${escapeHTML(booking.owner_name)}</span>
+          </div>
+        </div>
+        ` : ""}
+      </div>
+
+      <div class="booking-payment-details" style="margin-top: 14px;">
         <div class="payment-details-summary">
           <div class="detail-line">
             <span>Room Price</span>
