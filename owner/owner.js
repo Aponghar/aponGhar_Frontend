@@ -1597,7 +1597,7 @@ const approveBooking = async (bookingId) => {
 };
 
 const rejectBooking = async (bookingId) => {
-  const reason = window.prompt("Reason for rejecting this booking?", "Room unavailable");
+  const reason = await window.showCustomPromptModal("Reason for rejecting this booking?", "Room unavailable", "Reject Booking");
   if (reason === null) {
     return;
   }

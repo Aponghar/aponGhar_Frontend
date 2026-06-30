@@ -57,6 +57,7 @@ let allProperties = [];
 let filteredProperties = [];
 let wishlistedPropertyIds = new Set();
 const amenityIdToName = new Map();
+let renderedCount = 20;
 
 const fetchWishlistIds = async () => {
   if (!token) return;
@@ -356,7 +357,7 @@ const normalizeImageList = (primaryImage, galleryImages) => {
     images.push(...galleryImages.map((image) => image.image_url || image));
   }
 
-  return [...new Set(images.map(resolveImageUrl).filter(Boolean))];
+  return [...new Set(images.map(img => getOptimizedImageUrl(img, 400, 300)).filter(Boolean))];
 };
 
 const buildImageGallery = (images, altText, galleryClass) => {
@@ -365,7 +366,7 @@ const buildImageGallery = (images, altText, galleryClass) => {
   }
 
   const slides = images.map((image, index) => `
-    <img src="${image}" alt="${altText}" class="gallery-image ${index === 0 ? "active" : ""}" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
+    <img ${index === 0 ? `src="${image}"` : `data-src="${image}"`} alt="${altText}" class="gallery-image ${index === 0 ? "active" : ""}" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">
   `).join("");
 
   const controls = images.length > 1
@@ -387,6 +388,11 @@ const moveGallery = (gallery, direction) => {
 
   const currentIndex = Number(gallery.dataset.galleryIndex || 0);
   const nextIndex = (currentIndex + direction + images.length) % images.length;
+
+  const nextImage = images[nextIndex];
+  if (nextImage && !nextImage.getAttribute("src") && nextImage.getAttribute("data-src")) {
+    nextImage.setAttribute("src", nextImage.getAttribute("data-src"));
+  }
 
   images[currentIndex]?.classList.remove("active");
   images[nextIndex].classList.add("active");
@@ -471,111 +477,6 @@ const getPriceCandidatesFromRoom = (room) => {
   return candidates.filter((item) => item.amount > 0);
 };
 
-const enrichPropertyWithRooms = async (property) => {
-  const fallbackPrice = toNumber(property.price_per_night, 0);
-
-  try {
-    const response = await fetch(`${BASE_URL}/rooms/property/${property.id}/available`);
-    const data = await response.json();
-
-    if (!data.success || !Array.isArray(data.data)) {
-      return {
-        ...property,
-        effective_price: fallbackPrice,
-        max_guests: 0,
-        has_nightly: fallbackPrice > 0,
-        has_hourly: false,
-        room_types: [],
-        room_amenity_ids: [],
-        room_amenity_groups: []
-      };
-    }
-
-    const rooms = data.data;
-    const allPriceEntries = [];
-    let maxGuests = 0;
-    let hasNightly = false;
-    let hasHourly = false;
-    const roomTypes = new Set();
-    const roomAmenityIds = new Set();
-    const roomAmenityGroups = [];
-
-    rooms.forEach((room) => {
-      getPriceCandidatesFromRoom(room).forEach((entry) => allPriceEntries.push(entry));
-
-      const pricePerNight = toNumber(room.price_per_night, 0);
-      const hourlyCandidates = [
-        toNumber(room.price_3hours, 0),
-        toNumber(room.price_6hours, 0),
-        toNumber(room.price_9hours, 0)
-      ];
-
-      if (pricePerNight > 0) {
-        hasNightly = true;
-      }
-
-      if (hourlyCandidates.some((price) => price > 0)) {
-        hasHourly = true;
-      }
-
-      const adults = toNumber(room.max_adults, 0);
-      const children = toNumber(room.max_children, 0);
-      maxGuests = Math.max(maxGuests, adults + children);
-
-      if (room.room_type) {
-        roomTypes.add(String(room.room_type).trim());
-      }
-
-      const currentRoomAmenityIds = [];
-
-      normalizeRoomAmenities(room.room_amenities).forEach((amenity) => {
-        const amenityId = Number(amenity);
-        if (Number.isFinite(amenityId)) {
-          roomAmenityIds.add(amenityId);
-          currentRoomAmenityIds.push(amenityId);
-        }
-      });
-
-      roomAmenityGroups.push([...new Set(currentRoomAmenityIds)]);
-    });
-
-    if (fallbackPrice > 0) {
-      allPriceEntries.push({ amount: fallbackPrice, period: "/night" });
-    }
-
-    const cheapestEntry = allPriceEntries.length > 0
-      ? allPriceEntries.reduce((lowest, current) => {
-        return current.amount < lowest.amount ? current : lowest;
-      })
-      : null;
-
-    return {
-      ...property,
-      effective_price: cheapestEntry ? cheapestEntry.amount : 0,
-      effective_price_period: cheapestEntry ? cheapestEntry.period : "",
-      max_guests: maxGuests,
-      has_nightly: hasNightly || fallbackPrice > 0,
-      has_hourly: hasHourly,
-      room_types: [...roomTypes],
-      room_amenity_ids: [...roomAmenityIds],
-      room_amenity_groups: roomAmenityGroups
-    };
-  } catch (error) {
-    console.error(`Failed to enrich property ${property.id}`, error);
-    return {
-      ...property,
-      effective_price: fallbackPrice,
-      effective_price_period: fallbackPrice > 0 ? "/night" : "",
-      max_guests: 0,
-      has_nightly: fallbackPrice > 0,
-      has_hourly: false,
-      room_types: [],
-      room_amenity_ids: [],
-      room_amenity_groups: []
-    };
-  }
-};
-
 const loadProperties = async () => {
   try {
     propertiesGrid.innerHTML = Array(4).fill(0).map(() => `
@@ -606,12 +507,11 @@ const loadProperties = async () => {
     await fetchWishlistIds();
     await fetchAmenities();
 
-    const enriched = await Promise.all(data.data.map((property) => enrichPropertyWithRooms(property)));
-    allProperties = enriched;
+    allProperties = data.data;
 
     // Dynamically adjust price range slider limits based on loaded properties
-    if (enriched.length > 0) {
-      const maxPropertyPrice = enriched.reduce((max, p) => Math.max(max, toNumber(p.effective_price, 0)), 0);
+    if (data.data.length > 0) {
+      const maxPropertyPrice = data.data.reduce((max, p) => Math.max(max, toNumber(p.effective_price, 0)), 0);
       const computedMax = Math.max(5000, Math.ceil(maxPropertyPrice / 1000) * 1000);
       minPriceRange.max = String(computedMax);
       maxPriceRange.max = String(computedMax);
@@ -619,7 +519,7 @@ const loadProperties = async () => {
       updateSlider();
     }
 
-    renderPropertyTypeFilters(enriched);
+    renderPropertyTypeFilters(data.data);
     applyFilters();
   } catch (error) {
     console.error(error);
@@ -711,6 +611,8 @@ const applyFilters = () => {
   if (!validateDates()) {
     return;
   }
+
+  renderedCount = 20;
 
   const keyword = keywordInput.value.trim().toLowerCase();
   const guests = toNumber(guestsInput.value, 0);
@@ -845,7 +747,9 @@ const renderProperties = (properties) => {
     return;
   }
 
-  properties.forEach((property) => {
+  const propertiesToRender = properties.slice(0, renderedCount);
+
+  propertiesToRender.forEach((property) => {
     const galleryImages = normalizeImageList(property.property_image, property.gallery_images);
     const locationLabel = formatLocation(property) || "Location not specified";
     const propertyType = property.property_type ? String(property.property_type).trim() : "Property";
@@ -931,7 +835,7 @@ const renderProperties = (properties) => {
         <div class="property-tags-row">
           ${tagsHtml}
         </div>
-
+ 
         <p class="description">${description}</p>
         
         <div class="property-footer-row">
@@ -1354,4 +1258,14 @@ document.addEventListener("DOMContentLoaded", () => {
       if (joinBtn) joinBtn.click();
     }, 300);
   }
+
+  window.addEventListener("scroll", () => {
+    if (renderedCount >= filteredProperties.length) {
+      return;
+    }
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+      renderedCount += 20;
+      renderProperties(filteredProperties);
+    }
+  });
 });

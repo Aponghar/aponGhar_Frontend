@@ -2321,3 +2321,139 @@ footer {
   background: hsl(220, 20%, 85%);
   color: var(--dark);
 }
+
+/* AVAILABLE COUPONS SCROLL BOX */
+.available-coupons-section {
+  margin-top: 18px;
+  margin-bottom: 12px;
+  grid-column: span 2;
+  display: grid;
+  gap: 8px;
+}
+
+.available-coupons-label {
+  color: var(--dark);
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.available-coupons-list {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 12px 2px;
+  scroll-behavior: smooth;
+}
+
+.available-coupons-list::-webkit-scrollbar {
+  height: 6px;
+}
+
+.available-coupons-list::-webkit-scrollbar-track {
+  background: hsl(220, 20%, 96%);
+  border-radius: 3px;
+}
+
+.available-coupons-list::-webkit-scrollbar-thumb {
+  background: hsl(220, 10%, 80%);
+  border-radius: 3px;
+}
+
+.available-coupons-list::-webkit-scrollbar-thumb:hover {
+  background: hsl(220, 10%, 70%);
+}
+
+.coupon-card {
+  flex: 0 0 auto;
+  width: 210px;
+  background: #ffffff;
+  border: 1.5px dashed var(--primary);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--shadow-sm);
+  transition: var(--transition);
+}
+
+.coupon-card:hover {
+  border-color: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.coupon-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 6px;
+}
+
+.coupon-card-code {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.coupon-card-badge {
+  font-size: 8.5px;
+  font-weight: 800;
+  color: #fff;
+  padding: 2.5px 6.5px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.coupon-card-badge.admin-badge {
+  background: #3182ce;
+}
+
+.coupon-card-badge.owner-badge {
+  background: var(--primary);
+}
+
+.coupon-card-discount {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--dark);
+  margin-bottom: 6px;
+}
+
+.coupon-card-info {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--dark-muted);
+  margin-bottom: 10px;
+  line-height: 1.4;
+  white-space: pre-line;
+}
+
+.coupon-card-apply-btn {
+  width: 100%;
+  padding: 7px 12px;
+  border: 1.5px solid var(--primary);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  text-align: center;
+  transition: var(--transition);
+}
+
+.coupon-card-apply-btn:hover {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 4px 8px var(--primary-glow);
+}

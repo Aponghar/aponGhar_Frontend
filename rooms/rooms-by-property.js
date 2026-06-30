@@ -196,7 +196,7 @@ const normalizeImageList = (images) => {
     return [];
   }
 
-  return [...new Set(images.map((image) => resolveImageUrl(image.image_url || image)).filter(Boolean))];
+  return [...new Set(images.map((image) => getOptimizedImageUrl(image.image_url || image, 600, 450)).filter(Boolean))];
 };
 
 const buildRoomGallery = (images, altText) => {
@@ -503,10 +503,10 @@ const fetchRoomGallery = async (roomDbId) => {
 };
 
 const attachRoomGalleries = async (rooms) => {
-  return Promise.all(rooms.map(async (room) => ({
+  return rooms.map((room) => ({
     ...room,
-    room_images: await fetchRoomGallery(room.id)
-  })));
+    room_images: room.room_images || []
+  }));
 };
 
 const loadPropertyAndRooms = async () => {
@@ -628,10 +628,10 @@ const displayPropertyDetails = (data) => {
     
     const images = [];
     if (property.property_image) {
-      images.push(resolveImageUrl(property.property_image));
+      images.push(getOptimizedImageUrl(property.property_image, 800, 600));
     }
     gallery.forEach(img => {
-      const url = resolveImageUrl(img.image_url || img);
+      const url = getOptimizedImageUrl(img.image_url || img, 800, 600);
       if (url) images.push(url);
     });
     
@@ -1312,12 +1312,13 @@ const showCouponMessage = (msg, type) => {
   }
 };
 
-const applyCoupon = async () => {
-  const code = bookingCouponCode.value.trim();
+const applyCoupon = async (codeToApply) => {
+  const code = (typeof codeToApply === "string" ? codeToApply : bookingCouponCode.value).trim();
   if (!code) {
     showCouponMessage("Please enter a coupon code first.", "error");
     return;
   }
+  bookingCouponCode.value = code;
 
   const rooms = Math.max(1, Number(bookingRooms.value) || 1);
   const isHourly = selectedBookingRoom.bookingType === "HOURLY";
@@ -1519,6 +1520,56 @@ const handleBookingDetailsChange = async () => {
   }
 };
 
+const loadApplicableCoupons = async (propertyId) => {
+  const container = document.getElementById("availableCouponsSection");
+  const listEl = document.getElementById("availableCouponsList");
+  if (!container || !listEl) return;
+
+  try {
+    container.style.display = "none";
+    listEl.innerHTML = "";
+
+    const response = await fetch(`${BASE_URL}/coupons/applicable/${propertyId}`, {
+      headers: authHeaders()
+    });
+    const result = await response.json();
+
+    if (result.success && Array.isArray(result.data) && result.data.length > 0) {
+      container.style.display = "grid";
+      listEl.innerHTML = result.data.map(coupon => {
+        const isPercentage = coupon.discount_type === "PERCENTAGE";
+        const discountText = isPercentage 
+          ? `${Math.round(coupon.discount_value)}% OFF` 
+          : `${formatINR(coupon.discount_value)} OFF`;
+        
+        let minText = `Min: ${formatINR(coupon.minimum_booking_amount)}`;
+        let maxText = "";
+        if (isPercentage && coupon.maximum_discount_amount) {
+          maxText = `\nMax: ${formatINR(coupon.maximum_discount_amount)}`;
+        }
+
+        const isGlobal = coupon.property_id === null;
+        const badgeClass = isGlobal ? "admin-badge" : "owner-badge";
+        const badgeLabel = isGlobal ? "Admin Offer" : "Property Offer";
+
+        return `
+          <div class="coupon-card">
+            <div class="coupon-card-header">
+              <span class="coupon-card-code">${escapeHTML(coupon.coupon_code)}</span>
+              <span class="coupon-card-badge ${badgeClass}">${badgeLabel}</span>
+            </div>
+            <div class="coupon-card-discount">${discountText}</div>
+            <div class="coupon-card-info">${minText}${maxText}</div>
+            <button type="button" class="coupon-card-apply-btn" onclick="applyCoupon('${escapeHTML(coupon.coupon_code)}')">Apply</button>
+          </div>
+        `;
+      }).join("");
+    }
+  } catch (error) {
+    console.error("Failed to load applicable coupons:", error);
+  }
+};
+
 function bookRoom(buttonElement) {
   const roomCard = buttonElement.closest(".room-card");
   const selectedPricing = getSelectedPricingFromCard(roomCard);
@@ -1611,6 +1662,7 @@ function bookRoom(buttonElement) {
   }
 
   removeCoupon();
+  loadApplicableCoupons(propertyId);
   useWalletInput.checked = false;
   specialRequests.value = "";
   bookingModalMessage.textContent = "";

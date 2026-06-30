@@ -1877,7 +1877,7 @@ function renderAllProperties(properties) {
 async function deactivateProperty(propertyId){
 
   const ok =
-  confirm("Deactivate this property?");
+  await window.customConfirm("Deactivate this property?", "Deactivate Property");
 
   if(!ok){
     return;
@@ -1923,7 +1923,7 @@ async function deactivateProperty(propertyId){
 async function activateProperty(propertyId){
 
   const ok =
-  confirm("Activate this property?");
+  await window.customConfirm("Activate this property?", "Activate Property");
 
   if(!ok){
     return;
@@ -1969,7 +1969,7 @@ async function activateProperty(propertyId){
 async function deletePropertyByAdmin(propertyId){
 
   const ok =
-  confirm("Delete this property permanently? This action cannot be undone.");
+  await window.customConfirm("Delete this property permanently? This action cannot be undone.", "Delete Property");
 
   if(!ok){
     return;
@@ -2403,8 +2403,9 @@ function renderPendingCheckIns(checkIns) {
 
 async function recordCheckInAdmin(checkinId){
 
-  const ok = confirm(
-    "Record this check-in and add commission?"
+  const ok = await window.customConfirm(
+    "Record this check-in and add commission?",
+    "Record Check-In"
   );
 
   if(!ok){
@@ -3460,8 +3461,9 @@ function renderCommissionRequests(commissions, propertyId) {
 
 
 const requestCommissionPayment = async (commissionId) => {
-  const ok = confirm(
-    "Send a manual payment request to this owner?"
+  const ok = await window.customConfirm(
+    "Send a manual payment request to this owner?",
+    "Request Payment"
   );
 
   if (!ok) {
@@ -3502,13 +3504,14 @@ const requestCommissionPayment = async (commissionId) => {
 };
 
 // Modal for confirming payment receipt
-const confirmCommissionPaymentModal = (commissionId, amount, ownerName, propertyName) => {
+const confirmCommissionPaymentModal = async (commissionId, amount, ownerName) => {
 
   const payerName = ownerName || "owner";
 
-  const notes = prompt(
+  const notes = await window.showCustomPromptModal(
     `Confirm payment receipt for ${formatMoney(amount)} from ${payerName}?\n\nEnter bank transfer reference/notes (optional):`,
-    ""
+    "",
+    "Confirm Commission Payment"
   );
 
   if (notes === null) {
@@ -3869,7 +3872,7 @@ const renderWithdrawals = (requests) => {
 };
 
 const approveWithdrawal = async (id) => {
-  const adminNotes = prompt("Enter approval notes (optional):");
+  const adminNotes = await window.showCustomPromptModal("Enter approval notes (optional):", "", "Approve Withdrawal");
   if (adminNotes === null) return;
 
   try {
@@ -3895,7 +3898,7 @@ const approveWithdrawal = async (id) => {
 };
 
 const rejectWithdrawal = async (id) => {
-  const adminNotes = prompt("Enter rejection reason / notes (required):");
+  const adminNotes = await window.showCustomPromptModal("Enter rejection reason / notes (required):", "", "Reject Withdrawal");
   if (adminNotes === null) return;
   if (!adminNotes.trim()) {
     alert("Rejection notes are required.");
@@ -3925,7 +3928,7 @@ const rejectWithdrawal = async (id) => {
 };
 
 const markWithdrawalPaid = async (id) => {
-  const adminNotes = prompt("Enter payment details (e.g. UTR / Transaction Reference ID) (required):");
+  const adminNotes = await window.showCustomPromptModal("Enter payment details (e.g. UTR / Transaction Reference ID) (required):", "", "Mark Disbursed / Paid");
   if (adminNotes === null) return;
   if (!adminNotes.trim()) {
     alert("Payment details (e.g., UTR number) are required to mark as paid.");
@@ -4269,7 +4272,7 @@ const toggleCoupon = async (couponId) => {
 };
 
 const deleteCouponAction = async (couponId) => {
-  if (!confirm("Are you sure you want to delete this coupon? This action cannot be undone.")) {
+  if (!await window.customConfirm("Are you sure you want to delete this coupon? This action cannot be undone.", "Delete Coupon")) {
     return;
   }
 
@@ -4436,7 +4439,7 @@ const showAdFormMessage = (text, type) => {
 };
 
 const deleteAdAction = async (adId) => {
-  if (!confirm("Are you sure you want to delete this banner?")) {
+  if (!await window.customConfirm("Are you sure you want to delete this banner?", "Delete Banner")) {
     return;
   }
 

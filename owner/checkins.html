@@ -154,7 +154,7 @@ async function loadPendingCheckIns() {
 
 // Confirm check-in
 async function confirmCheckIn(checkinId) {
-  const ok = confirm("Confirm this guest check-in?");
+  const ok = await window.customConfirm("Confirm this guest check-in?", "Confirm Check-In");
 
   if (!ok) return;
 
@@ -188,7 +188,7 @@ async function confirmCheckIn(checkinId) {
 
 // Reject check-in
 async function rejectCheckIn(checkinId) {
-  const reason = prompt("Enter rejection reason:");
+  const reason = await window.showCustomPromptModal("Enter rejection reason:", "", "Reject Check-In");
   
   if (!reason) return;
 

@@ -300,6 +300,26 @@ console.log(`[API Config] Asset Base URL: ${ASSET_BASE_URL}`);
         .skeleton-line.text.short {
             width: 45%;
         }
+
+        /* CUSTOM PROMPT INPUT STYLING */
+        .custom-global-prompt-input {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1.5px solid hsl(40, 18%, 80%);
+            margin-bottom: 24px;
+            font-size: 14.5px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.2s ease;
+            box-shadow: inset 0 1px 2px rgba(15, 23, 42, 0.05);
+            background: #ffffff;
+            color: hsl(220, 16%, 14%);
+        }
+        .custom-global-prompt-input:focus {
+            border-color: hsl(41, 52%, 52%);
+            box-shadow: 0 0 0 3px hsla(41, 52%, 52%, 0.15), inset 0 1px 2px rgba(15, 23, 42, 0.05);
+        }
     `;
   document.head.appendChild(style);
 })();
@@ -402,6 +422,76 @@ window.customConfirm = (message, title = "Confirm Action") => {
   });
 };
 
+// global showCustomPromptModal function
+window.showCustomPromptModal = (message, defaultValue = "", title = "Input Required") => {
+  let modal = document.getElementById("customGlobalPromptModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "customGlobalPromptModal";
+    modal.className = "custom-global-modal hidden";
+    modal.innerHTML = `
+      <div class="custom-global-modal-card">
+        <div class="custom-global-modal-icon-wrap warning" id="customGlobalPromptIcon">📝</div>
+        <h3 id="customGlobalPromptTitle">Input Required</h3>
+        <div class="custom-global-modal-body">
+          <p id="customGlobalPromptMessage"></p>
+          <input type="text" id="customGlobalPromptInput" class="custom-global-prompt-input" />
+        </div>
+        <div class="custom-global-modal-footer">
+          <button id="customGlobalPromptCancelBtn" class="custom-global-modal-btn secondary">Cancel</button>
+          <button id="customGlobalPromptOkBtn" class="custom-global-modal-btn primary">OK</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+  }
+
+  const inputEl = document.getElementById("customGlobalPromptInput");
+  inputEl.value = defaultValue;
+  document.getElementById("customGlobalPromptTitle").textContent = title;
+  document.getElementById("customGlobalPromptMessage").innerHTML = escapeGlobalHTML(message).replace(/\n/g, '<br>');
+  modal.classList.remove("hidden");
+
+  // Focus and select text in input field
+  setTimeout(() => {
+    inputEl.focus();
+    inputEl.select();
+  }, 50);
+
+  return new Promise((resolve) => {
+    const handleOk = () => {
+      const val = inputEl.value;
+      modal.classList.add("hidden");
+      cleanup();
+      resolve(val);
+    };
+
+    const handleCancel = () => {
+      modal.classList.add("hidden");
+      cleanup();
+      resolve(null);
+    };
+
+    const handleKeydown = (e) => {
+      if (e.key === "Enter") {
+        handleOk();
+      } else if (e.key === "Escape") {
+        handleCancel();
+      }
+    };
+
+    const cleanup = () => {
+      document.getElementById("customGlobalPromptOkBtn").onclick = null;
+      document.getElementById("customGlobalPromptCancelBtn").onclick = null;
+      inputEl.removeEventListener("keydown", handleKeydown);
+    };
+
+    document.getElementById("customGlobalPromptOkBtn").onclick = handleOk;
+    document.getElementById("customGlobalPromptCancelBtn").onclick = handleCancel;
+    inputEl.addEventListener("keydown", handleKeydown);
+  });
+};
+
 // Overwrite window.alert with custom UI
 window.alert = function (message) {
   if (message !== undefined && message !== null) {
@@ -444,4 +534,29 @@ window.showToast = (message, type = "info") => {
       toast.remove();
     }, 400);
   }, 4000);
+};
+
+window.getOptimizedImageUrl = (url, width, height) => {
+  if (!url) return "";
+  const path = String(url).trim();
+  
+  if (!path.includes("res.cloudinary.com")) {
+    if (/^(https?:|data:|blob:)/i.test(path)) {
+      return path;
+    }
+    const normalizedPath = path.replace(/^\/+/, "").replace(/\\/g, "/");
+    const base = typeof ASSET_BASE_URL !== "undefined" ? ASSET_BASE_URL : "";
+    return `${base}/${normalizedPath}`;
+  }
+
+  const uploadIndex = path.indexOf("/upload/");
+  if (uploadIndex === -1) {
+    return path;
+  }
+
+  const insertString = height 
+    ? `c_fill,g_auto,w_${width},h_${height},f_auto,q_auto/`
+    : `c_limit,w_${width},f_auto,q_auto/`;
+
+  return path.substring(0, uploadIndex + 8) + insertString + path.substring(uploadIndex + 8);
 };
