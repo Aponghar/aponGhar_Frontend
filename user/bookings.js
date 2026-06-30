@@ -435,7 +435,6 @@ const renderBookings = (bookings) => {
       : "";
 
     card.innerHTML = `
-    card.innerHTML = `
       <div class="booking-card-header" style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1.5px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
         <div>
           <h3 style="margin: 0; font-size: 22px; font-weight: 800; color: var(--dark);">${booking.property_name || "AponGhar Stay"}</h3>
