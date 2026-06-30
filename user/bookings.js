@@ -435,156 +435,188 @@ const renderBookings = (bookings) => {
       : "";
 
     card.innerHTML = `
-      <div class="booking-topline">
-        <div class="booking-title">
-          <h3>${booking.property_name || "AponGhar booking"}</h3>
-          <p>${escapeHTML(booking.room_name || booking.room_type || "Room")} | ${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}</p>
+    card.innerHTML = `
+      <div class="booking-card-header" style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1.5px solid var(--border-color); padding-bottom: 16px; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div>
+          <h3 style="margin: 0; font-size: 22px; font-weight: 800; color: var(--dark);">${booking.property_name || "AponGhar Stay"}</h3>
+          <p style="margin: 4px 0 0 0; font-size: 14.5px; color: var(--dark-muted); font-weight: 600;">
+            ${escapeHTML(booking.room_name || booking.room_type || "Room")} &bull; ${escapeHTML(booking.booking_code || `Booking #${booking.id}`)}
+          </p>
         </div>
-        <span class="status-badge ${getStatusClass(status)}">${escapeHTML(status)}</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="status-badge ${getStatusClass(status)}" style="padding: 6px 14px; font-size: 11px; font-weight: 800; border-radius: 30px;">${escapeHTML(status)}</span>
+        </div>
       </div>
 
-      <div class="booking-meta">
-        <span>Check-in<strong>${formatDate(booking.check_in_date)} at ${formatTime12h(booking.check_in_time)}</strong></span>
-        <span>Check-out<strong>${formatDate(booking.check_out_date)} at ${formatTime12h(booking.check_out_time)}</strong></span>
-        <span>Guests<strong>${booking.guests || 0}</strong></span>
-        <span>Rooms<strong>${booking.booked_rooms || 1}</strong></span>
-        <span>Type<strong>${bookingType.replace("_", " ")}</strong></span>
-          <span>Payment<strong>${escapeHTML(paymentMethod)}</strong></span>
-      </div>
-
-      <!-- Property & Location Details -->
-      <div class="booking-property-details" style="margin-top: 18px; padding: 20px; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; font-size: 14px; text-transform: none;">
-        <div style="display: flex; align-items: flex-start; gap: 12px; text-transform: none; text-align: left;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary); font-size: 18px;">📍</div>
-          <div style="text-transform: none;">
-            <strong style="color: var(--dark); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;">Location Details</strong>
-            <span style="color: var(--dark-muted); line-height: 1.5; font-weight: 500; font-size: 13.5px; text-transform: none;">${escapeHTML(booking.property_address || booking.property_location || "Location not specified")}, ${escapeHTML(booking.property_city || "")}, ${escapeHTML(booking.property_state || "")} (${escapeHTML(booking.property_type || "Stay")})</span>
-            ${booking.property_google_maps_link ? `
-              <a href="${escapeHTML(booking.property_google_maps_link)}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: none; display: flex; align-items: center; gap: 4px; margin-top: 6px; font-size: 13px; text-transform: none; transition: var(--transition);">
-                View on Google Maps &rarr;
-              </a>
-            ` : ""}
-          </div>
-        </div>
-        ${booking.owner_name ? `
-        <div style="display: flex; align-items: flex-start; gap: 12px; text-transform: none; text-align: left;">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--primary); font-size: 18px;">👤</div>
-          <div style="text-transform: none;">
-            <strong style="color: var(--dark); display: block; margin-bottom: 4px; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800;">Host</strong>
-            <span style="color: var(--dark); font-weight: 600; font-size: 14px; text-transform: none;">${escapeHTML(booking.owner_name)}</span>
-            <span style="color: var(--dark-muted); display: block; font-size: 12.5px; margin-top: 2px;">Property Host</span>
-          </div>
-        </div>
-        ` : ""}
-      </div>
-
-      <!-- Room Details & Photos -->
-      <div class="booking-room-details" style="margin-top: 18px; padding: 24px; background: #ffffff; border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); font-size: 14px; text-transform: none; text-align: left; position: relative; overflow: hidden;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
-          <strong style="color: var(--dark); font-size: 16px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-            <span style="color: var(--primary);">🛏️</span> Room Information
-          </strong>
-          <span style="background: var(--primary-light); color: var(--primary); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700;">
-            ${escapeHTML(booking.room_type || "Stay")}
-          </span>
-        </div>
+      <div class="booking-card-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
         
-        ${roomPhotosHTML}
+        <!-- Left Column: Stay & Room Details -->
+        <div class="booking-col-room" style="display: flex; flex-direction: column; gap: 16px;">
+          <!-- Room Photos -->
+          ${roomPhotosHTML}
+          
+          <!-- Specs Grid -->
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; background: hsl(40, 20%, 98%); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 12px; text-align: center;">
+            <div>
+              <span style="font-size: 16px; display: block; margin-bottom: 2px;">🛏️</span>
+              <span style="font-size: 10px; color: var(--dark-muted); display: block; text-transform: uppercase; font-weight: 800; letter-spacing: 0.3px;">Bed Type</span>
+              <strong style="font-size: 12px; color: var(--dark); font-weight: 700;">${escapeHTML(booking.room_bed_type || "Standard")}</strong>
+            </div>
+            <div style="border-left: 1.5px solid var(--border-color); border-right: 1.5px solid var(--border-color);">
+              <span style="font-size: 16px; display: block; margin-bottom: 2px;">📐</span>
+              <span style="font-size: 10px; color: var(--dark-muted); display: block; text-transform: uppercase; font-weight: 800; letter-spacing: 0.3px;">Room Size</span>
+              <strong style="font-size: 12px; color: var(--dark); font-weight: 700;">${escapeHTML(booking.room_room_size || "Not set")}</strong>
+            </div>
+            <div>
+              <span style="font-size: 16px; display: block; margin-bottom: 2px;">👥</span>
+              <span style="font-size: 10px; color: var(--dark-muted); display: block; text-transform: uppercase; font-weight: 800; letter-spacing: 0.3px;">Max Guests</span>
+              <strong style="font-size: 12px; color: var(--dark); font-weight: 700;">${booking.room_max_adults || 1}A, ${booking.room_max_children || 0}K</strong>
+            </div>
+          </div>
 
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 16px; padding: 14px; background: hsl(40, 20%, 98%); border-radius: var(--radius-md); border: 1px solid var(--border-color);">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 18px; color: var(--primary);">🛏️</span>
-            <div>
-              <span style="color: var(--dark-muted); display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;">Bed Type</span>
-              <strong style="color: var(--dark); font-size: 13.5px; font-weight: 600;">${escapeHTML(booking.room_bed_type || "Not specified")}</strong>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 18px; color: var(--primary);">📐</span>
-            <div>
-              <span style="color: var(--dark-muted); display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;">Room Size</span>
-              <strong style="color: var(--dark); font-size: 13.5px; font-weight: 600;">${escapeHTML(booking.room_room_size || "Not specified")}</strong>
-            </div>
-          </div>
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 18px; color: var(--primary);">👥</span>
-            <div>
-              <span style="color: var(--dark-muted); display: block; font-size: 11px; font-weight: 700; text-transform: uppercase;">Max Capacity</span>
-              <strong style="color: var(--dark); font-size: 13.5px; font-weight: 600;">${booking.room_max_adults || 1} Adults, ${booking.room_max_children || 0} Kids</strong>
-            </div>
-          </div>
+          <!-- Description -->
+          ${roomDescriptionHTML}
+
+          <!-- Amenities & Benefits -->
+          ${roomAmenitiesHTML}
+          ${roomBenefitsHTML}
         </div>
 
-        ${roomAmenitiesHTML}
-        ${roomBenefitsHTML}
-        ${roomDescriptionHTML}
-      </div>
+        <!-- Right Column: Reservation, Host & Billing -->
+        <div class="booking-col-res" style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <!-- Timeline Card (Check-in/out) -->
+          <div style="background: hsl(40, 20%, 99%); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--primary); margin-top: 6px; flex-shrink: 0;"></div>
+              <div>
+                <span style="font-size: 11px; text-transform: uppercase; color: var(--dark-muted); font-weight: 800; letter-spacing: 0.5px; display: block;">Check-in</span>
+                <strong style="font-size: 14px; color: var(--dark); display: block; margin-top: 2px;">${formatDate(booking.check_in_date)}</strong>
+                <span style="font-size: 12.5px; color: var(--dark-muted); display: block; margin-top: 1px;">at ${formatTime12h(booking.check_in_time)}</span>
+              </div>
+            </div>
+            
+            <div style="border-left: 1.5px dashed var(--border-color); margin-left: 3px; height: 16px; min-height: 16px;"></div>
 
-      <div class="booking-payment-details" style="margin-top: 18px;">
-        <div class="payment-details-summary">
-          <div class="detail-line">
-            <span>Room Price</span>
-            <span>${money(booking.total_amount)}</span>
+            <div style="display: flex; align-items: flex-start; gap: 12px;">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--dark); margin-top: 6px; flex-shrink: 0;"></div>
+              <div>
+                <span style="font-size: 11px; text-transform: uppercase; color: var(--dark-muted); font-weight: 800; letter-spacing: 0.5px; display: block;">Check-out</span>
+                <strong style="font-size: 14px; color: var(--dark); display: block; margin-top: 2px;">${formatDate(booking.check_out_date)}</strong>
+                <span style="font-size: 12.5px; color: var(--dark-muted); display: block; margin-top: 1px;">at ${formatTime12h(booking.check_out_time)}</span>
+              </div>
+            </div>
           </div>
-          ${safeNumber(booking.coupon_discount) > 0 ? `
-          <div class="detail-line discount">
-            <span>Coupon Discount</span>
-            <span>-${money(booking.coupon_discount)}</span>
+
+          <!-- Details Info Row (Location, Host, Guests) -->
+          <div style="background: hsl(40, 20%, 99%); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; display: flex; flex-direction: column; gap: 12px; font-size: 13.5px;">
+            <div style="display: flex; align-items: flex-start; gap: 10px; text-align: left;">
+              <span style="font-size: 16px; flex-shrink: 0; margin-top: 1px;">📍</span>
+              <div>
+                <strong style="color: var(--dark); font-weight: 700; display: block;">Address</strong>
+                <span style="color: var(--dark-muted); display: block; margin-top: 2px; line-height: 1.4;">${escapeHTML(booking.property_address || booking.property_location || "Location not specified")}, ${escapeHTML(booking.property_city || "")}, ${escapeHTML(booking.property_state || "")}</span>
+                ${booking.property_google_maps_link ? `
+                  <a href="${escapeHTML(booking.property_google_maps_link)}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; margin-top: 4px; font-size: 12.5px;">
+                    Directions on Maps &rarr;
+                  </a>
+                ` : ""}
+              </div>
+            </div>
+            
+            ${booking.owner_name ? `
+            <div style="display: flex; align-items: flex-start; gap: 10px; border-top: 1.5px solid var(--border-color); padding-top: 10px; text-align: left;">
+              <span style="font-size: 16px; flex-shrink: 0;">👤</span>
+              <div>
+                <strong style="color: var(--dark); font-weight: 700; display: block;">Host</strong>
+                <span style="color: var(--dark-muted); display: block; margin-top: 2px;">${escapeHTML(booking.owner_name)}</span>
+              </div>
+            </div>
+            ` : ""}
+
+            <div style="display: flex; align-items: flex-start; gap: 10px; border-top: 1.5px solid var(--border-color); padding-top: 10px; text-align: left;">
+              <span style="font-size: 16px; flex-shrink: 0;">📋</span>
+              <div>
+                <strong style="color: var(--dark); font-weight: 700; display: block;">Reservation</strong>
+                <span style="color: var(--dark-muted); display: block; margin-top: 2px;">
+                  ${booking.guests || 1} Guest(s) &bull; ${booking.booked_rooms || 1} Room(s) &bull; ${bookingType.replace("_", " ")}
+                </span>
+              </div>
+            </div>
           </div>
-          ` : ""}
-          ${safeNumber(booking.wallet_used) > 0 ? `
-          <div class="detail-line wallet">
-            <span>Wallet Used</span>
-            <span>-${money(booking.wallet_used)}</span>
+
+          <!-- Invoice Details Widget -->
+          <div style="background: hsl(40, 20%, 99%); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; box-shadow: var(--shadow-sm); text-align: left;">
+            <strong style="color: var(--dark); display: block; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; font-weight: 800;">Payment Summary</strong>
+            <div class="payment-details-summary">
+              <div class="detail-line">
+                <span>Room Price</span>
+                <span>${money(booking.total_amount)}</span>
+              </div>
+              ${safeNumber(booking.coupon_discount) > 0 ? `
+              <div class="detail-line discount">
+                <span>Coupon Discount</span>
+                <span>-${money(booking.coupon_discount)}</span>
+              </div>
+              ` : ""}
+              ${safeNumber(booking.wallet_used) > 0 ? `
+              <div class="detail-line wallet">
+                <span>Wallet Used</span>
+                <span>-${money(booking.wallet_used)}</span>
+              </div>
+              ` : ""}
+              ${isPaid && safeNumber(booking.gateway_paid) > 0 ? `
+              <div class="detail-line gateway">
+                <span>Gateway Paid</span>
+                <span>${money(booking.gateway_paid)}</span>
+              </div>
+              ` : ""}
+              <div class="detail-divider"></div>
+              <div class="detail-line total">
+                ${isPaid ? `
+                  <span>Total Paid</span>
+                  <strong>${money(safeNumber(booking.gateway_paid) + safeNumber(booking.wallet_used))}</strong>
+                ` : `
+                  <span>Payable at Property</span>
+                  <strong>${money(Math.max(0, getPayableAmount(booking) - safeNumber(booking.wallet_used)))}</strong>
+                `}
+              </div>
+            </div>
           </div>
-          ` : ""}
-          ${isPaid && safeNumber(booking.gateway_paid) > 0 ? `
-          <div class="detail-line gateway">
-            <span>Gateway Paid</span>
-            <span>${money(booking.gateway_paid)}</span>
-          </div>
-          ` : ""}
-          <div class="detail-divider"></div>
-          <div class="detail-line total">
-            ${isPaid ? `
-              <span>Total Paid</span>
-              <strong>${money(safeNumber(booking.gateway_paid) + safeNumber(booking.wallet_used))}</strong>
-            ` : `
-              <span>Payable at Property</span>
-              <strong>${money(Math.max(0, getPayableAmount(booking) - safeNumber(booking.wallet_used)))}</strong>
-            `}
-          </div>
+
         </div>
+
       </div>
 
       ${specialRequests ? `
-        <div class="booking-note">
-          <span>Special requests & Additional guests</span>
-          <p style="white-space: pre-line;">${escapeHTML(specialRequests)}</p>
+        <div class="booking-note" style="margin-top: 18px; background: hsl(220, 20%, 98%); border: 1.5px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px; text-align: left;">
+          <span style="display: block; color: var(--dark-muted); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Special requests & Additional guests</span>
+          <p style="margin: 0; color: var(--dark); font-size: 13.5px; font-weight: 500; line-height: 1.5; white-space: pre-line;">${escapeHTML(specialRequests)}</p>
         </div>
       ` : ""}
 
       ${rejectionReason ? `
-        <div class="booking-note rejection">
-          <span>Rejection reason</span>
-          <p>${rejectionReason}</p>
+        <div class="booking-note rejection" style="margin-top: 18px; background: hsl(348, 83%, 98%); border: 1.5px solid hsl(348, 83%, 90%); border-radius: var(--radius-md); padding: 14px 16px; text-align: left;">
+          <span style="display: block; color: hsl(348, 83%, 47%); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Rejection reason</span>
+          <p style="margin: 0; color: var(--dark); font-size: 13.5px; font-weight: 500; line-height: 1.5;">${rejectionReason}</p>
         </div>
       ` : ""}
 
-      <div class="booking-actions">
-        <p class="refund-note">
-          Payment: <strong>${escapeHTML(paymentStatus)}</strong>
-          ${refundableAmount > 0 && canCancelBooking(booking) ? ` | Refund to wallet: <strong>${money(refundableAmount)}</strong>` : ""}
-          ${booking.review_id ? ` | Reviewed: <strong>${renderStars(Number(booking.review_rating || 0))}</strong>` : ""}
+      <div class="booking-actions" style="margin-top: 24px; border-top: 1.5px solid var(--border-color); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+        <p class="refund-note" style="margin: 0; font-size: 13.5px; color: var(--dark-muted); font-weight: 600;">
+          Payment Status: <strong style="color: var(--dark);">${escapeHTML(paymentStatus)}</strong>
+          ${refundableAmount > 0 && canCancelBooking(booking) ? ` | Refund to wallet: <strong style="color: hsl(142, 72%, 29%);">${money(refundableAmount)}</strong>` : ""}
+          ${booking.review_id ? ` | Reviewed: <strong style="color: var(--primary);">${renderStars(Number(booking.review_rating || 0))}</strong>` : ""}
         </p>
-        ${canReviewBooking(booking) ? `
-          <button type="button" class="review-btn" data-booking-id="${booking.id}">
-            Write Review
+        <div style="display: flex; gap: 10px; align-items: center;">
+          ${canReviewBooking(booking) ? `
+            <button type="button" class="review-btn" data-booking-id="${booking.id}">
+              Write Review
+            </button>
+          ` : ""}
+          <button type="button" class="cancel-btn" data-booking-id="${booking.id}" ${canCancelBooking(booking) ? "" : "disabled"}>
+            ${getCancelButtonText(booking)}
           </button>
-        ` : ""}
-        <button type="button" class="cancel-btn" data-booking-id="${booking.id}" ${canCancelBooking(booking) ? "" : "disabled"}>
-          ${getCancelButtonText(booking)}
-        </button>
+        </div>
       </div>
     `;
 
