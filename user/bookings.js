@@ -1,5 +1,34 @@
 const BASE_URL = typeof API_BASE_URL !== 'undefined' ? API_BASE_URL : 'http://127.0.0.1:5000/api';
 
+const resolveImageUrl = (imagePath) => {
+  if (!imagePath) {
+    return "";
+  }
+  const path = String(imagePath).trim();
+  if (/^(https?:|data:|blob:)/i.test(path)) {
+    return path;
+  }
+  const normalizedPath = path.replace(/^\/+/, "").replace(/\\/g, "/");
+  const assetBase = typeof ASSET_BASE_URL !== "undefined" ? ASSET_BASE_URL : BASE_URL.replace("/api", "");
+  return `${assetBase}/${normalizedPath}`;
+};
+
+const amenityIdToName = new Map();
+
+const fetchAmenities = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/rooms/amenities/list`);
+    const data = await response.json();
+    if (data.success && Array.isArray(data.data)) {
+      data.data.forEach((amenity) => {
+        amenityIdToName.set(Number(amenity.id), amenity.name);
+      });
+    }
+  } catch (error) {
+    console.error("Failed to fetch amenities:", error);
+  }
+};
+
 const token = localStorage.getItem("token");
 const user = JSON.parse(localStorage.getItem("user"));
 
@@ -316,6 +345,95 @@ const renderBookings = (bookings) => {
     const specialRequests = booking.special_requests || "";
     const rejectionReason = booking.rejection_reason || "";
 
+    // Parse room images list
+    const imagesList = booking.room_images_list ? booking.room_images_list.split("||").filter(Boolean) : [];
+    let roomPhotosHTML = "";
+    if (imagesList.length > 0) {
+      roomPhotosHTML = `
+        <div class="room-photos-scrollbar" style="display: flex; gap: 10px; overflow-x: auto; padding: 4px 2px 8px 2px; margin-bottom: 12px; scrollbar-width: thin;">
+          ${imagesList.map(img => `
+            <img src="${resolveImageUrl(img)}" style="width: 150px; height: 100px; border-radius: 8px; object-fit: cover; border: 1.5px solid var(--border-color); flex-shrink: 0;" onerror="this.onerror=null; this.src='../assets/placeholder-room.jpg';">
+          `).join("")}
+        </div>
+      `;
+    } else if (booking.property_image) {
+      roomPhotosHTML = `
+        <div style="margin-bottom: 12px;">
+          <img src="${resolveImageUrl(booking.property_image)}" style="width: 150px; height: 100px; border-radius: 8px; object-fit: cover; border: 1.5px solid var(--border-color);" onerror="this.onerror=null; this.src='../assets/placeholder-room.jpg';">
+        </div>
+      `;
+    }
+
+    // Parse Amenities
+    const normalizeRoomAmenities = (roomAmenities) => {
+      if (!roomAmenities) return [];
+      if (Array.isArray(roomAmenities)) return roomAmenities;
+      if (typeof roomAmenities === "string") {
+        try {
+          const parsed = JSON.parse(roomAmenities);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+      return [];
+    };
+
+    const amenityNames = normalizeRoomAmenities(booking.room_room_amenities)
+      .map(id => amenityIdToName.get(Number(id)) || id)
+      .filter(Boolean);
+
+    const roomAmenitiesHTML = amenityNames.length > 0
+      ? `
+        <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+          <strong style="color: var(--dark); display: block; margin-bottom: 4px;">Amenities</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            ${amenityNames.map(name => `
+              <span style="background: hsl(150, 40%, 96%); color: hsl(150, 80%, 25%); padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: none;">${escapeHTML(name)}</span>
+            `).join("")}
+          </div>
+        </div>
+      `
+      : "";
+
+    // Parse Benefits
+    const normalizeRoomBenefits = (roomBenefits) => {
+      if (!roomBenefits) return [];
+      if (Array.isArray(roomBenefits)) return roomBenefits;
+      if (typeof roomBenefits === "string") {
+        try {
+          const parsed = JSON.parse(roomBenefits);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+          return [];
+        }
+      }
+      return [];
+    };
+
+    const benefitNames = normalizeRoomBenefits(booking.room_room_benefits).filter(Boolean);
+    const roomBenefitsHTML = benefitNames.length > 0
+      ? `
+        <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px;">
+          <strong style="color: var(--dark); display: block; margin-bottom: 4px;">Included Benefits</strong>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            ${benefitNames.map(benefit => `
+              <span style="background: hsl(200, 50%, 96%); color: hsl(200, 80%, 25%); padding: 3px 8px; border-radius: 6px; font-size: 12px; font-weight: 600; text-transform: none;">${escapeHTML(benefit)}</span>
+            `).join("")}
+          </div>
+        </div>
+      `
+      : "";
+
+    // Room Description
+    const roomDescriptionHTML = booking.room_description
+      ? `
+        <div style="margin-top: 10px; border-top: 1px solid var(--border-color); padding-top: 8px; color: var(--dark-muted); line-height: 1.45; font-style: italic; font-size: 13px;">
+          "${escapeHTML(booking.room_description)}"
+        </div>
+      `
+      : "";
+
     card.innerHTML = `
       <div class="booking-topline">
         <div class="booking-title">
@@ -357,6 +475,23 @@ const renderBookings = (bookings) => {
           </div>
         </div>
         ` : ""}
+      </div>
+
+      <!-- Room Details & Photos -->
+      <div class="booking-room-details" style="margin-top: 14px; padding: 14px; background: hsl(220, 20%, 98%); border: 1px solid var(--border-color); border-radius: var(--radius-md); font-size: 13.5px; text-transform: none; text-align: left;">
+        <strong style="color: var(--dark); display: block; margin-bottom: 10px; font-size: 14px;">Room Details</strong>
+        
+        ${roomPhotosHTML}
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-top: 10px;">
+          <div><strong style="color: var(--dark);">Bed Type:</strong> <span style="color: var(--dark-muted);">${escapeHTML(booking.room_bed_type || "Not specified")}</span></div>
+          <div><strong style="color: var(--dark);">Room Size:</strong> <span style="color: var(--dark-muted);">${escapeHTML(booking.room_room_size || "Not specified")}</span></div>
+          <div><strong style="color: var(--dark);">Max Capacity:</strong> <span style="color: var(--dark-muted);">${booking.room_max_adults || 1} Adults, ${booking.room_max_children || 0} Kids</span></div>
+        </div>
+
+        ${roomAmenitiesHTML}
+        ${roomBenefitsHTML}
+        ${roomDescriptionHTML}
       </div>
 
       <div class="booking-payment-details" style="margin-top: 14px;">
@@ -528,6 +663,12 @@ logoutBtn.addEventListener("click", () => {
   window.location.href = "../index.html";
 });
 
-refreshBtn.addEventListener("click", loadBookings);
+refreshBtn.addEventListener("click", async () => {
+  await fetchAmenities();
+  loadBookings();
+});
 
-document.addEventListener("DOMContentLoaded", loadBookings);
+document.addEventListener("DOMContentLoaded", async () => {
+  await fetchAmenities();
+  loadBookings();
+});
