@@ -2212,3 +2212,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   loadPropertyAndRooms();
 });
+
+// Image Lightbox Controls
+const imageLightboxModal = document.getElementById("imageLightboxModal");
+const lightboxImage = document.getElementById("lightboxImage");
+
+window.openLightbox = (src) => {
+  if (imageLightboxModal && lightboxImage) {
+    lightboxImage.src = src;
+    imageLightboxModal.classList.remove("hidden");
+    document.body.style.overflow = "hidden"; // disable page scroll
+  }
+};
+
+window.closeLightbox = () => {
+  if (imageLightboxModal) {
+    imageLightboxModal.classList.add("hidden");
+    document.body.style.overflow = ""; // enable page scroll
+  }
+};
+
+// Close lightbox on Escape key
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    window.closeLightbox();
+  }
+});
+
+// Global click listener for any gallery or review images
+document.addEventListener("click", (event) => {
+  const target = event.target;
+  if (target.matches(".gallery-item, .gallery-image, .review-photo-strip img")) {
+    if (target.src) {
+      window.openLightbox(target.src);
+    }
+  }
+});

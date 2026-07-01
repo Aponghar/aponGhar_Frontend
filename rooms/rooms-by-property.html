@@ -478,6 +478,14 @@
   </div>
 </div>
 
+<!-- Generic Image Lightbox Modal -->
+<div id="imageLightboxModal" class="lightbox-modal hidden" onclick="closeLightbox()">
+  <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+  <div class="lightbox-content-wrapper">
+    <img class="lightbox-content" id="lightboxImage" onclick="event.stopPropagation()">
+  </div>
+</div>
+
 <footer>
   <p>&copy; 2024 AponGhar. All rights reserved.</p>
 </footer>
