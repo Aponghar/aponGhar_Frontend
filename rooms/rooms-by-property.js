@@ -698,6 +698,17 @@ const displayPropertyDetails = (data) => {
   document.getElementById("checkInTimeText").textContent = property.check_in_time ? formatTime12h(property.check_in_time) : "12:00 PM";
   document.getElementById("checkOutTimeText").textContent = property.check_out_time ? formatTime12h(property.check_out_time) : "11:00 AM";
 
+  const hourlyTimeInfoEl = document.getElementById("hourlyTimeInfo");
+  if (hourlyTimeInfoEl) {
+    if (property.check_in_time_hourly && property.check_out_time_hourly) {
+      hourlyTimeInfoEl.style.display = "block";
+      document.getElementById("hourlyCheckInStartText").textContent = formatTime12h(property.check_in_time_hourly);
+      document.getElementById("hourlyCheckOutEndText").textContent = formatTime12h(property.check_out_time_hourly);
+    } else {
+      hourlyTimeInfoEl.style.display = "none";
+    }
+  }
+
   // Render Rules
   const rulesList = document.getElementById("propertyRules");
   if (rulesList) {
@@ -1467,8 +1478,11 @@ const populateCheckInTimes = () => {
   ];
 
   if (isHourly && currentProperty) {
-    const propCheckInMinutes = parseTimeToMinutes(currentProperty.check_in_time || "00:00", false);
-    const propCheckOutMinutes = parseTimeToMinutes(currentProperty.check_out_time || "24:00", true);
+    const propCheckInStr = currentProperty.check_in_time_hourly || currentProperty.check_in_time || "00:00";
+    const propCheckOutStr = currentProperty.check_out_time_hourly || currentProperty.check_out_time || "24:00";
+
+    const propCheckInMinutes = parseTimeToMinutes(propCheckInStr, false);
+    const propCheckOutMinutes = parseTimeToMinutes(propCheckOutStr, true);
 
     let hasValidOption = false;
 

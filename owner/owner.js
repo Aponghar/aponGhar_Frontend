@@ -1990,11 +1990,14 @@ document.getElementById("propertyForm").addEventListener("submit", async (event)
     "longitude",
     "google_maps_link",
     "check_in_time",
-    "check_out_time"
+    "check_out_time",
+    "check_in_time_hourly",
+    "check_out_time_hourly"
   ];
 
   propertyFields.forEach((fieldId) => {
-    formData.append(fieldId, document.getElementById(fieldId).value);
+    const val = document.getElementById(fieldId).value;
+    formData.append(fieldId, val === "" ? null : val);
   });
 
   formData.append("property_image", document.getElementById("property_image").files[0]);
@@ -2078,20 +2081,33 @@ async function uploadImages(propertyId) {
   const desktopInput = document.getElementById(`image-${propertyId}`);
   const mobileInput = document.getElementById(`image-mobile-${propertyId}`);
   const input = desktopInput || mobileInput;
-  const files = input ? input.files : [];
+  const files = input ? Array.from(input.files) : [];
 
   if (files.length === 0) {
     alert("Select images");
     return;
   }
 
-  const formData = new FormData();
-
-  for (const file of files) {
-    formData.append("images", file);
+  if (files.length > 5) {
+    alert("Property photo limit is 5. You cannot upload more than 5 images at once.");
+    return;
   }
 
   try {
+    // Fetch existing gallery count
+    const galleryRes = await fetchJson(`${PROPERTY_BASE_URL}/${propertyId}/gallery`);
+    const existingCount = (galleryRes.data || []).length;
+    
+    if (existingCount + files.length > 5) {
+      alert(`Property photo limit is 5. This property already has ${existingCount} photo(s). You can upload at most ${5 - existingCount} more.`);
+      return;
+    }
+
+    const formData = new FormData();
+    for (const file of files) {
+      formData.append("images", file);
+    }
+
     const data = await fetchJson(`${PROPERTY_BASE_URL}/${propertyId}/images`, {
       method: "POST",
       body: formData
@@ -2099,6 +2115,10 @@ async function uploadImages(propertyId) {
 
     alert(data.data?.message || "Images uploaded successfully");
     dashboardLoaded = false;
+    // Clear input file selection
+    if (input) {
+      input.value = "";
+    }
   } catch (error) {
     console.error(error);
     alert(error.message || "Upload failed");

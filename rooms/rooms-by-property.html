@@ -94,24 +94,54 @@
             </div>
           </div>
 
-          <div class="time-info">
-            <div class="time-block">
-              <span class="time-icon">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
-              </span>
-              <div>
-                <strong>Check-In From</strong>
-                <span id="checkInTimeText">12:00 PM</span>
+          <div class="time-info-section" style="border-top: 1.5px solid hsl(220, 20%, 96%); border-bottom: 1.5px solid hsl(220, 20%, 96%); padding: 16px 0; display: flex; flex-direction: column; gap: 16px;">
+            <div>
+              <div style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">Nightly Stay Timings</div>
+              <div class="time-info" style="border: none; padding: 0; margin: 0;">
+                <div class="time-block">
+                  <span class="time-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+                  </span>
+                  <div>
+                    <strong>Check-In From</strong>
+                    <span id="checkInTimeText">12:00 PM</span>
+                  </div>
+                </div>
+                <div class="time-block-separator"></div>
+                <div class="time-block">
+                  <span class="time-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
+                  </span>
+                  <div>
+                    <strong>Check-Out Before</strong>
+                    <span id="checkOutTimeText">11:00 AM</span>
+                  </div>
+                </div>
               </div>
             </div>
-            <div class="time-block-separator"></div>
-            <div class="time-block">
-              <span class="time-icon">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"></path></svg>
-              </span>
-              <div>
-                <strong>Check-Out Before</strong>
-                <span id="checkOutTimeText">11:00 AM</span>
+
+            <div id="hourlyTimeInfo" style="display: none; border-top: 1px dashed var(--border-color); padding-top: 12px;">
+              <div style="font-size: 10px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">Hourly Stay Booking Window</div>
+              <div class="time-info" style="border: none; padding: 0; margin: 0;">
+                <div class="time-block">
+                  <span class="time-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </span>
+                  <div>
+                    <strong>Allowed Check-In Start</strong>
+                    <span id="hourlyCheckInStartText">09:00 AM</span>
+                  </div>
+                </div>
+                <div class="time-block-separator"></div>
+                <div class="time-block">
+                  <span class="time-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </span>
+                  <div>
+                    <strong>Latest Check-Out End</strong>
+                    <span id="hourlyCheckOutEndText">09:00 PM</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

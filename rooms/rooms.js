@@ -599,6 +599,11 @@ roomForm.addEventListener("submit", async (event) => {
   const selectedFiles = Array.from(roomImagesInput?.files || []);
   const submitBtn = document.getElementById("submitBtn");
 
+  if (selectedFiles.length > 3) {
+    alert("Room photo limit is 3. You cannot upload more than 3 images for a room.");
+    return;
+  }
+
   if (!validateRoomPayload(roomData)) {
     return;
   }
@@ -912,6 +917,21 @@ editRoomForm.addEventListener("submit", async (event) => {
   if (!payload.room_id) {
     alert("Room ID is required.");
     return;
+  }
+
+  if (selectedEditFiles.length > 3) {
+    alert("Room photo limit is 3. You cannot upload more than 3 images for a room.");
+    return;
+  }
+
+  try {
+    const currentGallery = await fetchRoomGallery(roomDbId);
+    if (currentGallery.length + selectedEditFiles.length > 3) {
+      alert(`Room photo limit is 3. This room already has ${currentGallery.length} photo(s). You can upload at most ${3 - currentGallery.length} more.`);
+      return;
+    }
+  } catch (err) {
+    console.error("Failed to fetch current room gallery size:", err);
   }
 
   if (!validateRoomPayload(payload)) {
