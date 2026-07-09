@@ -843,7 +843,7 @@ const renderPropertyReviews = (reviews) => {
     const photosHtml = photos.length
       ? `<div class="review-photo-strip">
           ${photos.map((photo) => {
-            const imageUrl = resolveImageUrl(photo.image_url || photo);
+            const imageUrl = getOptimizedImageUrl(photo.image_url || photo, 200, 150);
             return imageUrl
               ? `<img src="${imageUrl}" alt="Guest review photo" loading="lazy" onerror="this.onerror=null; this.src='${IMAGE_PLACEHOLDER}';">`
               : "";
@@ -2244,7 +2244,10 @@ document.addEventListener("click", (event) => {
   const target = event.target;
   if (target.matches(".gallery-item, .gallery-image, .review-photo-strip img")) {
     if (target.src) {
-      window.openLightbox(target.src);
+      const highResUrl = typeof window.getHighQualityImageUrl === "function"
+        ? window.getHighQualityImageUrl(target.src)
+        : target.src;
+      window.openLightbox(highResUrl);
     }
   }
 });

@@ -1,6 +1,18 @@
 // Frontend API Configuration
 // This file determines the correct API base URL based on the environment
 
+// Clean .html extension from URL address bar dynamically
+(function cleanUrlExtension() {
+  const path = window.location.pathname;
+  if (path.endsWith('.html')) {
+    let cleanPath = path.slice(0, -5); // Remove '.html'
+    if (cleanPath.endsWith('/index')) {
+      cleanPath = cleanPath.slice(0, -5); // Remove 'index'
+    }
+    window.history.replaceState(null, '', cleanPath + window.location.search + window.location.hash);
+  }
+})();
+
 const getApiBaseUrl = () => {
   const hostname = window.location.hostname;
   const protocol = window.location.protocol;
@@ -536,6 +548,12 @@ window.showToast = (message, type = "info") => {
   }, 4000);
 };
 
+window.IMAGE_OPTIMIZATION_SETTINGS = {
+  thumbnailQuality: "q_auto:good", // Balanced quality and compression
+  lightboxQuality: "q_auto:best",     // Maximum automated quality
+  lightboxMaxWidth: 1600
+};
+
 window.getOptimizedImageUrl = (url, width, height) => {
   if (!url) return "";
   const path = String(url).trim();
@@ -554,9 +572,49 @@ window.getOptimizedImageUrl = (url, width, height) => {
     return path;
   }
 
+  const quality = (window.IMAGE_OPTIMIZATION_SETTINGS && window.IMAGE_OPTIMIZATION_SETTINGS.thumbnailQuality) || "q_auto";
+
   const insertString = height 
-    ? `c_fill,g_auto,w_${width},h_${height},f_auto,q_auto/`
-    : `c_limit,w_${width},f_auto,q_auto/`;
+    ? `c_fill,g_auto,w_${width},h_${height},f_auto,${quality}/`
+    : `c_limit,w_${width},f_auto,${quality}/`;
 
   return path.substring(0, uploadIndex + 8) + insertString + path.substring(uploadIndex + 8);
+};
+
+window.getHighQualityImageUrl = (url) => {
+  if (!url) return "";
+  const path = String(url).trim();
+  
+  if (!path.includes("res.cloudinary.com")) {
+    return path;
+  }
+
+  const uploadIndex = path.indexOf("/upload/");
+  if (uploadIndex === -1) {
+    return path;
+  }
+
+  const quality = (window.IMAGE_OPTIMIZATION_SETTINGS && window.IMAGE_OPTIMIZATION_SETTINGS.lightboxQuality) || "q_auto:best";
+  const maxWidth = (window.IMAGE_OPTIMIZATION_SETTINGS && window.IMAGE_OPTIMIZATION_SETTINGS.lightboxMaxWidth) || 1600;
+
+  const afterUpload = path.substring(uploadIndex + 8);
+  const segments = afterUpload.split("/");
+  
+  const highQualityTransform = `c_limit,w_${maxWidth},f_auto,${quality}/`;
+
+  if (segments.length > 1) {
+    const firstSegment = segments[0];
+    const isVersion = /^v\d+$/.test(firstSegment);
+    
+    // Check if the first segment is a transformation segment
+    if (!isVersion && (firstSegment.includes(",") || firstSegment.includes("_") || firstSegment.includes("auto"))) {
+      // Replace it with high-quality transformation parameters
+      return path.substring(0, uploadIndex + 8) + highQualityTransform + segments.slice(1).join("/");
+    } else {
+      // It's the original URL. Let's insert the high-quality parameters
+      return path.substring(0, uploadIndex + 8) + highQualityTransform + afterUpload;
+    }
+  }
+  
+  return path;
 };
