@@ -2,6 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script>
+  // Ensure trailing slash for proper relative asset resolution
+  (function() {
+    var path = window.location.pathname;
+    if (path.toLowerCase().endsWith('/anishchakraborty-portfolio')) {
+      window.location.replace(window.location.protocol + '//' + window.location.host + path + '/' + window.location.search + window.location.hash);
+    }
+  })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Anish Chakraborty — AI/ML Engineer &amp; Founder</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -968,7 +977,7 @@
     </div>
     <div class="hero-photo-col">
       <div class="hero-photo-wrapper">
-        <img src="about.jpeg" alt="Anish Chakraborty Headshot">
+        <img src="hero.jpg" alt="Anish Chakraborty Headshot">
       </div>
     </div>
   </div>
@@ -1268,9 +1277,9 @@
       <h3 class="mentors-title">Guided by Renowned Academic Mentors</h3>
       <div class="mentors-grid">
         <!-- Mentor 1 -->
-        <div class="mentor-card" onclick="openLightbox('trivedi sir.jpeg', 'Prof. Gourav Trivedi', 'Professor, EEE Department, IIT Guwahati')">
+        <div class="mentor-card" onclick="openLightbox('trivedi%20sir.jpeg', 'Prof. Gourav Trivedi', 'Professor, EEE Department, IIT Guwahati')">
           <div class="mentor-img-container">
-            <img src="trivedi sir.jpeg" alt="Prof. Gourav Trivedi">
+            <img src="trivedi%20sir.jpeg" alt="Prof. Gourav Trivedi">
           </div>
           <div class="mentor-info">
             <span class="mentor-name">Prof. Gourav Trivedi</span>
@@ -1279,9 +1288,9 @@
         </div>
 
         <!-- Mentor 2 -->
-        <div class="mentor-card" onclick="openLightbox('ranjit sir.jpeg', 'Ranjit Sir', 'Academic Mentor')">
+        <div class="mentor-card" onclick="openLightbox('ranjit%20sir.jpeg', 'Ranjit Sir', 'Academic Mentor')">
           <div class="mentor-img-container">
-            <img src="ranjit sir.jpeg" alt="Ranjit Sir">
+            <img src="ranjit%20sir.jpeg" alt="Ranjit Sir">
           </div>
           <div class="mentor-info">
             <span class="mentor-name">Ranjit Sir</span>
