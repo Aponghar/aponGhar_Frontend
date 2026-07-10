@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anish Chakraborty — AI/ML Engineer &amp; Founder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0D12;
+    --bg-elev:#11161D;
+    --bg-elev-2:#171E27;
+    --text:#EDEFF3;
+    --text-muted:#8F9BAA;
+    --text-faint:#5C6673;
+    --gold:#E3A857;
+    --gold-soft:rgba(227,168,87,0.14);
+    --teal:#46B8A6;
+    --teal-soft:rgba(70,184,166,0.14);
+    --line:rgba(255,255,255,0.08);
+    --line-strong:rgba(255,255,255,0.16);
+    --font-display:'Fraunces',serif;
+    --font-body:'Inter',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+  }
+
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--font-body);
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+  img{max-width:100%;display:block;}
+
+  ::selection{background:var(--gold);color:#0A0D12;}
+
+  :focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .eyebrow::before{
+    content:'';
+    width:22px;
+    height:1px;
+    background:var(--gold);
+  }
+
+  h1,h2,h3{font-family:var(--font-display);font-weight:600;letter-spacing:-0.01em;}
+
+  /* ===== NAV ===== */
+  header.nav{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:100;
+    background:rgba(10,13,18,0.72);
+    backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    max-width:1180px;
+    margin:0 auto;
+    padding:18px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .nav-mark{
+    font-family:var(--font-mono);
+    font-size:15px;
+    font-weight:600;
+    letter-spacing:0.02em;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .nav-mark .dot{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);}
+  .nav-links{display:flex;gap:36px;}
+  .nav-links a{
+    font-size:13px;
+    font-weight:500;
+    color:var(--text-muted);
+    letter-spacing:0.02em;
+    position:relative;
+    padding:4px 0;
+    transition:color .25s ease;
+  }
+  .nav-links a::after{
+    content:'';
+    position:absolute;left:0;right:100%;bottom:0;
+    height:1px;background:var(--gold);
+    transition:right .3s ease;
+  }
+  .nav-links a:hover,.nav-links a.active{color:var(--text);}
+  .nav-links a.active::after,.nav-links a:hover::after{right:0;}
+  .nav-toggle{display:none;background:none;border:none;color:var(--text);font-size:22px;cursor:pointer;}
+
+  @media (max-width:820px){
+    .nav-links{
+      position:fixed;top:60px;left:0;right:0;
+      background:var(--bg-elev);
+      flex-direction:column;
+      padding:20px 32px 30px;
+      gap:20px;
+      border-bottom:1px solid var(--line);
+      transform:translateY(-140%);
+      transition:transform .35s ease;
+    }
+    .nav-links.open{transform:translateY(0);}
+    .nav-toggle{display:block;}
+  }
+
+  /* ===== RAIL (signature scroll element) ===== */
+  .rail{
+    position:fixed;
+    left:40px;top:50%;
+    transform:translateY(-50%);
+    z-index:50;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .rail-track{
+    position:relative;
+    width:2px;
+    height:280px;
+    background:repeating-linear-gradient(
+      to bottom,
+      var(--line-strong) 0px, var(--line-strong) 2px,
+      transparent 2px, transparent 10px
+    );
+  }
+  .rail-progress{
+    position:absolute;
+    top:0;left:0;
+    width:2px;
+    height:0%;
+    background:linear-gradient(to bottom,var(--gold),var(--teal));
+    transition:height .15s linear;
+  }
+  .rail-stops{
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:100%;
+  }
+  .rail-stop{
+    position:absolute;
+    left:50%;
+    transform:translate(-50%,-50%);
+    width:9px;height:9px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--text-faint);
+    cursor:pointer;
+    transition:all .25s ease;
+  }
+  .rail-stop.active{
+    border-color:var(--gold);
+    background:var(--gold);
+    box-shadow:0 0 10px var(--gold);
+    transform:translate(-50%,-50%) scale(1.3);
+  }
+  .rail-stop .rail-label{
+    position:absolute;
+    left:18px;top:50%;
+    transform:translateY(-50%);
+    font-family:var(--font-mono);
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--text-faint);
+    white-space:nowrap;
+    opacity:0;
+    transition:opacity .25s ease;
+    pointer-events:none;
+  }
+  .rail-stop.active .rail-label{opacity:1;color:var(--gold);}
+
+  @media (max-width:1100px){.rail{display:none;}}
+
+  /* ===== HERO ===== */
+  .hero{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    position:relative;
+    padding:140px 0 80px;
+    background:
+      radial-gradient(ellipse 900px 500px at 82% 12%, rgba(227,168,87,0.10), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 10% 90%, rgba(70,184,166,0.08), transparent 60%);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.15fr 0.85fr;
+    gap:64px;
+    align-items:center;
+  }
+  .hero-kicker{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--teal);
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    margin-bottom:22px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .hero-kicker .pulse{
+    width:7px;height:7px;border-radius:50%;background:var(--teal);
+    animation:pulse 2s infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 0 rgba(70,184,166,0.5);}
+    50%{box-shadow:0 0 0 6px rgba(70,184,166,0);}
+  }
+  .hero h1{
+    font-size:clamp(42px,6vw,72px);
+    line-height:1.02;
+    margin-bottom:22px;
+  }
+  .hero h1 span{color:var(--gold);font-style:italic;font-weight:500;}
+  .hero-role{
+    font-family:var(--font-mono);
+    font-size:14px;
+    color:var(--text-muted);
+    margin-bottom:26px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 0;
+  }
+  .hero-role .sep{margin:0 10px;color:var(--gold);}
+  .hero-desc{
+    font-size:16.5px;
+    color:var(--text-muted);
+    max-width:520px;
+    margin-bottom:38px;
+  }
+  .hero-cta{display:flex;gap:16px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--font-body);
+    font-size:14px;
+    font-weight:600;
+    padding:14px 26px;
+    border-radius:2px;
+    cursor:pointer;
+    border:1px solid transparent;
+    transition:all .25s ease;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn-primary{background:var(--gold);color:#0A0D12;}
+  .btn-primary:hover{background:#f0b968;transform:translateY(-2px);}
+  .btn-ghost{border-color:var(--line-strong);color:var(--text);}
+  .btn-ghost:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
+
+  .hero-photo-col{display:flex;justify-content:center;}
+  .photo-placeholder{
+    width:100%;
+    max-width:300px;
+    aspect-ratio:3/3.6;
+    border:1.5px dashed var(--line-strong);
+    border-radius:6px;
+    background:var(--bg-elev);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    text-align:center;
+    padding:24px;
+    position:relative;
+    overflow:hidden;
+  }
+  .photo-placeholder::before{
+    content:'';
+    position:absolute;inset:0;
+    background:linear-gradient(135deg, var(--gold-soft), transparent 60%);
+  }
+  .photo-placeholder svg{width:38px;height:38px;stroke:var(--text-faint);position:relative;}
+  .photo-placeholder .pp-title{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--text-muted);
+    letter-spacing:0.04em;
+    position:relative;
+  }
+  .photo-placeholder .pp-sub{
+    font-size:11px;
+    color:var(--text-faint);
+    position:relative;
+  }
+
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;left:50%;
+    transform:translateX(-50%);
+    font-family:var(--font-mono);
+    font-size:10px;
+    color:var(--text-faint);
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+  }
+  .scroll-cue .line{width:1px;height:34px;background:linear-gradient(to bottom, var(--text-faint), transparent);animation:scrolldown 1.8s infinite;}
+  @keyframes scrolldown{0%{opacity:0;transform:scaleY(0.3);transform-origin:top;}50%{opacity:1;}100%{opacity:0;transform:scaleY(1);transform-origin:top;}}
+
+  /* ===== SECTION GENERIC ===== */
+  section{padding:120px 0;position:relative;}
+  .section-head{max-width:640px;margin-bottom:64px;}
+  .section-head h2{font-size:clamp(30px,4vw,44px);}
+  .section-head p{color:var(--text-muted);margin-top:16px;font-size:15.5px;}
+
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:translateY(0);}
+
+  /* ===== ABOUT ===== */
+  .about{background:var(--bg-elev);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+  .about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:70px;align-items:start;}
+  .photo-placeholder.tall{max-width:340px;aspect-ratio:4/5;}
+  .about-text p{color:var(--text-muted);margin-bottom:18px;font-size:15.5px;}
+  .about-text strong{color:var(--text);font-weight:600;}
+  .stat-strip{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    background:var(--line);
+    margin-top:40px;
+    border:1px solid var(--line);
+  }
+  .stat{
+    background:var(--bg-elev);
+    padding:22px 20px;
+  }
+  .stat .num{font-family:var(--font-mono);font-size:26px;color:var(--gold);font-weight:600;}
+  .stat .label{font-size:11.5px;color:var(--text-faint);letter-spacing:0.03em;margin-top:4px;text-transform:uppercase;}
+
+  /* ===== JOURNEY / TIMELINE ===== */
+  .journey-line{
+    position:relative;
+    padding-left:44px;
+  }
+  .journey-line::before{
+    content:'';
+    position:absolute;
+    left:6px;top:6px;bottom:6px;
+    width:2px;
+    background:repeating-linear-gradient(to bottom, var(--line-strong) 0, var(--line-strong) 2px, transparent 2px, transparent 9px);
+  }
+  .stop{position:relative;padding-bottom:52px;}
+  .stop:last-child{padding-bottom:0;}
+  .stop::before{
+    content:'';
+    position:absolute;
+    left:-44px;top:4px;
+    width:13px;height:13px;
+    border-radius:50%;
+    background:var(--bg);
+    border:2px solid var(--gold);
+  }
+  .stop .stop-year{
+    font-family:var(--font-mono);
+    font-size:12px;
+    color:var(--teal);
+    letter-spacing:0.06em;
+    margin-bottom:6px;
+  }
+  .stop h3{font-size:21px;margin-bottom:4px;font-weight:600;}
+  .stop .stop-org{
+    font-family:var(--font-mono);
+    font-size:12.5px;
+    color:var(--text-muted);
+    margin-bottom:12px;
+  }
+  .stop .stop-desc{color:var(--text-muted);font-size:14.5px;margin-bottom:12px;max-width:640px;}
+  .stop ul{color:var(--text-muted);font-size:14px;}
+  .stop ul li{position:relative;padding-left:18px;margin-bottom:6px;}
+  .stop ul li::before{content:'—';position:absolute;left:0;color:var(--text-faint);}
+
+  /* ===== PROJECTS ===== */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);}
+  @media (min-width:1024px){.proj-grid{grid-template-columns:repeat(4,1fr);}}
+  .proj-card{
+    background:var(--bg);
+    padding:38px 30px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+    transition:all .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position:relative;
+  }
+  .proj-card:hover{
+    background:var(--bg-elev);
+    transform:translateY(-4px);
+    box-shadow:0 12px 30px rgba(0,0,0,0.3);
+    z-index: 2;
+  }
+  .proj-icon{
+    width:40px;height:40px;
+    border:1px solid var(--line-strong);
+    border-radius:4px;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .proj-icon svg{width:20px;height:20px;stroke:var(--gold);}
+  .proj-card h3{font-size:19px;font-weight:600;}
+  .proj-tag{font-family:var(--font-mono);font-size:11px;color:var(--teal);text-transform:uppercase;letter-spacing:0.05em;}
+  .proj-card p{color:var(--text-muted);font-size:14px;flex-grow:1;}
+  .proj-stat-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:var(--font-mono);
+    font-size:10px;
+    font-weight:600;
+    color:var(--gold);
+    background:var(--gold-soft);
+    padding:4px 10px;
+    border-radius:4px;
+    border:1px solid rgba(227,168,87,0.2);
+    width:fit-content;
+    margin-top:4px;
+  }
+  .proj-card .proj-meta{font-family:var(--font-mono);font-size:11px;color:var(--text-faint);border-top:1px solid var(--line);padding-top:14px;margin-top:auto;}
+
+  @media (max-width:900px){.proj-grid{grid-template-columns:1fr;}}
+
+  /* ===== SKILLS ===== */
+  .skills-wrap{display:grid;grid-template-columns:repeat(2,1fr);gap:36px 60px;}
+  .skill-group h3{
+    font-family:var(--font-mono);
+    font-size:12px;
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    color:var(--text-faint);
+    margin-bottom:16px;
+    font-weight:500;
+  }
+  .skill-tags{display:flex;flex-wrap:wrap;gap:9px;}
+  .skill-tags span{
+    font-size:13px;
+    padding:8px 14px;
+    border:1px solid var(--line-strong);
+    border-radius:2px;
+    color:var(--text-muted);
+    transition:all .2s ease;
+  }
+  .skill-tags span:hover{border-color:var(--gold);color:var(--gold);}
+  @media (max-width:760px){.skills-wrap{grid-template-columns:1fr;}}
+
+  /* ===== GALLERY / CERTS ===== */
+  .gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .gallery-item{
+    aspect-ratio:1/1;
+  }
+  .gallery-item .photo-placeholder{max-width:none;width:100%;height:100%;aspect-ratio:auto;border-radius:4px;}
+  .gallery-item .photo-placeholder svg{width:26px;height:26px;}
+  .gallery-item .photo-placeholder .pp-title{font-size:10.5px;}
+  .gallery-item .photo-placeholder .pp-sub{font-size:9.5px;}
+  @media (max-width:820px){.gallery-grid{grid-template-columns:repeat(2,1fr);}}
+
+  /* ===== ACHIEVEMENTS ===== */
+  .ach-list{display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid var(--line);}
+  .ach-item{
+    display:flex;gap:18px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .ach-item:nth-child(odd){padding-right:40px;border-right:1px solid var(--line);}
+  .ach-item:nth-child(even){padding-left:40px;}
+  .ach-num{font-family:var(--font-mono);color:var(--gold);font-size:13px;flex-shrink:0;}
+  .ach-item p{font-size:14.5px;color:var(--text-muted);}
+  @media (max-width:760px){
+    .ach-list{grid-template-columns:1fr;}
+    .ach-item:nth-child(odd){padding-right:0;border-right:none;}
+    .ach-item:nth-child(even){padding-left:0;}
+  }
+
+  /* ===== LANG/INTERESTS ===== */
+  .misc-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;}
+  .misc-grid h3{font-family:var(--font-mono);font-size:12px;text-transform:uppercase;letter-spacing:0.1em;color:var(--text-faint);margin-bottom:16px;font-weight:500;}
+  .pill-row{display:flex;flex-wrap:wrap;gap:10px;}
+  .pill-row span{font-size:13px;color:var(--text-muted);}
+  .pill-row span:not(:last-child)::after{content:'•';margin-left:10px;color:var(--gold);}
+  @media (max-width:760px){.misc-grid{grid-template-columns:1fr;gap:32px;}}
+
+  /* ===== CONTACT ===== */
+  .contact{
+    background:var(--bg-elev);
+    border-top:1px solid var(--line);
+    text-align:left;
+  }
+  .contact-grid{display:grid;grid-template-columns:1.2fr 0.8fr;gap:60px;align-items:end;}
+  .contact h2{font-size:clamp(32px,5vw,52px);line-height:1.05;}
+  .contact-desc{color:var(--text-muted);margin-top:18px;max-width:460px;font-size:15.5px;}
+  .contact-links{display:flex;flex-direction:column;gap:0;}
+  .contact-link{
+    display:flex;justify-content:space-between;align-items:center;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+    font-family:var(--font-mono);
+    font-size:13.5px;
+  }
+  .contact-link .label{color:var(--text-faint);font-size:11px;text-transform:uppercase;letter-spacing:0.06em;}
+  .contact-link .val{color:var(--text);transition:color .25s ease;}
+  .contact-link a.val:hover{color:var(--gold);}
+  .contact-link .val.todo{color:var(--gold);font-style:italic;}
+
+  footer{
+    padding:30px 0;
+    border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;align-items:center;
+    font-family:var(--font-mono);
+    font-size:11.5px;
+    color:var(--text-faint);
+  }
+  @media (max-width:760px){
+    .contact-grid{grid-template-columns:1fr;gap:40px;}
+    footer{flex-direction:column;gap:10px;text-align:center;}
+  }
+
+  @media (max-width:900px){
+    .hero-grid{grid-template-columns:1fr;}
+    .hero-photo-col{order:-1;}
+    .photo-placeholder{max-width:220px;}
+    .about-grid{grid-template-columns:1fr;}
+  }
+  @media (max-width:600px){
+    .wrap{padding:0 20px;}
+    section{padding:80px 0;}
+  }
+
+  /* ===== PORTFOLIO IMAGE STYLES & INTERACTIVE STUFF ===== */
+  .hero-photo-col {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .hero-photo-wrapper {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    border-radius: 24px;
+    padding: 4px;
+    background: linear-gradient(135deg, var(--gold), var(--teal));
+    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.4), 0 0 20px rgba(227,168,87,0.15);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.15);
+  }
+  .hero-photo-wrapper:hover {
+    transform: translateY(-8px) scale(1.03) rotate(1deg);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5), 0 0 30px rgba(227,168,87,0.3);
+  }
+  .hero-photo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 20px;
+    border: 3px solid var(--bg-elev);
+  }
+  .hero-photo-wrapper::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 26px;
+    background: linear-gradient(135deg, var(--gold), var(--teal));
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .hero-photo-wrapper:hover::after {
+    opacity: 0.6;
+    filter: blur(8px);
+  }
+
+  .about-photo-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    aspect-ratio: 3/4;
+    margin: 0 auto;
+  }
+  .about-photo-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid var(--line-strong);
+    position: relative;
+    z-index: 2;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .about-photo-wrapper::before {
+    content: '';
+    position: absolute;
+    inset: 12px -12px -12px 12px;
+    border: 1.5px solid var(--gold);
+    border-radius: 8px;
+    z-index: 1;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+  .about-photo-wrapper:hover img {
+    transform: translate(-8px, -8px);
+    box-shadow: 12px 12px 28px rgba(0,0,0,0.5);
+  }
+  .about-photo-wrapper:hover::before {
+    transform: translate(6px, 6px);
+    border-color: var(--teal);
+  }
+
+  /* Certifications Gallery */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 50px;
+  }
+  .cert-card {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    position: relative;
+  }
+  .cert-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 15px rgba(227,168,87,0.1);
+  }
+  .cert-img-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4/3;
+    overflow: hidden;
+    background: #06090e;
+    border-bottom: 1px solid var(--line);
+  }
+  .cert-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .cert-card:hover .cert-img-container img {
+    transform: scale(1.04);
+  }
+  .cert-zoom-cue {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    background: rgba(10, 13, 18, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: all 0.25s ease;
+    z-index: 3;
+  }
+  .cert-card:hover .cert-zoom-cue {
+    opacity: 1;
+    transform: scale(1);
+  }
+  .cert-zoom-cue svg {
+    width: 16px; height: 16px;
+    stroke: var(--gold);
+  }
+  .cert-info {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cert-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .cert-org {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Mentors Showcase */
+  .mentors-section {
+    margin-top: 70px;
+    border-top: 1px solid var(--line);
+    padding-top: 70px;
+  }
+  .mentors-section h3.mentors-title {
+    font-size: 20px;
+    margin-bottom: 32px;
+    font-family: var(--font-display);
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .mentors-section h3.mentors-title::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background: var(--line);
+  }
+  .mentors-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+  }
+  .mentor-card {
+    background: var(--bg-elev-2);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    cursor: pointer;
+    position: relative;
+  }
+  .mentor-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--teal);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4), 0 0 15px rgba(70,184,166,0.1);
+  }
+  .mentor-img-container {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #06090e;
+    border-bottom: 1px solid var(--line);
+  }
+  .mentor-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .mentor-card:hover .mentor-img-container img {
+    transform: scale(1.04);
+  }
+  .mentor-info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  .mentor-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .mentor-role {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  /* Lightbox */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(6, 9, 14, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 24px;
+  }
+  .lightbox.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .lightbox-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 85vh;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.7);
+    border-radius: 8px;
+    border: 1px solid var(--line-strong);
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--bg);
+  }
+  .lightbox.open .lightbox-content {
+    transform: scale(1);
+  }
+  .lightbox-img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: rgba(10, 13, 18, 0.7);
+    backdrop-filter: blur(4px);
+    border: 1px solid var(--line-strong);
+    color: var(--text);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    z-index: 10;
+  }
+  .lightbox-close:hover {
+    background: var(--gold);
+    color: #0A0D12;
+    border-color: var(--gold);
+  }
+  .lightbox-caption {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: linear-gradient(to top, rgba(10, 13, 18, 0.95) 70%, transparent);
+    padding: 24px 20px 16px;
+    color: var(--text);
+    text-align: center;
+    z-index: 5;
+  }
+  .lightbox-caption-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .lightbox-caption-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* Nav CV Button Styling */
+  .nav-cv-btn {
+    background: var(--gold-soft);
+    border: 1px solid var(--gold);
+    color: var(--gold) !important;
+    padding: 6px 14px !important;
+    border-radius: 2px;
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+    font-weight: 600 !important;
+    transition: all 0.25s ease !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .nav-cv-btn:hover {
+    background: var(--gold) !important;
+    color: #0A0D12 !important;
+    box-shadow: 0 0 12px rgba(227,168,87,0.35);
+    transform: translateY(-1px);
+  }
+
+  /* Responsive refinements */
+  @media (max-width:960px) {
+    .certs-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .mentors-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  }
+  @media (max-width:680px) {
+    .mentors-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width:550px) {
+    .certs-grid { grid-template-columns: 1fr; }
+    .mentors-grid { grid-template-columns: 1fr; }
+    .hero-photo-wrapper { width: 220px; height: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<header class="nav">
+  <div class="nav-inner">
+    <div class="nav-mark"><span class="dot"></span> ANISH CHAKRABORTY</div>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about" data-section="about">About</a>
+      <a href="#journey" data-section="journey">Journey</a>
+      <a href="#projects" data-section="projects">Projects</a>
+      <a href="#skills" data-section="skills">Skills</a>
+      <a href="#gallery" data-section="gallery">Gallery</a>
+      <a href="#contact" data-section="contact">Contact</a>
+      <a href="Anish_Chakraborty_CV.pdf" download="Anish_Chakraborty_CV.pdf" class="nav-cv-btn">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        CV
+      </a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+  </div>
+</header>
+
+<!-- ===== SIGNATURE RAIL ===== -->
+<div class="rail" aria-hidden="true">
+  <div class="rail-track">
+    <div class="rail-progress" id="railProgress"></div>
+    <div class="rail-stops" id="railStops"></div>
+  </div>
+</div>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="top">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="hero-kicker"><span class="pulse"></span>Assam, India — Open to AI/ML &amp; Full-Stack Roles</div>
+      <h1>Anish<br><span>Chakraborty</span></h1>
+      <div class="hero-role">
+        AI/ML Engineer <span class="sep">·</span> Full-Stack Developer <span class="sep">·</span> Founder <span class="sep">·</span> Data Science Enthusiast
+      </div>
+      <p class="hero-desc">
+        I build AI-driven products and data infrastructure end to end — from training models at IIT Guwahati to shipping a full property-booking platform from scratch. Two startups founded before 25, one growing dataset at a time.
+      </p>
+      <div class="hero-cta">
+        <a href="Anish_Chakraborty_CV.pdf" download="Anish_Chakraborty_CV.pdf" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download CV
+        </a>
+        <a href="#projects" class="btn btn-ghost">View Projects</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="hero-photo-col">
+      <div class="hero-photo-wrapper">
+        <img src="about.jpeg" alt="Anish Chakraborty Headshot">
+      </div>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+</section>
+
+<!-- ===== ABOUT ===== -->
+<section class="about" id="about">
+  <div class="wrap about-grid">
+    <div class="reveal">
+      <div class="about-photo-wrapper">
+        <img src="about.jpeg" alt="Anish Chakraborty Portfolio Photo">
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="eyebrow">About</div>
+      <h2 style="margin-bottom:24px;font-size:clamp(26px,3.4vw,36px);">Solving real problems in transportation, tourism, and data intelligence.</h2>
+      <div class="about-text">
+        <p><strong>AI/ML Engineer and Full-Stack Developer</strong> with hands-on experience in machine learning, data engineering, backend development, database design, and business development. Founder of multiple technology and marketing ventures with experience managing digital campaigns across Assam.</p>
+        <p>Skilled in developing scalable web platforms, designing databases, collecting and processing large-scale datasets, and building AI-driven solutions — with a particular pull toward transportation, tourism, data intelligence, and automation.</p>
+        <p>Strong professional network across educational institutions, media organizations, tourism businesses, and digital communities throughout Assam and Northeast India.</p>
+      </div>
+      <div class="stat-strip">
+        <div class="stat"><div class="num">2</div><div class="label">Startups Founded</div></div>
+        <div class="stat"><div class="num">80+</div><div class="label">Media Platforms Network</div></div>
+        <div class="stat"><div class="num">4</div><div class="label">Languages Spoken</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== JOURNEY ===== -->
+<section id="journey">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Journey</div>
+      <h2>Route so far</h2>
+      <p>Education, research, and ventures — laid out in the order they happened.</p>
+    </div>
+    <div class="journey-line">
+
+      <div class="stop reveal">
+        <div class="stop-year">2026 — Present</div>
+        <h3>Founder &amp; CEO</h3>
+        <div class="stop-org">AponGhar.in — Property Booking Platform</div>
+        <p class="stop-desc">Founded a property booking platform connecting travelers with hotels, homestays, hostels, villas, and resorts across Northeast India.</p>
+        <ul>
+          <li>Owned end-to-end product architecture, backend, and frontend development</li>
+          <li>Designed the database, authentication system, and property management system</li>
+          <li>Built the booking workflow and owner dashboard</li>
+          <li>Managed deployment and cloud infrastructure</li>
+        </ul>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2026</div>
+        <h3>AI/ML Project Assistant</h3>
+        <div class="stop-org">IIT Guwahati — with Prof. Gourav Trivedi (Professor, EEE Department)</div>
+        <p class="stop-desc">Worked on an AI research project for approximately two months, supporting data and model workflows.</p>
+        <ul>
+          <li>Data preparation and dataset processing</li>
+          <li>AI model support and research assistance</li>
+          <li>Backend development support and data organization</li>
+        </ul>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2025 — 2026</div>
+        <h3>9-Month On-Campus Training — AI &amp; Machine Learning</h3>
+        <div class="stop-org">Indian Institute of Technology (IIT) Guwahati</div>
+        <p class="stop-desc">Machine Learning, Deep Learning, Computer Vision, Data Engineering, Python Development, AI Project Development.</p>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2022 — Present</div>
+        <h3>Freelance Social Media Marketing Specialist</h3>
+        <div class="stop-org">Self-Employed</div>
+        <p class="stop-desc">Working with hospitals, schools, educational institutes, tourism, hospitality, and small businesses.</p>
+        <ul>
+          <li>Developed social media strategy, brand awareness, and audience growth plans</li>
+          <li>Led campaign execution, content planning, and digital promotion</li>
+        </ul>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2022 — Present</div>
+        <h3>Founder</h3>
+        <div class="stop-org">MediaHouseAssam</div>
+        <p class="stop-desc">Established a digital marketing and media promotion agency serving organizations across Assam.</p>
+        <ul>
+          <li>Built a network of 80+ news media platforms across Assam</li>
+          <li>Developed partnerships with multiple influencers</li>
+          <li>Executed digital campaigns for hospitals, educational institutions, local businesses, and startups</li>
+        </ul>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2022 — 2025</div>
+        <h3>B.Sc. in Mathematics</h3>
+        <div class="stop-org">Jawaharlal Nehru College, Boko</div>
+      </div>
+
+      <div class="stop reveal">
+        <div class="stop-year">2019 — 2021</div>
+        <h3>Higher Secondary (Science)</h3>
+        <div class="stop-org">Jawaharlal Nehru College, Boko</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== PROJECTS ===== -->
+<section id="projects" style="background:var(--bg-elev);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Major Projects</div>
+      <h2>Built end to end</h2>
+      <p>Products and datasets designed, structured, and shipped independently.</p>
+    </div>
+    <div class="proj-grid reveal">
+
+      <div class="proj-card">
+        <div class="proj-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg></div>
+        <div class="proj-tag">Product · Live</div>
+        <h3>AponGhar.in</h3>
+        <p>Property booking platform for Northeast India — hotels, homestays, and villas with an owner dashboard, booking management, authentication, listings, and payment integration.</p>
+        <div class="proj-stat-badge">Production Live</div>
+        <div class="proj-meta">Node.js · Express.js · PostgreSQL · MySQL</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 22c5.523 0 10-2.239 10-5V7c0-2.761-4.477-5-10-5S2 4.239 2 7v10c0 2.761 4.477 5 10 5z"/><path d="M2 7c0 2.761 4.477 5 10 5s10-2.239 10-5"/><path d="M2 12c0 2.761 4.477 5 10 5s10-2.239 10-5"/></svg></div>
+        <div class="proj-tag">Database · Access &amp; Analytics</div>
+        <h3>Indian Railway Database</h3>
+        <p>Full database access covering the entire Indian Railway network. Features complete timetables, routes, train categories, platform layouts, and schedules structured for AI routing optimizations.</p>
+        <div class="proj-stat-badge">13,000+ Trains Mapped</div>
+        <div class="proj-meta">Data Collection · PostgreSQL · GIS Parsing</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><path d="M12 21c4-4.5 7-8 7-11.5A7 7 0 0 0 5 9.5C5 13 8 16.5 12 21Z"/><circle cx="12" cy="9.5" r="2.2"/></svg></div>
+        <div class="proj-tag">Dataset · Hospitality</div>
+        <h3>Hospitality Intelligence</h3>
+        <p>A comprehensive nationwide property database focusing on hotels, homestays, hostels, resorts, and villas across Northeast India. Structured for geotagging and pricing recommendations.</p>
+        <div class="proj-stat-badge">10,000+ Properties Mapped</div>
+        <div class="proj-meta">Location Mapping · Tourism Analytics</div>
+      </div>
+
+      <div class="proj-card">
+        <div class="proj-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.5"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+        <div class="proj-tag">Scraping · Data Harvesting</div>
+        <h3>Scraping &amp; Pipelines</h3>
+        <p>I love to harvest and structure raw data. Built proxy-rotating, anti-bot bypassing web scrapers and cron-scheduled automated databases to aggregate regional tourism and transport data.</p>
+        <div class="proj-stat-badge">Custom Scraping Engines</div>
+        <div class="proj-meta">Python · Selenium · Puppeteer · ETL</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ===== SKILLS ===== -->
+<section id="skills">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Skills</div>
+      <h2>Toolset</h2>
+    </div>
+    <div class="skills-wrap reveal">
+      <div class="skill-group">
+        <h3>Programming</h3>
+        <div class="skill-tags"><span>Python</span><span>JavaScript</span><span>SQL</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>AI &amp; Machine Learning</h3>
+        <div class="skill-tags"><span>Machine Learning</span><span>Deep Learning</span><span>Computer Vision</span><span>Data Analysis</span><span>Data Processing</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>Web Development</h3>
+        <div class="skill-tags"><span>HTML5</span><span>CSS3</span><span>Node.js</span><span>Express.js</span><span>REST APIs</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>Databases</h3>
+        <div class="skill-tags"><span>PostgreSQL</span><span>MySQL</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>Cloud &amp; Deployment</h3>
+        <div class="skill-tags"><span>Git</span><span>GitHub</span><span>Linux</span><span>AWS</span><span>Render</span><span>Railway</span></div>
+      </div>
+      <div class="skill-group">
+        <h3>Data Engineering</h3>
+        <div class="skill-tags"><span>Dataset Collection</span><span>Data Cleaning</span><span>Data Structuring</span><span>Database Design</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== GALLERY / CERTS ===== -->
+<section id="gallery" style="background:var(--bg-elev);border-top:1px solid var(--line);border-bottom:1px solid var(--line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Certifications &amp; Mentors</div>
+      <h2>Proof of Work</h2>
+      <p>Official certifications and credentials representing academic milestones and research projects.</p>
+    </div>
+
+    <!-- Certifications Grid -->
+    <div class="certs-grid reveal">
+      <!-- Cert 1 -->
+      <div class="cert-card" onclick="openLightbox('iit-guwahati-aiml.jpg', 'AI & Machine Learning Training', 'IIT Guwahati')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="iit-guwahati-aiml.jpg" alt="IIT Guwahati AI/ML Training">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">IIT Guwahati</span>
+          <span class="cert-title">9-Month On-Campus Training (AI/ML)</span>
+        </div>
+      </div>
+
+      <!-- Cert 2 -->
+      <div class="cert-card" onclick="openLightbox('datascience.png', 'Data Science Certificate', '1-Year Program')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="datascience.png" alt="Data Science Program Certificate">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">Data Science Certification</span>
+          <span class="cert-title">1-Year Professional Program</span>
+        </div>
+      </div>
+
+      <!-- Cert 3 -->
+      <div class="cert-card" onclick="openLightbox('datafondation.png', 'Data Science Foundation Program', 'Certification')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="datafondation.png" alt="Data Science Foundation Certificate">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">Data Foundation Program</span>
+          <span class="cert-title">Data Analysis &amp; Python Foundations</span>
+        </div>
+      </div>
+
+      <!-- Cert 4 -->
+      <div class="cert-card" onclick="openLightbox('bscdegree.png', 'Bachelor of Science (B.Sc.) in Mathematics', 'Jawaharlal Nehru College, Boko')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="bscdegree.png" alt="B.Sc. Degree Certificate">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">B.Sc. in Mathematics</span>
+          <span class="cert-title">Jawaharlal Nehru College, Boko</span>
+        </div>
+      </div>
+
+      <!-- Cert 5 -->
+      <div class="cert-card" onclick="openLightbox('12th.png', 'Higher Secondary (Science)', 'Jawaharlal Nehru College, Boko')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="12th.png" alt="HS Certificate">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">Higher Secondary (Science)</span>
+          <span class="cert-title">HS Certificate — Science Division</span>
+        </div>
+      </div>
+
+      <!-- Cert 6 -->
+      <div class="cert-card" onclick="openLightbox('certification.jpeg', 'Professional Certification', 'AI & Data Intelligence')">
+        <div class="cert-zoom-cue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+        </div>
+        <div class="cert-img-container">
+          <img src="certification.jpeg" alt="Certification">
+        </div>
+        <div class="cert-info">
+          <span class="cert-org">AI/ML Certification</span>
+          <span class="cert-title">Professional Certification Milestone</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mentors Section -->
+    <div class="mentors-section reveal">
+      <h3 class="mentors-title">Guided by Renowned Academic Mentors</h3>
+      <div class="mentors-grid">
+        <!-- Mentor 1 -->
+        <div class="mentor-card" onclick="openLightbox('trivedi sir.jpeg', 'Prof. Gourav Trivedi', 'Professor, EEE Department, IIT Guwahati')">
+          <div class="mentor-img-container">
+            <img src="trivedi sir.jpeg" alt="Prof. Gourav Trivedi">
+          </div>
+          <div class="mentor-info">
+            <span class="mentor-name">Prof. Gourav Trivedi</span>
+            <span class="mentor-role">Professor, EEE Dept, IIT Guwahati</span>
+          </div>
+        </div>
+
+        <!-- Mentor 2 -->
+        <div class="mentor-card" onclick="openLightbox('ranjit sir.jpeg', 'Ranjit Sir', 'Academic Mentor')">
+          <div class="mentor-img-container">
+            <img src="ranjit sir.jpeg" alt="Ranjit Sir">
+          </div>
+          <div class="mentor-info">
+            <span class="mentor-name">Ranjit Sir</span>
+            <span class="mentor-role">Academic Mentor</span>
+          </div>
+        </div>
+
+        <!-- Mentor 3 -->
+        <div class="mentor-card" onclick="openLightbox('guhasir.jpeg', 'Prof. Guha', 'Professor, EEE Department, IIT Guwahati')">
+          <div class="mentor-img-container">
+            <img src="guhasir.jpeg" alt="Guha Sir">
+          </div>
+          <div class="mentor-info">
+            <span class="mentor-name">Prof. Guha</span>
+            <span class="mentor-role">Professor, EEE Dept, IIT Guwahati</span>
+          </div>
+        </div>
+
+        <!-- Mentor 4 -->
+        <div class="mentor-card" onclick="openLightbox('guptasir.jpeg', 'Gupta Sir', 'Academic Mentor')">
+          <div class="mentor-img-container">
+            <img src="guptasir.jpeg" alt="Gupta Sir">
+          </div>
+          <div class="mentor-info">
+            <span class="mentor-name">Gupta Sir</span>
+            <span class="mentor-role">Academic Mentor</span>
+          </div>
+        </div>
+
+        <!-- Mentor 5 -->
+        <div class="mentor-card" onclick="openLightbox('raansir.jpeg', 'Raan Sir', 'Academic Mentor')">
+          <div class="mentor-img-container">
+            <img src="raansir.jpeg" alt="Raan Sir">
+          </div>
+          <div class="mentor-info">
+            <span class="mentor-name">Raan Sir</span>
+            <span class="mentor-role">Academic Mentor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== ACHIEVEMENTS ===== -->
+<section id="achievements">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow">Achievements</div>
+      <h2>Milestones</h2>
+    </div>
+    <div class="ach-list reveal">
+      <div class="ach-item"><span class="ach-num">01</span><p>Founded two startups before the age of 25</p></div>
+      <div class="ach-item"><span class="ach-num">02</span><p>Built a large-scale structured dataset covering Indian Railways</p></div>
+      <div class="ach-item"><span class="ach-num">03</span><p>Developed an extensive hospitality database for India</p></div>
+      <div class="ach-item"><span class="ach-num">04</span><p>Successfully executed marketing campaigns for numerous organizations across Assam</p></div>
+      <div class="ach-item"><span class="ach-num">05</span><p>Worked on an AI research project at IIT Guwahati</p></div>
+      <div class="ach-item"><span class="ach-num">06</span><p>Developed complete full-stack web applications independently</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== LANGUAGES & INTERESTS ===== -->
+<section style="padding-top:0;">
+  <div class="wrap misc-grid reveal">
+    <div>
+      <h3>Languages</h3>
+      <div class="pill-row"><span>English</span><span>Hindi</span><span>Bengali</span><span>Assamese</span></div>
+    </div>
+    <div>
+      <h3>Interests</h3>
+      <div class="pill-row"><span>AI</span><span>Data Engineering</span><span>Railway Analytics</span><span>Tourism Tech</span><span>Startups</span><span>Cloud Computing</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== CONTACT ===== -->
+<section class="contact" id="contact">
+  <div class="wrap contact-grid">
+    <div class="reveal">
+      <div class="eyebrow">Contact</div>
+      <h2>Let's build<br>something together.</h2>
+      <p class="contact-desc">Open to AI/ML engineering roles, full-stack opportunities, and collaborations across data, travel, and tourism tech.</p>
+      <div style="margin-top:24px;">
+        <a href="Anish_Chakraborty_CV.pdf" download="Anish_Chakraborty_CV.pdf" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download PDF Resume
+        </a>
+      </div>
+    </div>
+    <div class="contact-links reveal">
+      <div class="contact-link"><span class="label">Location</span><span class="val">Assam, India</span></div>
+      <div class="contact-link"><span class="label">Email</span><a href="mailto:anishchakraborty699@gmail.com" class="val">anishchakraborty699@gmail.com</a></div>
+      <div class="contact-link"><span class="label">Phone</span><a href="tel:+919957499346" class="val">+91 9957499346</a></div>
+      <div class="contact-link"><span class="label">Website</span><a href="https://aponghar.in" target="_blank" class="val" style="color:var(--gold);text-decoration:underline;">aponghar.in</a></div>
+      <div class="contact-link"><span class="label">LinkedIn</span><a href="https://www.linkedin.com/in/anish-chakraborty-32717820a" target="_blank" class="val">anish-chakraborty-32717820a</a></div>
+      <div class="contact-link"><span class="label">GitHub</span><a href="https://github.com/Anishchakraborty7" target="_blank" class="val">Anishchakraborty7</a></div>
+    </div>
+  </div>
+</section>
+
+<footer class="wrap">
+  <span>© 2026 Anish Chakraborty</span>
+  <span>Assam, India — Built with intent</span>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+  navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+
+  // Sections tracked by rail + nav
+  const sectionIds = ['top','about','journey','projects','skills','gallery','achievements','contact'];
+  const railLabels = {top:'Start',about:'About',journey:'Journey',projects:'Projects',skills:'Skills',gallery:'Gallery',achievements:'Wins',contact:'Contact'};
+  const sections = sectionIds.map(id => document.getElementById(id)).filter(Boolean);
+
+  // Build rail stops
+  const railStopsEl = document.getElementById('railStops');
+  const stopCount = sections.length;
+  sections.forEach((sec, i) => {
+    const stop = document.createElement('div');
+    stop.className = 'rail-stop';
+    stop.style.top = (i / (stopCount - 1) * 100) + '%';
+    stop.dataset.id = sec.id;
+    const label = document.createElement('span');
+    label.className = 'rail-label';
+    label.textContent = railLabels[sec.id] || sec.id;
+    stop.appendChild(label);
+    stop.addEventListener('click', () => sec.scrollIntoView({behavior:'smooth'}));
+    railStopsEl.appendChild(stop);
+  });
+  const railStopEls = railStopsEl.querySelectorAll('.rail-stop');
+  const railProgress = document.getElementById('railProgress');
+
+  const navA = document.querySelectorAll('.nav-links a');
+
+  function onScroll(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = Math.min(100, Math.max(0, (scrollTop / docHeight) * 100));
+    railProgress.style.height = pct + '%';
+
+    let currentId = sections[0].id;
+    const scanPoint = scrollTop + window.innerHeight * 0.35;
+    sections.forEach(sec => { if (sec.offsetTop <= scanPoint) currentId = sec.id; });
+
+    railStopEls.forEach(s => s.classList.toggle('active', s.dataset.id === currentId));
+    navA.forEach(a => a.classList.toggle('active', a.dataset.section === currentId));
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // Reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Lightbox implementation
+  const lightbox = document.createElement('div');
+  lightbox.className = 'lightbox';
+  lightbox.innerHTML = `
+    <div class="lightbox-content">
+      <button class="lightbox-close" aria-label="Close lightbox">✕</button>
+      <img class="lightbox-img" src="" alt="Certificate View">
+      <div class="lightbox-caption">
+        <div class="lightbox-caption-title"></div>
+        <div class="lightbox-caption-sub"></div>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(lightbox);
+
+  const lightboxImg = lightbox.querySelector('.lightbox-img');
+  const lightboxTitle = lightbox.querySelector('.lightbox-caption-title');
+  const lightboxSub = lightbox.querySelector('.lightbox-caption-sub');
+  const lightboxClose = lightbox.querySelector('.lightbox-close');
+
+  window.openLightbox = function(src, title, sub) {
+    lightboxImg.src = src;
+    lightboxTitle.textContent = title;
+    lightboxSub.textContent = sub;
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  function closeLightbox() {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  lightboxClose.addEventListener('click', closeLightbox);
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.body.addEventListener('click', (e) => {
+    // If user clicks on an active lightbox container itself
+    if (e.target.classList.contains('lightbox')) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox();
+  });
+</script>
+
+</body>
+</html>
+
