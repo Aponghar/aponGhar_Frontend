@@ -1,0 +1,14 @@
+# Robots.txt for Aponghar (https://aponghar.in/)
+User-agent: *
+Allow: /
+
+# Disallow private user dashboards, owner portals, admin panels, and auth pages
+Disallow: /admin/
+Disallow: /owner/
+Disallow: /user/
+Disallow: /auth/
+Disallow: /checkin/
+Disallow: /rooms/rooms.html
+
+# XML Sitemap
+Sitemap: https://aponghar.in/sitemap.xml

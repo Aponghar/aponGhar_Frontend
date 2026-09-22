@@ -591,12 +591,121 @@ const loadPropertyAndRooms = async () => {
   }
 };
 
+const updateDynamicSEOAndSchema = (property, gallery = []) => {
+  if (!property || !property.property_name) return;
+
+  const propName = property.property_name;
+  const propCity = property.city || property.location || "Assam";
+  const propType = property.property_type ? String(property.property_type).toUpperCase() : "HOTEL";
+  const rawDesc = property.description ? String(property.description).trim() : "";
+  const seoDesc = rawDesc.length >= 20 
+    ? `${propName} in ${propCity}. ${rawDesc.slice(0, 140)}${rawDesc.length > 140 ? '...' : ''}` 
+    : `Book your stay at ${propName} in ${propCity}. Verified accommodation with top amenities, flexible timings, and best rates on Aponghar.`;
+  const canonicalUrl = `https://aponghar.in/rooms/rooms-by-property.html?propertyId=${property.id}`;
+  
+  // 1. Dynamic Title & Meta Description
+  document.title = `${propName} – Aponghar`;
+  const pageTitleEl = document.getElementById("pageTitle");
+  if (pageTitleEl) pageTitleEl.textContent = `${propName} – Aponghar`;
+
+  const metaDescEl = document.getElementById("metaDescription");
+  if (metaDescEl) metaDescEl.setAttribute("content", seoDesc);
+
+  // 2. Canonical URL
+  const canonicalEl = document.getElementById("canonicalLink");
+  if (canonicalEl) canonicalEl.setAttribute("href", canonicalUrl);
+
+  // 3. Open Graph Tags
+  const primaryImgUrl = property.property_image
+    ? getOptimizedImageUrl(property.property_image, 1200, 630)
+    : (gallery[0] ? getOptimizedImageUrl(gallery[0].image_url || gallery[0], 1200, 630) : "https://aponghar.in/assets/logo.jpg");
+
+  const ogTitleEl = document.getElementById("ogTitle");
+  if (ogTitleEl) ogTitleEl.setAttribute("content", `${propName} – Aponghar`);
+
+  const ogDescEl = document.getElementById("ogDescription");
+  if (ogDescEl) ogDescEl.setAttribute("content", seoDesc);
+
+  const ogUrlEl = document.getElementById("ogUrl");
+  if (ogUrlEl) ogUrlEl.setAttribute("content", canonicalUrl);
+
+  const ogImgEl = document.getElementById("ogImage");
+  if (ogImgEl) ogImgEl.setAttribute("content", primaryImgUrl);
+
+  // 4. Twitter Card Tags
+  const twTitleEl = document.getElementById("twitterTitle");
+  if (twTitleEl) twTitleEl.setAttribute("content", `${propName} – Aponghar`);
+
+  const twDescEl = document.getElementById("twitterDescription");
+  if (twDescEl) twDescEl.setAttribute("content", seoDesc);
+
+  const twImgEl = document.getElementById("twitterImage");
+  if (twImgEl) twImgEl.setAttribute("content", primaryImgUrl);
+
+  // 5. Schema.org Structured Data
+  let schemaType = "LodgingBusiness";
+  if (propType.includes("HOTEL")) schemaType = "Hotel";
+  else if (propType.includes("HOMESTAY") || propType.includes("BED")) schemaType = "BedAndBreakfast";
+  else if (propType.includes("HOSTEL")) schemaType = "Hostel";
+  else if (propType.includes("RESORT")) schemaType = "Resort";
+
+  const schemaObj = {
+    "@context": "https://schema.org",
+    "@type": schemaType,
+    "@id": `${canonicalUrl}#lodging`,
+    "name": propName,
+    "description": rawDesc || seoDesc,
+    "url": canonicalUrl,
+    "image": primaryImgUrl
+  };
+
+  if (property.address || property.city || property.state || property.country) {
+    schemaObj.address = {
+      "@type": "PostalAddress",
+      "streetAddress": property.address || undefined,
+      "addressLocality": property.city || property.location || undefined,
+      "addressRegion": property.state || undefined,
+      "postalCode": property.zip_code || undefined,
+      "addressCountry": property.country || "IN"
+    };
+  }
+
+  const lat = parseFloat(property.latitude);
+  const lng = parseFloat(property.longitude);
+  if (!isNaN(lat) && !isNaN(lng) && lat !== 0 && lng !== 0) {
+    schemaObj.geo = {
+      "@type": "GeoCoordinates",
+      "latitude": lat,
+      "longitude": lng
+    };
+  }
+
+  const avgRating = Number(property.average_rating || 0);
+  const totalReviews = Number(property.total_reviews || 0);
+  if (avgRating > 0 && totalReviews > 0) {
+    schemaObj.aggregateRating = {
+      "@type": "AggregateRating",
+      "ratingValue": avgRating.toFixed(1),
+      "reviewCount": totalReviews,
+      "bestRating": "5",
+      "worstRating": "1"
+    };
+  }
+
+  const schemaScriptEl = document.getElementById("propertySchemaLd");
+  if (schemaScriptEl) {
+    schemaScriptEl.textContent = JSON.stringify(schemaObj, null, 2);
+  }
+};
+
 const displayPropertyDetails = (data) => {
   const property = data.property || {};
   currentProperty = property;
   const gallery = data.gallery || [];
   const amenities = data.amenities || [];
   const rules = data.rules || [];
+
+  updateDynamicSEOAndSchema(property, gallery);
 
   document.getElementById("propertyName").textContent = property.property_name || "";
   document.getElementById("propertyNameBread").textContent = property.property_name || "Property";
