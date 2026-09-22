@@ -137,8 +137,50 @@ passwordForm.addEventListener("submit", async (e) => {
 const params = new URLSearchParams(window.location.search);
 if (params.get("tab") === "security") {
   setTimeout(() => {
-    currentPasswordInput.focus();
+    currentPasswordInput?.focus();
   }, 100);
+}
+
+// Delete Account
+const deleteAccountBtn = document.getElementById("deleteAccountBtn");
+const deleteMessage = document.getElementById("deleteMessage");
+
+if (deleteAccountBtn) {
+  deleteAccountBtn.addEventListener("click", async () => {
+    const confirmed = confirm(
+      "Are you sure you want to permanently delete your account?\n\nThis will remove your personal data and cannot be undone."
+    );
+    if (!confirmed) return;
+
+    deleteAccountBtn.disabled = true;
+    deleteAccountBtn.textContent = "Deleting Account...";
+    deleteMessage.classList.add("hidden");
+
+    try {
+      const res = await fetch(`${BASE_URL}/profile`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        alert("Your account has been deleted successfully.");
+        localStorage.clear();
+        window.location.href = "../home/home.html";
+      } else {
+        showMsg(deleteMessage, data.message || "Failed to delete account.", "error");
+        deleteAccountBtn.disabled = false;
+        deleteAccountBtn.textContent = "Delete My Account";
+      }
+    } catch (err) {
+      console.error("Account deletion failed:", err);
+      showMsg(deleteMessage, "Server error occurred while deleting account.", "error");
+      deleteAccountBtn.disabled = false;
+      deleteAccountBtn.textContent = "Delete My Account";
+    }
+  });
 }
 
 loadUserProfile();
