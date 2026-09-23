@@ -72,7 +72,15 @@ let eligiblePropertyReviewBooking = null;
 let selectedReviewRating = 5;
 
 if (token && user) {
-  profileBtn.innerHTML = `${user.full_name} v`;
+  const displayName = user.full_name || user.name || user.email || "Account";
+  const initial = displayName.charAt(0).toUpperCase();
+  profileBtn.innerHTML = `
+    <span class="profile-avatar">${initial}</span>
+    <span class="profile-name-text">${displayName}</span>
+    <svg class="profile-chevron" viewBox="0 0 20 20" width="14" height="14" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>
+  `;
 
   if (user.role === "OWNER") {
     joinBtn.innerHTML = "Dashboard";
@@ -86,7 +94,7 @@ if (token && user) {
     joinBtn.innerHTML = "Join With Us";
   }
 } else {
-  profileBtn.innerHTML = "Login / Sign Up";
+  profileBtn.innerHTML = `<span class="profile-name-text">Sign In</span>`;
   joinBtn.innerHTML = "Become a Partner";
 }
 
@@ -551,6 +559,7 @@ const loadPropertyAndRooms = async () => {
     if (roomsData.success && Array.isArray(roomsData.data) && roomsData.data.length > 0) {
       allRooms = await attachRoomGalleries(roomsData.data);
       applyRoomFilters();
+      updateMobileStartingPrice(allRooms);
 
       // Check for pending booking details
       const pendingRoomDbId = sessionStorage.getItem("pendingBookingRoomDbId");
@@ -2320,7 +2329,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   loadPropertyAndRooms();
+  initQuickNavPills();
 });
+
+const updateMobileStartingPrice = (rooms) => {
+  const mobileStartingPrice = document.getElementById("mobileStartingPrice");
+  if (!mobileStartingPrice || !Array.isArray(rooms) || rooms.length === 0) return;
+
+  let minPrice = Infinity;
+  rooms.forEach((room) => {
+    const nightly = safeNumber(room.nightly_price || room.price);
+    if (nightly > 0 && nightly < minPrice) minPrice = nightly;
+    const hourly = safeNumber(room.hourly_rate);
+    if (hourly > 0 && hourly < minPrice) minPrice = hourly;
+  });
+
+  if (minPrice < Infinity) {
+    mobileStartingPrice.textContent = `₹${minPrice.toLocaleString('en-IN')}`;
+  }
+};
+
+const initQuickNavPills = () => {
+  const pills = document.querySelectorAll(".quick-nav-pill");
+  pills.forEach((pill) => {
+    pill.addEventListener("click", (e) => {
+      const targetId = pill.getAttribute("href");
+      if (targetId && targetId.startsWith("#")) {
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          const yOffset = -70; // offset for sticky navbar
+          const y = targetEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+          pills.forEach((p) => p.classList.remove("active"));
+          pill.classList.add("active");
+        }
+      }
+    });
+  });
+};
 
 // Image Lightbox Controls
 const imageLightboxModal = document.getElementById("imageLightboxModal");

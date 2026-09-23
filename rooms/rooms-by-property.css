@@ -55,20 +55,39 @@ nav {
 .logo-link {
   display: flex;
   align-items: center;
+  gap: 10px;
   text-decoration: none;
 }
 .nav-logo {
-  height: 48px;
-  width: auto;
+  height: 42px;
+  width: 42px;
+  object-fit: contain;
   border-radius: 8px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease;
 }
 .nav-logo:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(212, 175, 55, 0.2);
-  border-color: rgba(212, 175, 55, 0.35);
+  transform: scale(1.06);
+}
+
+.brand-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1;
+}
+
+.brand-apon {
+  color: var(--primary);
+}
+
+.brand-ghar {
+  color: var(--dark);
 }
 
 /* PROFILE */
@@ -80,19 +99,48 @@ nav {
   background: var(--primary);
   color: white;
   border: none;
-  padding: 11px 22px;
+  padding: 10px 18px;
   border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
-  box-shadow: 0 8px 16px var(--primary-glow);
+  box-shadow: 0 6px 16px var(--primary-glow);
   transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 240px;
+}
+
+#profileBtn .profile-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: #fff;
+  flex-shrink: 0;
+}
+
+#profileBtn .profile-name-text {
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#profileBtn .profile-chevron {
+  flex-shrink: 0;
 }
 
 #profileBtn:hover {
   background: var(--primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 12px 20px hsla(41, 52%, 52%, 0.25);
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px hsla(41, 52%, 52%, 0.25);
 }
 
 /* DROPDOWN */
@@ -1957,15 +2005,71 @@ footer {
   box-shadow: 0 4px 12px var(--primary-glow);
 }
 
+/* QUICK SECTION NAV STRIP */
+.property-quick-nav {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 0 16px;
+  margin-top: 14px;
+  margin-bottom: 24px;
+  border-bottom: 1.5px solid var(--border-color);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.property-quick-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.quick-nav-pill {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 20px;
+  background: white;
+  border: 1.5px solid var(--border-color);
+  color: var(--dark-muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.quick-nav-pill:hover,
+.quick-nav-pill.active {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.rooms-section-header {
+  margin-bottom: 18px;
+}
+
+.rooms-section-subtitle {
+  font-size: 14px;
+  color: var(--dark-muted);
+  margin-top: 4px;
+}
+
+.mobile-booking-bar {
+  display: none;
+}
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
-  nav,
+  nav {
+    padding: 14px 28px;
+  }
+
   main {
-    padding: 20px 40px;
+    padding: 20px 28px;
   }
 
   .breadcrumb {
-    padding: 15px 40px;
+    padding: 15px 28px;
   }
 
   .property-info-split {
@@ -1987,10 +2091,36 @@ footer {
 
   .rooms-layout {
     grid-template-columns: 1fr;
+    gap: 18px;
   }
 
   .filters-sidebar {
     position: static;
+    padding: 16px 20px;
+  }
+
+  .filters-sidebar h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .filter-group {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+  }
+
+  .checkbox-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .checkbox-item {
+    background: hsl(220, 20%, 96%);
+    border: 1px solid var(--border-color);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
   }
 
   .room-card {
@@ -2004,36 +2134,138 @@ footer {
 
 @media (max-width: 768px) {
   nav {
-    flex-direction: column;
-    gap: 15px;
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .nav-logo {
+    height: 36px;
+    width: 36px;
+  }
+
+  .brand-title {
+    font-size: 19px;
+  }
+
+  #profileBtn {
+    padding: 8px 12px;
+    font-size: 13px;
+    max-width: 150px;
+    gap: 6px;
+  }
+
+  #profileBtn .profile-avatar {
+    width: 20px;
+    height: 20px;
+    font-size: 10px;
+  }
+
+  #profileBtn .profile-name-text {
+    max-width: 80px;
+  }
+
+  .dropdown {
+    right: 0;
+    top: 48px;
+    width: 200px;
   }
 
   main {
-    padding: 20px;
+    padding: 16px 16px 85px;
   }
 
   .breadcrumb {
-    padding: 15px 20px;
+    padding: 12px 16px;
+    font-size: 12.5px;
   }
 
   .property-title-section h1 {
-    font-size: 28px;
+    font-size: 24px;
+    line-height: 1.25;
+  }
+
+  .property-meta {
+    font-size: 13px;
+    flex-wrap: wrap;
+    gap: 6px;
   }
 
   .property-gallery-grid {
-    height: 220px;
+    height: 240px;
   }
 
   .rooms-section h2 {
-    font-size: 22px;
+    font-size: 20px;
+  }
+
+  .rooms-section-subtitle {
+    font-size: 13px;
   }
 
   .room-card {
     padding: 16px;
+    border-radius: var(--radius-md);
   }
 
   .room-gallery {
-    height: 280px;
+    height: 220px;
+  }
+
+  /* Sticky Mobile Booking Bar */
+  .mobile-booking-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-color);
+    padding: 12px 18px;
+    z-index: 999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  .mobile-booking-price-col {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-booking-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--dark-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .mobile-booking-price {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--dark);
+    line-height: 1.2;
+  }
+
+  .mobile-booking-btn {
+    background: var(--primary);
+    color: #ffffff;
+    padding: 10px 18px;
+    border-radius: var(--radius-md);
+    font-size: 13.5px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 4px 12px var(--primary-glow);
+    transition: var(--transition);
+  }
+
+  .mobile-booking-btn:hover {
+    background: var(--primary-hover);
   }
 
   .section-heading-row {

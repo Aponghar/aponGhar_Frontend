@@ -46,7 +46,12 @@
 
 <nav>
   <a href="../home/home.html" class="logo-link">
-    <img src="../assets/logo-small.png" alt="AponGhar Logo" class="nav-logo">
+    <img src="../assets/brand-icon.png" alt="AponGhar Logo" class="nav-logo">
+    <div class="brand-text-container">
+      <span class="brand-title">
+        <span class="brand-apon">Apon</span><span class="brand-ghar">Ghar</span>
+      </span>
+    </div>
   </a>
   <div class="profile-container">
     <button id="profileBtn">Profile</button>
@@ -58,7 +63,6 @@
       <a href="#">Settings</a>
       <button id="logoutBtn">Logout</button>
     </div>
-  </div>
   </div>
 </nav>
 
@@ -84,8 +88,52 @@
       <!-- Dynamic grid filled by JS -->
     </div>
 
+    <!-- Quick Navigation Strip (Jump to sections on mobile & desktop) -->
+    <div class="property-quick-nav">
+      <a href="#roomsSection" class="quick-nav-pill active">Available Rooms</a>
+      <a href="#aboutStaySection" class="quick-nav-pill">About</a>
+      <a href="#propertyAmenitiesSection" class="quick-nav-pill">Amenities</a>
+      <a href="#propertyMapSection" class="quick-nav-pill">Location</a>
+      <a href="#policiesRulesSection" class="quick-nav-pill">Rules &amp; Timings</a>
+      <a href="#propertyReviewsSection" class="quick-nav-pill">Reviews</a>
+    </div>
+
+    <!-- Available Room Types Section (Brought right to the top after gallery!) -->
+    <section class="rooms-section" id="roomsSection">
+      <div class="rooms-section-header">
+        <div>
+          <h2>Available Room Types</h2>
+          <p class="rooms-section-subtitle">Select your room to book nightly or hourly</p>
+        </div>
+      </div>
+
+      <div class="rooms-layout">
+        <aside class="filters-sidebar">
+          <h3>Filters</h3>
+
+          <div class="filter-group">
+            <h4>Amenities</h4>
+            <div id="amenityFilters" class="checkbox-list">
+              <!-- Amenity filters will be loaded here -->
+            </div>
+          </div>
+
+          <button type="button" id="resetRoomFiltersBtn" class="reset-filters-btn">
+            Reset Filters
+          </button>
+        </aside>
+
+        <div class="rooms-content">
+          <p id="roomsSummary" class="rooms-summary"></p>
+          <div class="rooms-grid" id="roomsGrid">
+            <!-- Rooms will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Full-width About Stay Section -->
-    <div class="info-card description-card full-width-description">
+    <div class="info-card description-card full-width-description" id="aboutStaySection">
       <h2>About this stay</h2>
       <p id="description" class="description"></p>
     </div>
@@ -115,7 +163,7 @@
 
       <div class="info-right">
         <!-- Floating details card -->
-        <div class="sticky-info-card">
+        <div class="sticky-info-card" id="policiesRulesSection">
           <div class="trust-badge-container" id="trustBadgeSection">
             <span class="trust-icon">
               <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -189,36 +237,7 @@
     </div>
   </section>
 
-  <section class="rooms-section">
-    <h2>Available Room Types</h2>
-
-    <div class="rooms-layout">
-      <aside class="filters-sidebar">
-
-        <h3>Filters</h3>
-
-        <div class="filter-group">
-          <h4>Amenities</h4>
-          <div id="amenityFilters" class="checkbox-list">
-            <!-- Amenity filters will be loaded here -->
-          </div>
-        </div>
-
-        <button type="button" id="resetRoomFiltersBtn" class="reset-filters-btn">
-          Reset Filters
-        </button>
-      </aside>
-
-      <div class="rooms-content">
-        <p id="roomsSummary" class="rooms-summary"></p>
-        <div class="rooms-grid" id="roomsGrid">
-          <!-- Rooms will be loaded here -->
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="property-reviews-section">
+  <section class="property-reviews-section" id="propertyReviewsSection">
     <div class="section-heading-row">
       <div>
         <h2>Guest Reviews</h2>
@@ -516,6 +535,15 @@
   <div class="lightbox-content-wrapper">
     <img class="lightbox-content" id="lightboxImage" onclick="event.stopPropagation()">
   </div>
+</div>
+
+<!-- Floating Mobile Sticky Booking Bar -->
+<div id="mobileBookingBar" class="mobile-booking-bar">
+  <div class="mobile-booking-price-col">
+    <span class="mobile-booking-label">Starting from</span>
+    <span id="mobileStartingPrice" class="mobile-booking-price">Check Rates</span>
+  </div>
+  <a href="#roomsSection" class="mobile-booking-btn">View Rooms</a>
 </div>
 
 <footer>

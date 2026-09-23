@@ -173,20 +173,39 @@ nav {
 .logo-link {
   display: flex;
   align-items: center;
+  gap: 10px;
   text-decoration: none;
 }
 .nav-logo {
-  height: 48px;
-  width: auto;
+  height: 42px;
+  width: 42px;
+  object-fit: contain;
   border-radius: 8px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-  transition: all 0.25s ease;
+  transition: transform 0.25s ease;
 }
 .nav-logo:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(212, 175, 55, 0.2);
-  border-color: rgba(212, 175, 55, 0.35);
+  transform: scale(1.06);
+}
+
+.brand-text-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.brand-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1;
+}
+
+.brand-apon {
+  color: var(--primary);
+}
+
+.brand-ghar {
+  color: var(--dark);
 }
 
 .profile-container {
@@ -1995,6 +2014,19 @@ nav {
 }
 
 @media (max-width: 480px) {
+  nav {
+    padding: 12px 16px;
+  }
+  
+  .nav-logo {
+    height: 36px;
+    width: 36px;
+  }
+  
+  .brand-title {
+    font-size: 19px;
+  }
+
   .category-grid {
     grid-template-columns: repeat(2, 1fr);
   }
