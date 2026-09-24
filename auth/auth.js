@@ -518,7 +518,7 @@ function initGoogleSignIn() {
           });
           const profile = await res.json();
           if (profile.email) {
-            await proceedGoogleLogin(profile.name || profile.email.split("@")[0], profile.email);
+            await proceedGoogleLogin(tokenResponse.access_token);
           } else {
             showMessage("Failed to get email from Google profile.", false);
           }
@@ -544,8 +544,8 @@ function handleGoogleLoginClick() {
     }
   }
   
-  // Fallback to simulation modal
-  openGoogleModal();
+  // If Google client ID is not configured
+  showMessage("Google Sign-In is not configured. Please sign in with your email and password.", false);
 }
 
 function openGoogleModal() {
@@ -655,7 +655,7 @@ async function submitGoogleCustom() {
   await proceedGoogleLogin(name, email);
 }
 
-async function proceedGoogleLogin(name, email) {
+async function proceedGoogleLogin(token) {
   try {
     showMessage("Signing in with Google...", true);
     
@@ -665,8 +665,8 @@ async function proceedGoogleLogin(name, email) {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        email: email,
-        full_name: name
+        id_token: token,
+        credential: token
       })
     });
     

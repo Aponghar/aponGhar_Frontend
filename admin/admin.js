@@ -20,12 +20,19 @@ const resolveImageUrl = (imagePath) => {
 
 
 
-// AUTH
-const token =
-localStorage.getItem("token");
+// AUTH & ROUTE GUARD
+const token = localStorage.getItem("token");
+let user = null;
+try {
+  user = JSON.parse(localStorage.getItem("user"));
+} catch (e) {
+  user = null;
+}
 
-const user =
-JSON.parse(localStorage.getItem("user"));
+if (!token || !user || user.role !== "ADMIN") {
+  window.location.href = "../auth/auth.html";
+  throw new Error("Admin access required");
+}
 
 
 
