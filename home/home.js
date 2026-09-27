@@ -59,6 +59,12 @@ let wishlistedPropertyIds = new Set();
 const amenityIdToName = new Map();
 let renderedCount = 20;
 
+let currentPage = 1;
+let totalPages = 1;
+let totalProperties = 0;
+let isLoadingMore = false;
+let hasMoreProperties = true;
+
 const fetchWishlistIds = async () => {
   if (!token) return;
   try {
@@ -490,7 +496,14 @@ const loadProperties = async () => {
       </div>
     `).join("");
 
-    const response = await fetch(`${BASE_URL}/properties`, {
+    currentPage = 1;
+    hasMoreProperties = true;
+    const endNoticeEl = document.getElementById("endOfPropertiesNotice");
+    const loaderEl = document.getElementById("infiniteScrollLoader");
+    if (endNoticeEl) endNoticeEl.style.display = "none";
+    if (loaderEl) loaderEl.style.display = "none";
+
+    const response = await fetch(`${BASE_URL}/properties?page=1&limit=20`, {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     });
@@ -509,6 +522,17 @@ const loadProperties = async () => {
 
     allProperties = data.data;
 
+    if (data.pagination) {
+      currentPage = Number(data.pagination.page) || 1;
+      totalPages = Number(data.pagination.pages) || 1;
+      totalProperties = Number(data.pagination.total) || allProperties.length;
+      hasMoreProperties = currentPage < totalPages;
+    } else {
+      totalPages = 1;
+      totalProperties = allProperties.length;
+      hasMoreProperties = false;
+    }
+
     // Dynamically adjust price range slider limits based on loaded properties
     if (data.data.length > 0) {
       const maxPropertyPrice = data.data.reduce((max, p) => Math.max(max, toNumber(p.effective_price, 0)), 0);
@@ -519,11 +543,82 @@ const loadProperties = async () => {
       updateSlider();
     }
 
-    renderPropertyTypeFilters(data.data);
-    applyFilters();
+    renderPropertyTypeFilters(allProperties);
+    renderedCount = allProperties.length;
+    applyFilters(false);
   } catch (error) {
-    console.error(error);
+    console.error("Error loading properties:", error);
     alert("Error loading properties");
+  }
+};
+
+const loadMoreProperties = async () => {
+  if (isLoadingMore || !hasMoreProperties) {
+    return;
+  }
+
+  const loaderEl = document.getElementById("infiniteScrollLoader");
+  const endNoticeEl = document.getElementById("endOfPropertiesNotice");
+  const spinnerTextEl = document.getElementById("loadingSpinnerText");
+
+  try {
+    isLoadingMore = true;
+    const searchedKeyword = (keywordInput?.value || "").trim();
+    if (spinnerTextEl) {
+      spinnerTextEl.textContent = searchedKeyword ? `Loading more stays for "${searchedKeyword}"...` : "Loading more stays...";
+    }
+    if (loaderEl) loaderEl.style.display = "flex";
+    if (endNoticeEl) endNoticeEl.style.display = "none";
+
+    const nextPage = currentPage + 1;
+    const response = await fetch(`${BASE_URL}/properties?page=${nextPage}&limit=20`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await response.json();
+
+    if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+      const existingIds = new Set(allProperties.map(p => p.id));
+      const newItems = data.data.filter(p => !existingIds.has(p.id));
+
+      allProperties.push(...newItems);
+      currentPage = nextPage;
+
+      if (data.pagination) {
+        totalPages = Number(data.pagination.pages) || totalPages;
+        totalProperties = Number(data.pagination.total) || allProperties.length;
+        hasMoreProperties = currentPage < totalPages;
+      } else {
+        hasMoreProperties = false;
+      }
+
+      // Adjust price slider if new max is higher
+      const maxPropertyPrice = allProperties.reduce((max, p) => Math.max(max, toNumber(p.effective_price, 0)), 0);
+      const computedMax = Math.max(5000, Math.ceil(maxPropertyPrice / 1000) * 1000);
+      if (computedMax > Number(maxPriceRange.max)) {
+        minPriceRange.max = String(computedMax);
+        maxPriceRange.max = String(computedMax);
+      }
+
+      renderPropertyTypeFilters(allProperties);
+      renderedCount = allProperties.length;
+      applyFilters(false);
+    } else {
+      hasMoreProperties = false;
+    }
+  } catch (err) {
+    console.error("Failed to load more properties:", err);
+  } finally {
+    isLoadingMore = false;
+    if (loaderEl) loaderEl.style.display = "none";
+    if (!hasMoreProperties && endNoticeEl && allProperties.length > 0) {
+      const endTextEl = document.getElementById("endOfPropertiesText");
+      if (endTextEl) {
+        endTextEl.textContent = `You've viewed all ${totalProperties || allProperties.length} available properties`;
+      }
+      endNoticeEl.style.display = "flex";
+    }
   }
 };
 
@@ -607,12 +702,14 @@ const validateDates = () => {
   return true;
 };
 
-const applyFilters = () => {
+const applyFilters = (resetCount = true) => {
   if (!validateDates()) {
     return;
   }
 
-  renderedCount = 20;
+  if (resetCount) {
+    renderedCount = 20;
+  }
 
   const keyword = keywordInput.value.trim().toLowerCase();
   const guests = toNumber(guestsInput.value, 0);
@@ -730,7 +827,8 @@ const getRatingLabel = (rating) => {
 
 const renderProperties = (properties) => {
   propertiesGrid.innerHTML = "";
-  resultsSummary.textContent = `Showing ${properties.length} of ${allProperties.length} properties`;
+  const totalDisplay = totalProperties > allProperties.length ? totalProperties : allProperties.length;
+  resultsSummary.textContent = `Showing ${Math.min(properties.length, renderedCount)} of ${totalDisplay} properties`;
 
   if (properties.length === 0) {
     propertiesGrid.innerHTML = `
@@ -852,6 +950,19 @@ const renderProperties = (properties) => {
 
     propertiesGrid.appendChild(card);
   });
+
+  const endNoticeEl = document.getElementById("endOfPropertiesNotice");
+  if (!hasMoreProperties && propertiesToRender.length >= properties.length && properties.length > 0) {
+    if (endNoticeEl) {
+      const endTextEl = document.getElementById("endOfPropertiesText");
+      if (endTextEl) {
+        endTextEl.textContent = `You've viewed all ${properties.length} available properties`;
+      }
+      endNoticeEl.style.display = "flex";
+    }
+  } else if (endNoticeEl) {
+    endNoticeEl.style.display = "none";
+  }
 };
 
 propertiesGrid.addEventListener("click", async (event) => {
@@ -1259,13 +1370,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 300);
   }
 
+  let scrollThrottle = false;
   window.addEventListener("scroll", () => {
-    if (renderedCount >= filteredProperties.length) {
-      return;
-    }
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
-      renderedCount += 20;
-      renderProperties(filteredProperties);
-    }
-  });
+    if (scrollThrottle) return;
+    scrollThrottle = true;
+    requestAnimationFrame(() => {
+      scrollThrottle = false;
+      const scrollPosition = window.innerHeight + window.scrollY;
+      const pageHeight = document.documentElement.scrollHeight || document.body.offsetHeight;
+
+      // When user reaches near bottom (within 550px)
+      if (scrollPosition >= pageHeight - 550) {
+        if (renderedCount < filteredProperties.length) {
+          renderedCount += 20;
+          renderProperties(filteredProperties);
+        } else if (hasMoreProperties && !isLoadingMore) {
+          loadMoreProperties();
+        }
+      }
+    });
+  }, { passive: true });
 });
