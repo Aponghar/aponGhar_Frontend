@@ -2,10 +2,16 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
   <title>Account Access – Aponghar</title>
+  <meta name="description" content="Sign in or register for an Aponghar account to book premium hotels, homestays, and curated stays.">
   <meta name="robots" content="noindex, nofollow">
   <link rel="icon" type="image/png" href="../assets/logo-small.png">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <script src="../config.js"></script>
   <link rel="stylesheet" href="./auth.css" />
@@ -14,187 +20,414 @@
 </head>
 <body>
 
-<div class="container">
+  <!-- Background Ambient Glow Orbs -->
+  <div class="ambient-glow orb-1" aria-hidden="true"></div>
+  <div class="ambient-glow orb-2" aria-hidden="true"></div>
+  <div class="ambient-glow orb-3" aria-hidden="true"></div>
 
-  <div class="left-panel">
-    <h1 class="logo-container">
-      <a href="../home/home.html" title="Back to Home">
-        <img src="../assets/logo-small.png" alt="AponGhar Logo" class="auth-logo">
-      </a>
-    </h1>
-    <p>
-      Hotel & Homestay Management System
-    </p>
+  <!-- Global Floating Toast Notification -->
+  <div id="message" role="status" aria-live="polite"></div>
 
-    <div class="circle"></div>
-    <div class="circle2"></div>
+  <div class="auth-wrapper">
+    <div class="container">
+
+      <!-- LEFT PANEL: Luxury Brand Presentation (Desktop/Tablet) -->
+      <aside class="left-panel">
+        <a href="../home/home.html" class="back-home-badge" title="Return to Homepage">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          <span>Back to Home</span>
+        </a>
+
+        <div class="left-content">
+          <div class="brand-hero">
+            <a href="../home/home.html" class="brand-logo-link" title="AponGhar Home">
+              <img src="../assets/brand-icon.png" alt="AponGhar Emblem" class="auth-brand-logo">
+            </a>
+            <div class="brand-identity">
+              <h1 class="brand-title">
+                <span class="brand-gold">Apon</span><span class="brand-white">Ghar</span>
+              </h1>
+              <span class="brand-tagline">YOUR HOME WORLDWIDE</span>
+            </div>
+          </div>
+
+          <p class="brand-description">
+            Experience handpicked hotels, homestays, and boutique resorts across Northeast India with guaranteed seamless comfort.
+          </p>
+
+          <div class="auth-features">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <div class="feature-text">
+                <span class="feature-title">Verified Hospitality</span>
+                <span class="feature-desc">100% vetted properties & top safety</span>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                </svg>
+              </div>
+              <div class="feature-text">
+                <span class="feature-title">Instant Confirmation</span>
+                <span class="feature-desc">Zero-wait booking & fast check-in</span>
+              </div>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <path d="M12 6v6l4 2"></path>
+                </svg>
+              </div>
+              <div class="feature-text">
+                <span class="feature-title">Best Rate Guarantee</span>
+                <span class="feature-desc">Exclusive member prices & rewards</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Decorative Ambient Rings -->
+        <div class="circle circle-1" aria-hidden="true"></div>
+        <div class="circle circle-2" aria-hidden="true"></div>
+        <div class="panel-pattern" aria-hidden="true"></div>
+      </aside>
+
+      <!-- RIGHT PANEL: Forms & Controls -->
+      <main class="right-panel">
+
+        <!-- Mobile Header Bar (Visible on mobile/small screens) -->
+        <div class="mobile-header">
+          <a href="../home/home.html" class="mobile-logo-wrap">
+            <img src="../assets/brand-icon.png" alt="AponGhar" class="mobile-logo-img">
+            <div class="mobile-logo-text">
+              <span class="mobile-brand-title"><span class="brand-gold">Apon</span>Ghar</span>
+              <span class="mobile-brand-sub">Worldwide Stays</span>
+            </div>
+          </a>
+          <a href="../home/home.html" class="mobile-home-btn" title="Back to Home">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+            <span>Home</span>
+          </a>
+        </div>
+
+        <!-- Segmented Tab Switcher (Login / Register) -->
+        <div class="auth-tabs" id="authTabs" role="tablist">
+          <button type="button" class="auth-tab-btn active" id="tabLogin" role="tab" aria-selected="true" onclick="showForm('loginForm')">
+            <span>Sign In</span>
+          </button>
+          <button type="button" class="auth-tab-btn" id="tabRegister" role="tab" aria-selected="false" onclick="showForm('registerForm')">
+            <span>Create Account</span>
+          </button>
+        </div>
+
+        <div class="form-container">
+
+          <!-- 1. LOGIN FORM -->
+          <form id="loginForm" class="form active" novalidate>
+            <div class="form-header">
+              <h2>Welcome Back</h2>
+              <p class="form-subtitle">Sign in to manage your bookings and explore exclusive offers</p>
+            </div>
+
+            <div class="input-field">
+              <label for="loginEmail">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </span>
+                <input type="email" id="loginEmail" placeholder="name@example.com" autocomplete="email" required />
+              </div>
+            </div>
+
+            <div class="input-field">
+              <div class="field-label-row">
+                <label for="loginPassword">Password</label>
+                <button type="button" class="text-link-sm" onclick="showForm('forgotForm')">Forgot password?</button>
+              </div>
+              <div class="password-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="current-password" required />
+                <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)" title="Show or hide password" role="button" tabindex="0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="loginSubmitBtn">
+              <span class="btn-text">Sign In</span>
+            </button>
+
+            <div class="divider">
+              <span>or continue with</span>
+            </div>
+
+            <button type="button" class="google-btn" onclick="handleGoogleLoginClick()">
+              <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <p class="switch">
+              Don't have an account?
+              <span onclick="showForm('registerForm')">Create an account</span>
+            </p>
+          </form>
+
+          <!-- 2. REGISTER FORM -->
+          <form id="registerForm" class="form" novalidate>
+            <div class="form-header">
+              <h2>Join Aponghar</h2>
+              <p class="form-subtitle">Create your account to unlock member discounts & instant stays</p>
+            </div>
+
+            <div class="input-field">
+              <label for="registerName">Full Name</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                </span>
+                <input type="text" id="registerName" placeholder="e.g. John Doe" autocomplete="name" required />
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="registerEmail">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </span>
+                <input type="email" id="registerEmail" placeholder="name@example.com" autocomplete="email" required />
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="registerPhone">Phone Number</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                  </svg>
+                </span>
+                <input type="tel" id="registerPhone" placeholder="+91 98765 43210" autocomplete="tel" required />
+              </div>
+            </div>
+
+            <div class="input-field">
+              <label for="registerPassword">Password</label>
+              <div class="password-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="password" id="registerPassword" placeholder="Create a secure password" autocomplete="new-password" required />
+                <span class="password-toggle" onclick="togglePasswordVisibility('registerPassword', this)" title="Show or hide password" role="button" tabindex="0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="registerSubmitBtn">
+              <span class="btn-text">Create Account</span>
+            </button>
+
+            <div class="divider">
+              <span>or register with</span>
+            </div>
+
+            <button type="button" class="google-btn" onclick="handleGoogleLoginClick()">
+              <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
+                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+              </svg>
+              <span>Continue with Google</span>
+            </button>
+
+            <p class="switch">
+              Already have an account?
+              <span onclick="showForm('loginForm')">Sign in</span>
+            </p>
+          </form>
+
+          <!-- 3. OTP VERIFICATION FORM -->
+          <form id="otpForm" class="form" novalidate>
+            <div class="form-header">
+              <h2>Verify Security Code</h2>
+              <p class="form-subtitle">Enter the 6-digit code sent to your email to verify your account</p>
+            </div>
+
+            <div class="input-field">
+              <label for="otpCode">Verification Code (OTP)</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="text" id="otpCode" placeholder="Enter OTP code" maxlength="8" inputmode="numeric" required />
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="otpSubmitBtn">
+              <span class="btn-text">Verify Code</span>
+            </button>
+
+            <p class="switch">
+              Back to
+              <span onclick="showForm('loginForm')">Sign In</span>
+            </p>
+          </form>
+
+          <!-- 4. FORGOT PASSWORD FORM -->
+          <form id="forgotForm" class="form" novalidate>
+            <div class="form-header">
+              <h2>Reset Password</h2>
+              <p class="form-subtitle">Enter the email associated with your account and we'll send recovery instructions</p>
+            </div>
+
+            <div class="input-field">
+              <label for="forgotEmail">Email Address</label>
+              <div class="input-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                  </svg>
+                </span>
+                <input type="email" id="forgotEmail" placeholder="name@example.com" autocomplete="email" required />
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="forgotSubmitBtn">
+              <span class="btn-text">Send Recovery Link</span>
+            </button>
+
+            <p class="switch">
+              Remember your password?
+              <span onclick="showForm('loginForm')">Back to Sign In</span>
+            </p>
+          </form>
+
+          <!-- 5. RESET PASSWORD FORM -->
+          <form id="resetForm" class="form" novalidate>
+            <div class="form-header">
+              <h2>Create New Password</h2>
+              <p class="form-subtitle">Choose a new, strong password for your Aponghar account</p>
+            </div>
+
+            <div class="input-field">
+              <label for="newPassword">New Password</label>
+              <div class="password-wrapper">
+                <span class="input-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </span>
+                <input type="password" id="newPassword" placeholder="Enter new password" autocomplete="new-password" required />
+                <span class="password-toggle" onclick="togglePasswordVisibility('newPassword', this)" title="Show or hide password" role="button" tabindex="0">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                  </svg>
+                </span>
+              </div>
+            </div>
+
+            <button type="submit" class="submit-btn" id="resetSubmitBtn">
+              <span class="btn-text">Update Password</span>
+            </button>
+          </form>
+
+        </div>
+      </main>
+    </div>
   </div>
 
-  <div class="right-panel">
-
-    <!-- LOGIN -->
-    <form id="loginForm" class="form active">
-      <h2>Login</h2>
-
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <div class="password-wrapper">
-        <input type="password" id="loginPassword" placeholder="Password" required />
-        <span class="password-toggle" onclick="togglePasswordVisibility('loginPassword', this)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        </span>
-      </div>
-
-      <button type="submit">Login</button>
-
-      <div class="divider">or</div>
-
-      <button type="button" class="google-btn" onclick="handleGoogleLoginClick()">
-        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+  <!-- MOCK GOOGLE CHOOSE ACCOUNT MODAL -->
+  <div id="googleModal" class="google-modal" role="dialog" aria-modal="true" aria-labelledby="googleModalTitle">
+    <div class="google-modal-content">
+      <div class="google-logo">
+        <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
           <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
           <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
           <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
           <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
         </svg>
-        Continue with Google
-      </button>
-
-      <p class="switch">
-        Don't have an account?
-        <span onclick="showForm('registerForm')">Register</span>
-      </p>
-
-      <p class="switch">
-        Forgot Password?
-        <span onclick="showForm('forgotForm')">Reset</span>
-      </p>
-    </form>
-
-
-    <!-- REGISTER -->
-    <form id="registerForm" class="form">
-      <h2>Register</h2>
-
-      <input type="text" id="registerName" placeholder="Full Name" required />
-      <input type="email" id="registerEmail" placeholder="Email" required />
-      <input type="text" id="registerPhone" placeholder="Phone" required />
-      <div class="password-wrapper">
-        <input type="password" id="registerPassword" placeholder="Password" required />
-        <span class="password-toggle" onclick="togglePasswordVisibility('registerPassword', this)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        </span>
+        <span>Google</span>
+      </div>
+      <h2 id="googleModalTitle">Choose an account</h2>
+      <p class="google-subtitle">to continue to <strong>AponGhar</strong></p>
+      
+      <div class="google-account-list">
+        <!-- Account list items dynamically populated from auth.js -->
+      </div>
+      
+      <!-- Custom Email Form inside popup -->
+      <div id="googleCustomForm" style="display: none; width: 100%; margin-top: 15px;">
+        <input type="text" id="googleCustomName" placeholder="Full Name (e.g. Alex Johnson)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px;" />
+        <input type="email" id="googleCustomEmail" placeholder="Email (e.g. alex@gmail.com)" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px;" />
+        <button type="button" onclick="submitGoogleCustom()" style="width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(26,115,232,0.2);">Continue</button>
       </div>
 
-      <button type="submit">Register</button>
-
-      <div class="divider">or</div>
-
-      <button type="button" class="google-btn" onclick="handleGoogleLoginClick()">
-        <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
-          <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-          <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-          <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-          <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-        </svg>
-        Continue with Google
-      </button>
-
-      <p class="switch">
-        Already have account?
-        <span onclick="showForm('loginForm')">Login</span>
-      </p>
-    </form>
-
-
-    <!-- OTP -->
-    <form id="otpForm" class="form">
-      <h2>Verify OTP</h2>
-
-      <input type="text" id="otpCode" placeholder="Enter OTP" required />
-
-      <button type="submit">Verify OTP</button>
-
-      <p class="switch">
-        Back to
-        <span onclick="showForm('loginForm')">Login</span>
-      </p>
-    </form>
-
-
-    <!-- FORGOT -->
-    <form id="forgotForm" class="form">
-      <h2>Forgot Password</h2>
-
-      <input type="email" id="forgotEmail" placeholder="Enter Email" required />
-
-      <button type="submit">Send Reset Link</button>
-
-      <p class="switch">
-        Back to
-        <span onclick="showForm('loginForm')">Login</span>
-      </p>
-    </form>
-
-
-    <!-- RESET -->
-    <form id="resetForm" class="form">
-      <h2>Reset Password</h2>
-
-      <div class="password-wrapper">
-        <input type="password" id="newPassword" placeholder="New Password" required />
-        <span class="password-toggle" onclick="togglePasswordVisibility('newPassword', this)">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="eye-icon"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        </span>
+      <!-- Client ID Setup helper inside popup -->
+      <div id="googleConfigSection" style="margin-top: 18px; width: 100%; border-top: 1px dashed #dadce0; padding-top: 15px; font-size: 12px; color: #5f6368; text-align: left;">
+        <div style="font-weight: 600; margin-bottom: 4px; color: #3c4043;">Setup Real Google Login</div>
+        <p style="font-size: 11px; margin-bottom: 8px; line-height: 1.4;">To enable the real Google Sign-In popup with browser accounts, provide a Google Client ID here or add <code>GOOGLE_CLIENT_ID</code> to your backend <code>.env</code> file.</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="googleClientIdInput" placeholder="Enter Google Client ID" style="flex: 1; padding: 6px 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px;" />
+          <button type="button" onclick="saveGoogleClientId()" style="padding: 6px 12px; background: #1a73e8; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Save</button>
+        </div>
+        <div id="googleClientIdStatus" style="font-size: 10px; margin-top: 6px; font-weight: 600; color: #ea4335;">○ Not configured (using simulation)</div>
       </div>
 
-      <button type="submit">Reset Password</button>
-    </form>
-
-    <div id="message"></div>
-
+      <button type="button" class="google-cancel-btn" onclick="closeGoogleModal()">Cancel</button>
+    </div>
   </div>
-</div>
 
-<!-- MOCK GOOGLE CHOOSE ACCOUNT MODAL -->
-<div id="googleModal" class="google-modal">
-  <div class="google-modal-content">
-    <div class="google-logo">
-      <svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
-        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/>
-        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-      </svg>
-      <span>Google</span>
-    </div>
-    <h2>Choose an account</h2>
-    <p class="google-subtitle">to continue to <strong>AponGhar</strong></p>
-    
-    <div class="google-account-list">
-      <!-- Account list items dynamically populated from auth.js -->
-    </div>
-    
-    <!-- Custom Email Form inside popup -->
-    <div id="googleCustomForm" style="display: none; width: 100%; margin-top: 15px;">
-      <input type="text" id="googleCustomName" placeholder="Full Name (e.g. Alex Johnson)" style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px;" />
-      <input type="email" id="googleCustomEmail" placeholder="Email (e.g. alex@gmail.com)" style="width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #dadce0; border-radius: 6px; font-size: 14px;" />
-      <button type="button" onclick="submitGoogleCustom()" style="width: 100%; padding: 12px; background: #1a73e8; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 14px; box-shadow: 0 2px 4px rgba(26,115,232,0.2);">Continue</button>
-    </div>
-
-    <!-- Client ID Setup helper inside popup -->
-    <div id="googleConfigSection" style="margin-top: 18px; width: 100%; border-top: 1px dashed #dadce0; padding-top: 15px; font-size: 12px; color: #5f6368; text-align: left;">
-      <div style="font-weight: 600; margin-bottom: 4px; color: #3c4043;">Setup Real Google Login</div>
-      <p style="font-size: 11px; margin-bottom: 8px; line-height: 1.4;">To enable the real Google Sign-In popup with browser accounts, provide a Google Client ID here or add <code>GOOGLE_CLIENT_ID</code> to your backend <code>.env</code> file.</p>
-      <div style="display: flex; gap: 8px;">
-        <input type="text" id="googleClientIdInput" placeholder="Enter Google Client ID" style="flex: 1; padding: 6px 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 11px;" />
-        <button type="button" onclick="saveGoogleClientId()" style="padding: 6px 12px; background: #1a73e8; color: white; border: none; border-radius: 4px; font-size: 11px; font-weight: 600; cursor: pointer;">Save</button>
-      </div>
-      <div id="googleClientIdStatus" style="font-size: 10px; margin-top: 6px; font-weight: 600; color: #ea4335;">○ Not configured (using simulation)</div>
-    </div>
-
-    <button type="button" class="google-cancel-btn" onclick="closeGoogleModal()">Cancel</button>
-  </div>
-</div>
-
-<script src="auth.js"></script>
+  <script src="auth.js"></script>
 </body>
 </html>
